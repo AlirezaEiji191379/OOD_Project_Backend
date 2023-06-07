@@ -16,7 +16,7 @@
   <ItemGroup>
     <Folder Include="Channel\" />
     <Folder Include="Content\" />
-    <Folder Include="Core\" />
+    <Folder Include="Core\DataAccess\" />
     <Folder Include="Payment\" />
     <Folder Include="UserAuth\" />
   </ItemGroup>
