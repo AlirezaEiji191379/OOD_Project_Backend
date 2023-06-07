@@ -1,4 +1,4 @@
-﻿using OOD_Project_Backend.Core.Common.Assemb_y;
+﻿using OOD_Project_Backend.Core.Common.Assembly;
 using OOD_Project_Backend.Core.Common.DependencyInjection.Abstractions;
 using System.Reflection;
 

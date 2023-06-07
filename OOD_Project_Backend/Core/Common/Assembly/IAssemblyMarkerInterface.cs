@@ -1,4 +1,4 @@
-﻿namespace OOD_Project_Backend.Core.Common.Assemb_y
+﻿namespace OOD_Project_Backend.Core.Common.Assembly
 {
     internal interface IAssemblyMarkerInterface
     {
