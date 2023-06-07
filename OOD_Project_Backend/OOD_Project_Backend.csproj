@@ -13,4 +13,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Channel\" />
+    <Folder Include="Content\" />
+    <Folder Include="Core\" />
+    <Folder Include="Payment\" />
+    <Folder Include="UserAuth\" />
+  </ItemGroup>
+
 </Project>
