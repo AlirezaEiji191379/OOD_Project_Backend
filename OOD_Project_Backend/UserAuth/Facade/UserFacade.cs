@@ -1,4 +1,4 @@
-﻿using OOD_Project_Backend.UserAuth.Abstractions;
+﻿using OOD_Project_Backend.UserAuth.Facade.Abstractions;
 
 namespace OOD_Project_Backend.UserAuth.Facade
 {
