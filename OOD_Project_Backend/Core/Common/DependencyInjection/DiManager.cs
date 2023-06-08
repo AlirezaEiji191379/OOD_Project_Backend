@@ -1,18 +1,24 @@
-﻿using OOD_Project_Backend.Core.Common.Assembly;
+﻿using Microsoft.EntityFrameworkCore;
+using OOD_Project_Backend.Core.Common.Assembly;
 using OOD_Project_Backend.Core.Common.DependencyInjection.Abstractions;
-using System.Reflection;
+using OOD_Project_Backend.Core.DataAccess;
 
 namespace OOD_Project_Backend.Core.Common.DependencyInjection
 {
     internal static class DiManager
     {
-        internal static void AddOODServices(this IServiceCollection serviceCollection)
+        internal static void AddOODServices(this IServiceCollection serviceCollection,IConfiguration configuration)
         {
             var installers = GetAllIDependencyInstallerImplementations();
             foreach (var installer in installers)
             {
                 installer.Install(serviceCollection);
             }
+
+            serviceCollection.AddDbContext<AppDbContext>
+                    (options =>
+                        options.UseNpgsql(configuration["GhasedakDb"]));
+
         }
 
         private static IEnumerable<IDependencyInstaller> GetAllIDependencyInstallerImplementations()

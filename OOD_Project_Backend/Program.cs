@@ -27,7 +27,7 @@ static WebApplicationBuilder AddServices(string[] args)
     var builder = WebApplication.CreateBuilder(args);
 
     // Add services to the container.
-    builder.Services.AddOODServices();
+    builder.Services.AddOODServices(builder.Configuration);
     builder.Services.AddControllers();
 
 
