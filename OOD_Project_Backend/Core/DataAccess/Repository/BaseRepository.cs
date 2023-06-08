@@ -31,15 +31,15 @@ namespace OOD_Project_Backend.Core.DataAccess.Repository
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges)
         {
             return trackChanges
-                ? _dbContext.Set<T>().Where(expression).AsNoTracking()
-                : _dbContext.Set<T>().Where(expression);
+                ? _dbContext.Set<T>().Where(expression)
+                : _dbContext.Set<T>().Where(expression).AsNoTracking();
         }
 
         public IQueryable<T> GetAll(bool trackChanges)
         {
             return trackChanges
-                ? _dbContext.Set<T>().AsNoTracking()
-                : _dbContext.Set<T>();
+                ? _dbContext.Set<T>()
+                : _dbContext.Set<T>().AsNoTracking();
         }
 
         public Task SaveChangesAsync()
