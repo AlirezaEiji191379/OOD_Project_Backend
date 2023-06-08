@@ -9,5 +9,6 @@ namespace OOD_Project_Backend.Core.DataAccess.Abstractions
         void Delete(T entity);
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges);
         IQueryable<T> GetAll(bool trackChanges);
+        Task SaveChangesAsync();
     }
 }

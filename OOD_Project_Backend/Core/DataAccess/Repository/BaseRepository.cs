@@ -41,5 +41,10 @@ namespace OOD_Project_Backend.Core.DataAccess.Repository
                 ? _dbContext.Set<T>().AsNoTracking()
                 : _dbContext.Set<T>();
         }
+
+        public Task SaveChangesAsync()
+        {
+            return _dbContext.SaveChangesAsync();
+        }
     }
 }
