@@ -17,7 +17,7 @@ namespace OOD_Project_Backend.Core.Common.DependencyInjection
 
             serviceCollection.AddDbContext<AppDbContext>
                     (options =>
-                        options.UseNpgsql(configuration["GhasedakDb"]));
+                        options.UseNpgsql(configuration.GetConnectionString("GhasedakDb")));
 
         }
 
