@@ -135,6 +135,18 @@ namespace OOD_Project_Backend.Tests.Core.DataAccess
             result.Should().BeEquivalentTo(entityList);
         }
 
+        [Fact]
+        public async Task SaveChangesAsync_ShouldReceiveCall_WhenItIsInvokedAsync()
+        {
+            // Arrange
+
+            // Act
+            await _sut.SaveChangesAsync();
+
+            // Assert
+            await _appDbContext.Received(1).SaveChangesAsync();
+        }
+
 
 
     }
