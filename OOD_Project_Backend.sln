@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OOD_Project_Backend", "OOD_
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OOD_Project_Backend.Tests", "OOD_Project_Backend.Tests\OOD_Project_Backend.Tests.csproj", "{98CC52DB-8DAA-4303-B54C-1CA9F086FD3F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{5CA663F9-0267-4BF5-B9E6-3BE91A3FF4A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{98CC52DB-8DAA-4303-B54C-1CA9F086FD3F} = {5CA663F9-0267-4BF5-B9E6-3BE91A3FF4A4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0EF4E5C4-F05B-4BFF-AEE6-6136E88A017F}
