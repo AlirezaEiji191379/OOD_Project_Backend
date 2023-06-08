@@ -1,8 +1,25 @@
-version: '3.4'
+version: '3.8'
 
 services:
-  ood_project_backend:
-    image: ${DOCKER_REGISTRY-}oodprojectbackend
-    build:
-      context: .
-      dockerfile: OOD_Project_Backend/Dockerfile
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: str0ngP@ssw0rd
+      POSTGRES_DB: Ghasedak
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ood@ood.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - '8080:80'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
