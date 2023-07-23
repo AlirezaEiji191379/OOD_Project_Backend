@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Channel\Business\Validation\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
 
 </Project>

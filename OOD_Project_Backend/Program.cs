@@ -32,6 +32,17 @@ static WebApplicationBuilder AddServices(string[] args)
     builder.Services.AddScoped<SecurityMiddleware>();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowSpecificPort",
+            builder =>
+            {
+                builder.WithOrigins("http://*:8080")
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod();
+            });
+    });
     
     return builder;
 }
