@@ -1,0 +1,17 @@
+﻿using OOD_Project_Backend.Core.Common.DependencyInjection.Abstractions;
+using OOD_Project_Backend.Core.DataAccess.Abstractions;
+using OOD_Project_Backend.Core.Validation;
+using OOD_Project_Backend.User.Business.Validation;
+using OOD_Project_Backend.User.DataAccess.Entities;
+using OOD_Project_Backend.User.DataAccess.Repository;
+
+namespace OOD_Project_Backend.User.DependencyInjection;
+
+public class UserPackageDiManager : IDependencyInstaller
+{
+    public void Install(IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddScoped<IBaseRepository<UserEntity>,UserRepository>();
+        //serviceCollection.AddSingleton<Validator,DefaultValidator>();
+    }
+}

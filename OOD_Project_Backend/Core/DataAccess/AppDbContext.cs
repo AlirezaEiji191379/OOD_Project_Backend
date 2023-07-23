@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using OOD_Project_Backend.User.DataAccess.Entities;
 
 namespace OOD_Project_Backend.Core.DataAccess
 {
@@ -13,6 +14,8 @@ namespace OOD_Project_Backend.Core.DataAccess
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
+
+        public DbSet<UserEntity> Users { get; set; }
 
     }
 }
