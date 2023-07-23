@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Channel\DataAccess\EntityConfigurations\" />
     <Folder Include="Content\DataAccess\EntityConfigurations\" />
   </ItemGroup>
 

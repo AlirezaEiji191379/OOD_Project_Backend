@@ -1,4 +1,6 @@
-﻿namespace OOD_Project_Backend.User.DataAccess.Entities;
+﻿using OOD_Project_Backend.Channel.DataAccess.Entities;
+
+namespace OOD_Project_Backend.User.DataAccess.Entities;
 
 public class UserEntity
 {
@@ -9,4 +11,6 @@ public class UserEntity
     public string? ProfilePicPath { get; set; }
     public string Password { get; set; }
     public bool IsDeleted { get; set; }
+    
+    public ICollection<ChannelMemberEntity> ChannelMemberEntities { get; set; }
 }

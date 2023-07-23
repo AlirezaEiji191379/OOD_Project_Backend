@@ -7,4 +7,6 @@ public class ChannelEntity
     public string PicturePath { get; set; }
     public string Description { get; set; }
     public string JoinLink { get; set; }
+    
+    public ICollection<ChannelMemberEntity> ChannelMemberEntities { get; set; }
 }
