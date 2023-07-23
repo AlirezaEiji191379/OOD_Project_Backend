@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using OOD_Project_Backend.Core.Common.Authentication;
 using OOD_Project_Backend.Core.Common.DependencyInjection;
@@ -13,7 +14,12 @@ UseMiddlewares(builder);
 static void UseMiddlewares(WebApplicationBuilder builder)
 {
     var app = builder.Build();
-    
+    app.UseStaticFiles(new StaticFileOptions()
+    {
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "./Resources")),
+        RequestPath = new PathString("")
+    });
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
