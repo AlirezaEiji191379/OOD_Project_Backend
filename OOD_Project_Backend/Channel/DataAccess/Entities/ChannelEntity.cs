@@ -1,4 +1,7 @@
-﻿namespace OOD_Project_Backend.Channel.DataAccess.Entities;
+﻿using System.Collections;
+using OOD_Project_Backend.Content.DataAccess.Entities;
+
+namespace OOD_Project_Backend.Channel.DataAccess.Entities;
 
 public class ChannelEntity
 {
@@ -9,4 +12,5 @@ public class ChannelEntity
     public string JoinLink { get; set; }
     
     public ICollection<ChannelMemberEntity> ChannelMemberEntities { get; set; }
+    public ICollection<CategoryEntity> CategoryEntities { get; set; }
 }
