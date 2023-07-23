@@ -23,5 +23,13 @@ public class UserController : ControllerBase
         var result = await _userService.Register(registerRequest);
         return result;
     }
-    
+
+    [HttpPost]
+    [Route("SignIn")]
+    public async Task<Response> Login([FromBody] LoginRequest loginRequest)
+    {
+        var result = await _userService.Login(loginRequest);
+        return result;
+    }
+
 }

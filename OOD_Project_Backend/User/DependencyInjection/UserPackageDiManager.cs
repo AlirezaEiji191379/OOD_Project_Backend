@@ -17,6 +17,7 @@ public class UserPackageDiManager : IDependencyInstaller
         serviceCollection.AddScoped<IBaseRepository<UserEntity>,UserRepository>();
         serviceCollection.AddScoped<UserService, DefaultUserService>();
         serviceCollection.AddScoped<PasswordService,DefaultPasswordService>();
+        serviceCollection.AddScoped<Authenticator, JwtAuthenticator>();
         //serviceCollection.AddSingleton<Validator,DefaultValidator>();
     }
 }
