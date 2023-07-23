@@ -13,4 +13,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Channel\DataAccess\EntityConfigurations\" />
+    <Folder Include="Content\DataAccess\EntityConfigurations\" />
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,10 @@
 using System.Text;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using OOD_Project_Backend.Core.Common.Authentication;
 using OOD_Project_Backend.Core.Common.DependencyInjection;
+using OOD_Project_Backend.Core.Common.Middlewares;
 
 WebApplicationBuilder builder = AddServices(args);
 
@@ -16,11 +19,7 @@ static void UseMiddlewares(WebApplicationBuilder builder)
         app.UseSwagger();
         app.UseSwaggerUI();
     }
-
-    //app.UseHttpsRedirection();
-    app.UseAuthentication();
-    app.UseAuthorization();
-
+    app.UseMiddleware<SecurityMiddleware>();
     app.MapControllers();
 
     app.Run();
@@ -30,20 +29,9 @@ static WebApplicationBuilder AddServices(string[] args)
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddOODServices(builder.Configuration);
     builder.Services.AddControllers();
+    builder.Services.AddScoped<SecurityMiddleware>();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
-    builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    }).AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Str@ngP@assword"))
-        };
-    });;
+    
     return builder;
 }
