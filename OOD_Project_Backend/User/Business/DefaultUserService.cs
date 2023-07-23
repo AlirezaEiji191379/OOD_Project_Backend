@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OOD_Project_Backend.Core.Common.Response;
 using OOD_Project_Backend.Core.DataAccess.Abstractions;
 using OOD_Project_Backend.Core.Validation;
+using OOD_Project_Backend.Finanace.Facade.Abstractions;
 using OOD_Project_Backend.User.Business.Abstractions;
 using OOD_Project_Backend.User.Business.Requests;
 using OOD_Project_Backend.User.Business.Validation;
@@ -14,17 +15,19 @@ namespace OOD_Project_Backend.User.Business;
 public class DefaultUserService : UserService
 {
     private readonly IBaseRepository<UserEntity> _userRepository;
+    private readonly IFinanaceFacade _finanaceFacade;
     private readonly Validator _validator;
     private readonly PasswordService _passwordService;
     private readonly Authenticator _jwtAutenticator;
 
     public DefaultUserService(IBaseRepository<UserEntity> userRepository,
         PasswordService passwordService,
-        Authenticator jwtAuthenticator)
+        Authenticator jwtAuthenticator, IFinanaceFacade finanaceFacade)
     {
         _userRepository = userRepository;
         _passwordService = passwordService;
         _jwtAutenticator = jwtAuthenticator;
+        _finanaceFacade = finanaceFacade;
         //TODO : correct the DI for the dependency!
         _validator = new DefaultValidator();
     }
@@ -52,6 +55,7 @@ public class DefaultUserService : UserService
         try
         {
             await _userRepository.Create(user);
+            await _finanaceFacade.CreateWallet(user);
             await _userRepository.SaveChangesAsync();
             return new Response(201, new { Message = "User Created" });
         }

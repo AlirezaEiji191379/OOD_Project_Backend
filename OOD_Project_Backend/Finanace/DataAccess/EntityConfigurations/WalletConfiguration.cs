@@ -8,7 +8,7 @@ public class WalletConfiguration : IEntityTypeConfiguration<WalletEntity>
 {
     public void Configure(EntityTypeBuilder<WalletEntity> builder)
     {
-        builder.HasNoKey();
+        builder.HasKey(x => x.Id);
         builder.HasIndex(x => x.UserId).IsUnique();
         builder.HasOne(x => x.User)
             .WithOne()
