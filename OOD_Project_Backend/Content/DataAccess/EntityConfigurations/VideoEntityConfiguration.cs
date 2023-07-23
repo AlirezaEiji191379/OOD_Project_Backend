@@ -8,6 +8,7 @@ public class VideoEntityConfiguration : IEntityTypeConfiguration<VideoEntity>
 {
     public void Configure(EntityTypeBuilder<VideoEntity> builder)
     {
+        builder.HasNoKey();
         builder.HasOne(x => x.File)
             .WithOne()
             .HasForeignKey<VideoEntity>(x => x.FileId);

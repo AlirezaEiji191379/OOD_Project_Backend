@@ -5,6 +5,7 @@ namespace OOD_Project_Backend.Content.DataAccess.Entities;
 
 public class ContentMetaDataEntity
 {
+    public int Id { get; set; }
     public int ContentId { get; set; }
     public ContentEntity Content { get; set; }
     public ChannelEntity Channel { get; set; }

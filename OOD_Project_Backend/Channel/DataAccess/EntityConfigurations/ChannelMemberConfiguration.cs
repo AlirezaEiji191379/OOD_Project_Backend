@@ -18,7 +18,6 @@ public class ChannelMemberConfiguration : IEntityTypeConfiguration<ChannelMember
         builder.HasOne(x => x.User)
             .WithMany(x => x.ChannelMemberEntities)
             .HasForeignKey(fk => fk.UserId);
-        builder.HasIndex(x => new { x.UserId, x.ChannelId })
-            .IsUnique();
+        builder.HasKey(x => new { x.UserId, x.ChannelId });
     }
 }
