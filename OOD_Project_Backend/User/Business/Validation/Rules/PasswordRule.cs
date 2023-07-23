@@ -13,7 +13,7 @@ public class PasswordRule : Rule
 
     public bool Apply()
     {
-        if (_password.Length < 6)
+        if (_password.Length < 6 || _password.Length > 20)
         {
             return false;
         }

@@ -19,6 +19,10 @@ public class PhoneNumberRule : Rule
             return false;
         }
 
+        if (_phoneNumber.Length != 11)
+        {
+            return false;
+        }
         var pattern = @"^\(?([0-9]{4})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$";
         return Regex.IsMatch(_phoneNumber, pattern);
     }

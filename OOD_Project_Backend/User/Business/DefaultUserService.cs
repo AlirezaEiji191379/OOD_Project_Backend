@@ -13,10 +13,12 @@ public class DefaultUserService : UserService
 {
     private readonly IBaseRepository<UserEntity> _userRepository;
     private readonly Validator _validator;
+    private readonly PasswordService _passwordService;
 
-    public DefaultUserService(IBaseRepository<UserEntity> userRepository)
+    public DefaultUserService(IBaseRepository<UserEntity> userRepository, PasswordService passwordService)
     {
         _userRepository = userRepository;
+        _passwordService = passwordService;
         //TODO : correct the DI for the dependency!
         _validator = new DefaultValidator();
     }
@@ -38,7 +40,7 @@ public class DefaultUserService : UserService
         {
             PhoneNumber = register.PhoneNumber,
             Email = register.Email,
-            Password = register.Password
+            Password = _passwordService.HashPassword(register.Password)
         };
         try
         {

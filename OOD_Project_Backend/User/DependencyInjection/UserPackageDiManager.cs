@@ -3,6 +3,7 @@ using OOD_Project_Backend.Core.DataAccess.Abstractions;
 using OOD_Project_Backend.Core.Validation;
 using OOD_Project_Backend.User.Business;
 using OOD_Project_Backend.User.Business.Abstractions;
+using OOD_Project_Backend.User.Business.Security;
 using OOD_Project_Backend.User.Business.Validation;
 using OOD_Project_Backend.User.DataAccess.Entities;
 using OOD_Project_Backend.User.DataAccess.Repository;
@@ -15,6 +16,7 @@ public class UserPackageDiManager : IDependencyInstaller
     {
         serviceCollection.AddScoped<IBaseRepository<UserEntity>,UserRepository>();
         serviceCollection.AddScoped<UserService, DefaultUserService>();
+        serviceCollection.AddScoped<PasswordService,DefaultPasswordService>();
         //serviceCollection.AddSingleton<Validator,DefaultValidator>();
     }
 }
