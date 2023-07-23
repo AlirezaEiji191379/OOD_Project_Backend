@@ -1,4 +1,7 @@
+using Microsoft.Extensions.FileProviders;
 using OOD_Project_Backend.Core.Common.DependencyInjection;
+using OOD_Project_Backend.Core.Common.Middlewares;
+using OOD_Project_Backend.Core.DataAccess;
 
 WebApplicationBuilder builder = AddServices(args);
 
@@ -7,17 +10,19 @@ UseMiddlewares(builder);
 static void UseMiddlewares(WebApplicationBuilder builder)
 {
     var app = builder.Build();
-    
+    Migrator.Migrate(app);
+    app.UseStaticFiles(new StaticFileOptions()
+    {
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "./Resources")),
+        RequestPath = new PathString("")
+    });
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
         app.UseSwaggerUI();
     }
-
-    //app.UseHttpsRedirection();
-    app.UseAuthentication();
-    app.UseAuthorization();
-
+    app.UseMiddleware<SecurityMiddleware>();
     app.MapControllers();
 
     app.Run();
@@ -27,7 +32,20 @@ static WebApplicationBuilder AddServices(string[] args)
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddOODServices(builder.Configuration);
     builder.Services.AddControllers();
+    builder.Services.AddScoped<SecurityMiddleware>();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowSpecificPort",
+            builder =>
+            {
+                builder.WithOrigins("http://*:8080")
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod();
+            });
+    });
+    
     return builder;
 }
