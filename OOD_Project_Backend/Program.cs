@@ -1,11 +1,7 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.IdentityModel.Tokens;
-using OOD_Project_Backend.Core.Common.Authentication;
 using OOD_Project_Backend.Core.Common.DependencyInjection;
 using OOD_Project_Backend.Core.Common.Middlewares;
+using OOD_Project_Backend.Core.DataAccess;
 
 WebApplicationBuilder builder = AddServices(args);
 
@@ -14,6 +10,7 @@ UseMiddlewares(builder);
 static void UseMiddlewares(WebApplicationBuilder builder)
 {
     var app = builder.Build();
+    Migrator.Migrate(app);
     app.UseStaticFiles(new StaticFileOptions()
     {
         FileProvider = new PhysicalFileProvider(
