@@ -21,7 +21,7 @@ public class UserController : ControllerBase
     public async Task<Response> Register([FromBody] RegisterRequest registerRequest)
     {
         var result = await _userService.Register(registerRequest);
-        return (Response)StatusCode(result.StatusCode!.Value,new {Message = result.Message});
+        return result;
     }
     
 }

@@ -23,13 +23,15 @@ public class DefaultUserService : UserService
 
     public async Task<Response> Register(RegisterRequest register)
     {
-        var phoneRule = new PhoneNumberRule(register.PhoneNumber);
-        var emailRule = new EmailRule(register.Email);
+        Rule phoneOrEmailRule = string.IsNullOrEmpty(register.PhoneNumber)
+            ? new EmailRule(register.Email)
+            : new PhoneNumberRule(register.PhoneNumber);
+
         var passwordRule = new PasswordRule(register.Password);
-        if (!_validator.Validate(phoneRule, emailRule, passwordRule))
+        if (!_validator.Validate(phoneOrEmailRule, passwordRule))
         {
-            var validateFailedMessage = "Register Request Is not valid Check Email,Phone and your password";
-            return new Response( 400,validateFailedMessage);
+            var validateFailedMessage = new {Message = "Register Request Is not valid Check Email,Phone and your password"};
+            return new Response(400, validateFailedMessage);
         }
 
         var user = new UserEntity()
@@ -42,11 +44,11 @@ public class DefaultUserService : UserService
         {
             await _userRepository.Create(user);
             await _userRepository.SaveChangesAsync();
-            return new Response(201, "User Created");
+            return new Response(201, new {Message = "User Created"});
         }
         catch (Exception e)
         {
-            return new Response(400, "sign up failed! try later!");
+            return new Response(400, new {Message = "duplicated user is found or the sign up failed!"});
         }
     }
 }
