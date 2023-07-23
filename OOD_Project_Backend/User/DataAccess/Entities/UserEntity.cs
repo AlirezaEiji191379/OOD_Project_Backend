@@ -1,4 +1,5 @@
 ﻿using OOD_Project_Backend.Channel.DataAccess.Entities;
+using OOD_Project_Backend.Finanace.DataAccess.Entities;
 
 namespace OOD_Project_Backend.User.DataAccess.Entities;
 
@@ -13,4 +14,6 @@ public class UserEntity
     public bool IsDeleted { get; set; }
     
     public ICollection<ChannelMemberEntity> ChannelMemberEntities { get; set; }
+    public ICollection<TransactionEntity> TransactionEntities { get; set; }
+    public ICollection<RefundEntity> RefundEntities { get; set; }
 }

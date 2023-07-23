@@ -2,6 +2,7 @@
 using System.Reflection;
 using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Content.DataAccess.Entities;
+using OOD_Project_Backend.Finanace.DataAccess.Entities;
 using OOD_Project_Backend.User.DataAccess.Entities;
 
 namespace OOD_Project_Backend.Core.DataAccess
@@ -26,6 +27,8 @@ namespace OOD_Project_Backend.Core.DataAccess
         public DbSet<FileEntity> Files { get; set; }
         public DbSet<MusicEntity> Musics { get; set; }
         public DbSet<VideoEntity> Videos { get; set; }
-
+        public DbSet<RefundEntity> Refunds { get; set; }
+        public DbSet<TransactionEntity> Transactions { get; set; }
+        public DbSet<WalletEntity> Wallets { get; set; }
     }
 }
