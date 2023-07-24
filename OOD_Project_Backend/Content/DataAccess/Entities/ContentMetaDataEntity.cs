@@ -13,4 +13,5 @@ public class ContentMetaDataEntity
     public ContentType ContentType { get; set; }
     public int Price { get; set; }
     public bool Premium { get; set; }
+    public string FileName { get; set; }
 }
