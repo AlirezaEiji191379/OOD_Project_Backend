@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using OOD_Project_Backend.User.Business.Abstractions;
 
@@ -20,6 +21,10 @@ public class SecurityMiddleware : IMiddleware
             if (!context.Request.Headers.ContainsKey("X-Auth-Token"))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "text/plain";
+                context.Response.ContentLength = Encoding.UTF8.GetByteCount("no token");
+                await context.Response.WriteAsync("no token");
                 return;
             }
 
@@ -28,6 +33,9 @@ public class SecurityMiddleware : IMiddleware
             if (!isValidToken)
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "text/plain";
+                context.Response.ContentLength = Encoding.UTF8.GetByteCount("invalid jwt token");
+                await context.Response.WriteAsync("invalid jwt token");
                 return;
             }
             context.Items["User"] = _authenticator.FindUserId(token);

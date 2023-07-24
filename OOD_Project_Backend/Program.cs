@@ -26,7 +26,7 @@ static void UseMiddlewares(WebApplicationBuilder builder)
     app.UseMiddleware<SecurityMiddleware>();
     app.MapControllers();
 
-    app.Run();
+    app.Run("http://*:5000");
 }
 static WebApplicationBuilder AddServices(string[] args)
 {
