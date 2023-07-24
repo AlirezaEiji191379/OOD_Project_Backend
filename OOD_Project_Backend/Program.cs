@@ -11,6 +11,7 @@ static void UseMiddlewares(WebApplicationBuilder builder)
 {
     var app = builder.Build();
     Migrator.Migrate(app);
+    app.UseCors("AllowAnyUrl");
     app.UseStaticFiles(new StaticFileOptions()
     {
         FileProvider = new PhysicalFileProvider(
@@ -37,10 +38,10 @@ static WebApplicationBuilder AddServices(string[] args)
     builder.Services.AddSwaggerGen();
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowSpecificPort",
+        options.AddPolicy("AllowAnyUrl",
             builder =>
             {
-                builder.WithOrigins("http://*:8080")
+                builder
                     .AllowAnyHeader()
                     .AllowAnyOrigin()
                     .AllowAnyMethod();
