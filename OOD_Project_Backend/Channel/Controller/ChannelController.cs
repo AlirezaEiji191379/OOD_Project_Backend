@@ -19,9 +19,17 @@ public class ChannelController : ControllerBase
     [HttpPost]
     [Route("{name}")]
     [Authorize]
-    public Task<Response> CreateChannel(string name)
+    public async Task<Response> CreateChannel(string name)
     {
-        return _channelService.CreateChannel(name,(int)HttpContext.Items["User"]);
+        return await _channelService.CreateChannel(name,(int)HttpContext.Items["User"]);
+    }
+
+    [HttpGet]
+    [Route("getAll")]
+    [Authorize]
+    public async Task<Response> GetAllChannels()
+    {
+        return await _channelService.GetAllUsersChannels((int)HttpContext.Items["User"]);
     }
 
 }

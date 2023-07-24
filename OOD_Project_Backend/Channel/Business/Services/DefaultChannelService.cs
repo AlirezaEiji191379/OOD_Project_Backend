@@ -1,4 +1,5 @@
-﻿using OOD_Project_Backend.Channel.Business.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+using OOD_Project_Backend.Channel.Business.Abstractions;
 using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Core.Common.Response;
@@ -45,4 +46,29 @@ public class DefaultChannelService : ChannelService
             return new Response(400, new { Message = "the channel can not be created due to system failures!" });
         }
     }
+
+    public async Task<Response> GetAllUsersChannels(int userId)
+    {
+        try
+        {
+            var ownedChannelIds =await _channelMemberRepository
+                .FindByCondition(x => x.Role == Role.OWNER && x.UserId == userId, false)
+                .Select(x => x.ChannelId)
+                .ToListAsync();
+            var channels = await _channelRepository
+                .FindByCondition(x => ownedChannelIds.Contains(x.Id), false)
+                .Select(x => new
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    JoinLink = x.JoinLink
+                }).ToListAsync();
+            return new Response(200, new {Message = channels});
+        }
+        catch (Exception e)
+        {
+            return new Response(400,"we can not retrive list of channels due to problems please try later");
+        }
+    }
+
 }
