@@ -19,9 +19,9 @@ public class ContentController : ControllerBase
     }
 
     [HttpPost]
-    [Route("Add")]
+    [Route("Add/{channelId}")]
     [Authorize]
-    public async Task<Response> AddContent([FromForm] IFormFile file,
+    public async Task<Response> AddContent(int channelId,[FromForm] IFormFile file,
         [FromForm] string Title,[FromForm] string Description,[FromForm] ContentType Type)
     {
         return await _contentService.Add(new ContentCreationRequest()
@@ -30,8 +30,17 @@ public class ContentController : ControllerBase
             Description = Description,
             Title = Title,
             File = file,
-            Value = ""
+            Value = "",
+            ChannelId = channelId
         });
+    }
+
+    [HttpGet]
+    [Route("GetAll/{channelId}")]
+    [Authorize]
+    public async Task<Response> GetContnetsOfChannels(int channelId)
+    {
+        return await _contentService.GetChannelContentsMetadata(channelId);
     }
 
 }

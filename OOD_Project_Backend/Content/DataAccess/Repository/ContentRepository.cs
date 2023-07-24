@@ -19,7 +19,7 @@ public class ContentRepository : BaseRepository<ContentEntity>,IContentRepositor
     {
         var query = await _appDbContext.Contents
             .Where(x => x.ChannelId == channelId)
-            .Include(x => x.Channel)
+            .Include(x => x.ContentMetaData)
             .ToListAsync();
         return query.Select(x => new ContentDto()
         {

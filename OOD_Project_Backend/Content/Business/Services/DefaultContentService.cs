@@ -29,6 +29,7 @@ public class DefaultContentService : ContentService
                 Description = request.Description,
                 Title = request.Title,
                 CreatedAt = DateTime.Now.ToUniversalTime(),
+                ChannelId = request.ChannelId
             };
             var contentMetaData = new ContentMetaDataEntity()
             {
