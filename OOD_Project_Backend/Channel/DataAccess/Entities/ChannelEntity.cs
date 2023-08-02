@@ -13,4 +13,5 @@ public class ChannelEntity
     
     public ICollection<ChannelMemberEntity> ChannelMemberEntities { get; set; }
     public ICollection<CategoryEntity> CategoryEntities { get; set; }
+    public ICollection<ContentEntity> ContentEntities { get; set; }
 }

@@ -11,6 +11,7 @@ static void UseMiddlewares(WebApplicationBuilder builder)
 {
     var app = builder.Build();
     Migrator.Migrate(app);
+    app.UseCors("AllowAnyUrl");
     app.UseStaticFiles(new StaticFileOptions()
     {
         FileProvider = new PhysicalFileProvider(
@@ -25,7 +26,7 @@ static void UseMiddlewares(WebApplicationBuilder builder)
     app.UseMiddleware<SecurityMiddleware>();
     app.MapControllers();
 
-    app.Run();
+    app.Run("http://*:5000");
 }
 static WebApplicationBuilder AddServices(string[] args)
 {
@@ -37,10 +38,10 @@ static WebApplicationBuilder AddServices(string[] args)
     builder.Services.AddSwaggerGen();
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowSpecificPort",
+        options.AddPolicy("AllowAnyUrl",
             builder =>
             {
-                builder.WithOrigins("http://*:8080")
+                builder
                     .AllowAnyHeader()
                     .AllowAnyOrigin()
                     .AllowAnyMethod();

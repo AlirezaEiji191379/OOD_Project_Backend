@@ -35,7 +35,7 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("Test")]
-    [Authorize]
+    //[Authorize]
     public IActionResult Test()
     {
         return Ok("hi");
