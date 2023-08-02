@@ -10,10 +10,10 @@ namespace OOD_Project_Backend.Content.DiManager;
 
 public class ContentDiManager : IDependencyInstaller
 {
-    public void Install(IServiceCollection serviceCollection)
+    public void Install(IServiceCollection services)
     {
-        serviceCollection.AddScoped<ContentService,DefaultContentService>();
-        serviceCollection.AddScoped<IContentRepository,ContentRepository>();
-        serviceCollection.AddScoped<IBaseRepository<ContentMetaDataEntity>,ContentMetaDataRepository>();
+        services.AddScoped<ContentService,DefaultContentService>();
+        services.AddScoped<IContentRepository,ContentRepository>();
+        services.AddScoped<IBaseRepository<ContentMetaDataEntity>,ContentMetaDataRepository>();
     }
 }

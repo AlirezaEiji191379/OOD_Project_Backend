@@ -11,13 +11,13 @@ namespace OOD_Project_Backend.Finanace.DiManager;
 
 public class FinanaceDiManager : IDependencyInstaller
 {
-    public void Install(IServiceCollection serviceCollection)
+    public void Install(IServiceCollection services)
     {
-        serviceCollection.AddScoped<IBaseRepository<RefundEntity>, RefundRepository>();
-        serviceCollection.AddScoped<IBaseRepository<TransactionEntity>, TransactionRepository>();
-        serviceCollection.AddScoped<IBaseRepository<WalletEntity>, WalletRepository>();
-        serviceCollection.AddScoped<TransactionService,DefaultTransactionService>();
-        serviceCollection.AddScoped<WalletService,DefaultWalletService>();
-        serviceCollection.AddScoped<IFinanaceFacade, FinanaceFacade>();
+        services.AddScoped<IBaseRepository<RefundEntity>, RefundRepository>();
+        services.AddScoped<IBaseRepository<TransactionEntity>, TransactionRepository>();
+        services.AddScoped<IBaseRepository<WalletEntity>, WalletRepository>();
+        services.AddScoped<TransactionService,DefaultTransactionService>();
+        services.AddScoped<WalletService,DefaultWalletService>();
+        services.AddScoped<IFinanaceFacade, FinanaceFacade>();
     }
 }

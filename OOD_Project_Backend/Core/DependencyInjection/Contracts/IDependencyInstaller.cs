@@ -2,6 +2,6 @@
 {
     internal interface IDependencyInstaller
     {
-        void Install(IServiceCollection serviceCollection);
+        void Install(IServiceCollection services);
     }
 }
