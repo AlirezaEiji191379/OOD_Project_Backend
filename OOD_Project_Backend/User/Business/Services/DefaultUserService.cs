@@ -10,6 +10,7 @@ using OOD_Project_Backend.User.Business.Requests;
 using OOD_Project_Backend.User.Business.Validation;
 using OOD_Project_Backend.User.Business.Validation.Rules;
 using OOD_Project_Backend.User.DataAccess.Entities;
+using OOD_Project_Backend.User.DataAccess.Repositories.Contract;
 
 namespace OOD_Project_Backend.User.Business;
 
@@ -20,15 +21,18 @@ public class DefaultUserService : IUserService
     private readonly IValidator _validator;
     private readonly IPasswordService _passwordService;
     private readonly IAuthenticator _jwtAutenticator;
+    private readonly ITokenRepository _tokenRepository;
 
     public DefaultUserService(IBaseRepository<UserEntity> userRepository,
         IPasswordService passwordService,
-        IAuthenticator jwtAuthenticator, IFinanaceFacade finanaceFacade)
+        IAuthenticator jwtAuthenticator, IFinanaceFacade finanaceFacade,
+        ITokenRepository tokenRepository)
     {
         _userRepository = userRepository;
         _passwordService = passwordService;
         _jwtAutenticator = jwtAuthenticator;
         _finanaceFacade = finanaceFacade;
+        _tokenRepository = tokenRepository;
         //TODO : correct the DI for the dependency!
         _validator = new Validator();
     }
@@ -85,6 +89,20 @@ public class DefaultUserService : IUserService
         catch (Exception e)
         {
             return new Response(404, new { Message = "invalid email/phone and password" });
+        }
+    }
+
+    public async Task<Response> Logout(HttpContext httpContext)
+    {
+        try
+        {
+            var jti = _jwtAutenticator.FindJwtId(httpContext.Request.Headers["X-Auth-Token"].FirstOrDefault());
+            await _tokenRepository.SaveBlackListedTokenId(jti);
+            return new Response(200, new { Message = "logout succesfull!" });
+        }
+        catch (Exception e)
+        {
+            return new Response(400, new { Message = "the logout failed!" });
         }
     }
 }

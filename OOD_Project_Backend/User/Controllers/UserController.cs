@@ -33,9 +33,18 @@ public class UserController : ControllerBase
         return result;
     }
 
+    [HttpDelete]
+    [Route("Logout")]
+    [Authorize]
+    public async Task<Response> Logout()
+    {
+        var result = await _userService.Logout(HttpContext);
+        return result;
+    }
+    
     [HttpGet]
     [Route("Test")]
-    //[Authorize]
+    [Authorize]
     public IActionResult Test()
     {
         return Ok("hi");

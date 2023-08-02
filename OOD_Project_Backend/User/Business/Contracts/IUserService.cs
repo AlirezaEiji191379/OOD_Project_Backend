@@ -7,4 +7,5 @@ public interface IUserService
 {
     Task<Response> Register(RegisterRequest register);
     Task<Response> Login(LoginRequest loginRequest);
+    Task<Response> Logout(HttpContext httpContext);
 }

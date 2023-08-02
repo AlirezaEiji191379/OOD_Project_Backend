@@ -4,5 +4,6 @@ public interface IAuthenticator
 {
     string GenerateToken(int userId);
     int FindUserId(string token);
-    bool ValidateToken(string token);
+    Task<bool> ValidateToken(string token);
+    string FindJwtId(string token);
 }

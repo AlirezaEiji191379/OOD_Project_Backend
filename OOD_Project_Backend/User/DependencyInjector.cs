@@ -9,6 +9,7 @@ using OOD_Project_Backend.User.Business.Services;
 using OOD_Project_Backend.User.Business.Validation;
 using OOD_Project_Backend.User.DataAccess.Entities;
 using OOD_Project_Backend.User.DataAccess.Repositories;
+using OOD_Project_Backend.User.DataAccess.Repositories.Contract;
 
 namespace OOD_Project_Backend.User.DependencyInjection;
 
@@ -16,12 +17,13 @@ public class DependencyInjector : IDependencyInstaller
 {
     public void Install(IServiceCollection services)
     {
-        services.AddScoped<IBaseRepository<UserEntity>,UserRepository>();
+        services.AddScoped<IBaseRepository<UserEntity>, UserRepository>();
         services.AddScoped<IUserService, DefaultUserService>();
-        services.AddScoped<IPasswordService,DefaultPasswordService>();
+        services.AddScoped<IPasswordService, DefaultPasswordService>();
         services.AddScoped<IAuthenticator, JwtAuthenticator>();
         services.AddScoped<IValidator, Validator>();
         services.AddScoped<IAuthenticationService, DefaultAuthenticationService>();
         services.AddScoped<IUserFacade, UserFacade>();
+        services.AddScoped<ITokenRepository, TokenRepository>();
     }
 }

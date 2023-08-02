@@ -28,7 +28,7 @@ public class SecurityMiddleware : IMiddleware
             }
 
             var token = context.Request.Headers["X-Auth-Token"].FirstOrDefault();
-            var isValidToken = _authenticator.ValidateToken(token);
+            var isValidToken = await _authenticator.ValidateToken(token);
             if (!isValidToken)
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;

@@ -2,8 +2,9 @@
 using OOD_Project_Backend.Core.Common.DependencyInjection.Abstractions;
 using OOD_Project_Backend.Core.DataAccess;
 using OOD_Project_Backend.Core.DependencyInjection.Contracts;
+using StackExchange.Redis;
 
-namespace OOD_Project_Backend.Core.Common.DependencyInjection
+namespace OOD_Project_Backend.Core.DependencyInjection
 {
     internal static class DiManager
     {
@@ -18,7 +19,7 @@ namespace OOD_Project_Backend.Core.Common.DependencyInjection
             serviceCollection.AddDbContext<AppDbContext>
                     (options =>
                         options.UseNpgsql(configuration.GetConnectionString("GhasedakDb")));
-
+            serviceCollection.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(configuration.GetConnectionString("RedisConnectionString")));
         }
 
         private static IEnumerable<IDependencyInstaller> GetAllIDependencyInstallerImplementations()

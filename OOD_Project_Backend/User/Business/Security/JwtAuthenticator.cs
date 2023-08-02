@@ -3,16 +3,19 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using OOD_Project_Backend.User.Business.Contracts;
+using OOD_Project_Backend.User.DataAccess.Repositories.Contract;
 
 namespace OOD_Project_Backend.User.Business.Security;
 
 public class JwtAuthenticator : IAuthenticator
 {
     private readonly IConfiguration _configuration;
+    private readonly ITokenRepository _tokenRepository;
 
-    public JwtAuthenticator(IConfiguration configuration)
+    public JwtAuthenticator(IConfiguration configuration, ITokenRepository tokenRepository)
     {
         _configuration = configuration;
+        _tokenRepository = tokenRepository;
     }
 
     public string GenerateToken(int userId)
@@ -42,12 +45,18 @@ public class JwtAuthenticator : IAuthenticator
         return Convert.ToInt32(uid);
     }
 
-    public bool ValidateToken(string token)
+    public async Task<bool> ValidateToken(string token)
     {
         try
         {
             var secretKey = _configuration.GetValue<string>("JwtPrivateKey");
             var tokenHandler = new JwtSecurityTokenHandler();
+            var jti = GetJti(token, tokenHandler);
+            if (await _tokenRepository.IsTokenBlackListed(jti))
+            {
+                return false;
+            }
+
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -64,5 +73,19 @@ public class JwtAuthenticator : IAuthenticator
         {
             return false;
         }
+    }
+
+    public string FindJwtId(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        return GetJti(token, tokenHandler);
+    }
+
+    private string GetJti(string token, JwtSecurityTokenHandler tokenHandler)
+    {
+        var jsonToken = tokenHandler.ReadToken(token);
+        var tokenS = jsonToken as JwtSecurityToken;
+        var jti = tokenS.Claims.First(claim => claim.Type == "jti").Value;
+        return jti;
     }
 }
