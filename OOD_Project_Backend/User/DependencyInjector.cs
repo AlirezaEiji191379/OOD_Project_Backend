@@ -6,12 +6,11 @@ using OOD_Project_Backend.User.Business;
 using OOD_Project_Backend.User.Business.Contracts;
 using OOD_Project_Backend.User.Business.Security;
 using OOD_Project_Backend.User.Business.Services;
-using OOD_Project_Backend.User.Business.Validation;
 using OOD_Project_Backend.User.DataAccess.Entities;
 using OOD_Project_Backend.User.DataAccess.Repositories;
 using OOD_Project_Backend.User.DataAccess.Repositories.Contract;
 
-namespace OOD_Project_Backend.User.DependencyInjection;
+namespace OOD_Project_Backend.User;
 
 public class DependencyInjector : IDependencyInstaller
 {
