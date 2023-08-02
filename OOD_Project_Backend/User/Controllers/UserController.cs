@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OOD_Project_Backend.Core.Common.Authentication;
-using OOD_Project_Backend.Core.Common.Response;
-using OOD_Project_Backend.User.Business.Abstractions;
+using OOD_Project_Backend.Core.Context;
+using OOD_Project_Backend.User.Business.Contracts;
 using OOD_Project_Backend.User.Business.Requests;
 
 namespace OOD_Project_Backend.User.Controllers;
@@ -10,9 +10,9 @@ namespace OOD_Project_Backend.User.Controllers;
 [Route("User")]
 public class UserController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
 
-    public UserController(UserService userService)
+    public UserController(IUserService userService)
     {
         _userService = userService;
     }

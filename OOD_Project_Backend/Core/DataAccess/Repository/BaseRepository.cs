@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OOD_Project_Backend.Core.DataAccess.Abstractions;
 using System.Linq.Expressions;
+using OOD_Project_Backend.Core.DataAccess.Contracts;
 
 namespace OOD_Project_Backend.Core.DataAccess.Repository
 {

@@ -3,7 +3,7 @@ using OOD_Project_Backend.Channel.Business.Services;
 using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Repositories;
 using OOD_Project_Backend.Core.Common.DependencyInjection.Abstractions;
-using OOD_Project_Backend.Core.DataAccess.Abstractions;
+using OOD_Project_Backend.Core.DataAccess.Contracts;
 
 namespace OOD_Project_Backend.Channel.DiManager;
 

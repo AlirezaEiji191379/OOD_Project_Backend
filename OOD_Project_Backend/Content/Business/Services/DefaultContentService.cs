@@ -5,8 +5,8 @@ using OOD_Project_Backend.Content.DataAccess.Entities;
 using OOD_Project_Backend.Content.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Content.DataAccess.Repository;
 using OOD_Project_Backend.Content.DataAccess.Repository.Abstractions;
-using OOD_Project_Backend.Core.Common.Response;
-using OOD_Project_Backend.Core.DataAccess.Abstractions;
+using OOD_Project_Backend.Core.Context;
+using OOD_Project_Backend.Core.DataAccess.Contracts;
 
 namespace OOD_Project_Backend.Content.Business.Services;
 

@@ -4,7 +4,7 @@ using OOD_Project_Backend.Content.DataAccess.Entities;
 using OOD_Project_Backend.Content.DataAccess.Repository;
 using OOD_Project_Backend.Content.DataAccess.Repository.Abstractions;
 using OOD_Project_Backend.Core.Common.DependencyInjection.Abstractions;
-using OOD_Project_Backend.Core.DataAccess.Abstractions;
+using OOD_Project_Backend.Core.DataAccess.Contracts;
 
 namespace OOD_Project_Backend.Content.DiManager;
 

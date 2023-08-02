@@ -1,6 +1,19 @@
-﻿namespace OOD_Project_Backend.Core.Validation;
+﻿using OOD_Project_Backend.Core.Validation.Contracts;
 
-public interface Validator
+namespace OOD_Project_Backend.Core.Validation;
+
+public class Validator : IValidator
 {
-    bool Validate(params Rule[] rules);
+    public bool Validate(params IRule[] rules)
+    {
+        foreach (var rule in rules)
+        {
+            if (!rule.Apply())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

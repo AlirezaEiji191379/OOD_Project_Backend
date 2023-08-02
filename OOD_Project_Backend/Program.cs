@@ -1,7 +1,7 @@
 using Microsoft.Extensions.FileProviders;
 using OOD_Project_Backend.Core.Common.DependencyInjection;
-using OOD_Project_Backend.Core.Common.Middlewares;
 using OOD_Project_Backend.Core.DataAccess;
+using OOD_Project_Backend.Core.Middleware;
 
 WebApplicationBuilder builder = AddServices(args);
 
