@@ -4,12 +4,19 @@ namespace OOD_Project_Backend.Core.DataAccess;
 
 public class Migrator
 {
-    public static void Migrate(WebApplication app)
+    public static async Task Migrate(WebApplication app)
     {
         using (var service = app.Services.CreateScope())
         {
-            Console.WriteLine("Appling migrations to the Database...");
-            service.ServiceProvider.GetService<AppDbContext>()?.Database.Migrate();
+
+            var appDbContext = service.ServiceProvider.GetService<AppDbContext>();
+            var pendingMigrations = await appDbContext.Database.GetPendingMigrationsAsync();
+            if (pendingMigrations.Any())
+            {
+                Console.WriteLine("Applying pending migrations to the Database...");
+                await appDbContext.Database.MigrateAsync();
+            }
+            Console.WriteLine("Database Migrations Are Up to date!");
         }
     }
 }
