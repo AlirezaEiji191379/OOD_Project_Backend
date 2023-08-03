@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <Folder Include="Content\Controller\" />
-    <Folder Include="Resources\" />
+    <Folder Include="Resources\Profiles\" />
   </ItemGroup>
 
 </Project>

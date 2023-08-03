@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OOD_Project_Backend.Channel.Business.Abstractions;
 using OOD_Project_Backend.Core.Common.Authentication;
-using OOD_Project_Backend.Core.Common.Response;
+using OOD_Project_Backend.Core.Context;
 
 namespace OOD_Project_Backend.Channel.Controller;
 

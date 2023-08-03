@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OOD_Project_Backend.Core.Common.Authentication;
-using OOD_Project_Backend.Core.Common.Response;
+using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Finanace.Business.Abstractions;
 
 namespace OOD_Project_Backend.Finanace.Controller;

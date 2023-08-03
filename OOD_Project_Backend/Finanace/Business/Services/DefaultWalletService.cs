@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OOD_Project_Backend.Core.Common.Response;
-using OOD_Project_Backend.Core.DataAccess.Abstractions;
+using OOD_Project_Backend.Core.Context;
+using OOD_Project_Backend.Core.DataAccess.Contracts;
 using OOD_Project_Backend.Finanace.Business.Abstractions;
 using OOD_Project_Backend.Finanace.DataAccess.Entities;
 using OOD_Project_Backend.Finanace.DataAccess.Entities.Enums;

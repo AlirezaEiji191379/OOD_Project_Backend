@@ -10,6 +10,7 @@ public class UserEntity
     public string? Email { get; set; }
     public string? PhoneNumber { get; set; }
     public string? ProfilePicPath { get; set; }
+    public string? Biography { get; set; }
     public string Password { get; set; }
     public bool IsDeleted { get; set; }
     

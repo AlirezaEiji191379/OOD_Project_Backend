@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OOD_Project_Backend.Core.DataAccess.Abstractions;
 using System.Linq.Expressions;
+using OOD_Project_Backend.Core.DataAccess.Contracts;
 
 namespace OOD_Project_Backend.Core.DataAccess.Repository
 {
@@ -18,7 +18,7 @@ namespace OOD_Project_Backend.Core.DataAccess.Repository
             return _dbContext.Set<T>().AddAsync(entity).AsTask();
         }
 
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             _dbContext.Set<T>().Update(entity);
         }

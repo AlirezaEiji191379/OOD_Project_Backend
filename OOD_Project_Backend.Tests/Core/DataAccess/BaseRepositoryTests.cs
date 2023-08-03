@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
 using OOD_Project_Backend.Core.DataAccess;
-using OOD_Project_Backend.Core.DataAccess.Abstractions;
+using OOD_Project_Backend.Core.DataAccess.Contracts;
 using OOD_Project_Backend.Core.DataAccess.Repository;
 using OOD_Project_Backend.Tests.Common.Mocks;
 using Xunit;
