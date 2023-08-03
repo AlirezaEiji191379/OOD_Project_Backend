@@ -89,4 +89,9 @@ public class ChannelMemberRepository : BaseRepository<ChannelMemberEntity>, ICha
             .ToListAsync();
 
     }
+
+    public Task<List<ChannelMemberEntity>> FindByChannelId(int channelId)
+    {
+        return _appDbContext.ChannelMembers.Where(x => x.ChannelId == channelId).ToListAsync();
+    }
 }

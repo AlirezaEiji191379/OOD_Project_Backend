@@ -1,7 +1,7 @@
 ﻿using OOD_Project_Backend.Core.DataAccess.Contracts;
-using OOD_Project_Backend.Finanace.Business.Abstractions;
 using OOD_Project_Backend.Finanace.DataAccess.Entities;
 using OOD_Project_Backend.Finanace.DataAccess.Entities.Enums;
+using OOD_Project_Backend.Finance.Business.Contracts;
 
 namespace OOD_Project_Backend.Finanace.Business.Services;
 

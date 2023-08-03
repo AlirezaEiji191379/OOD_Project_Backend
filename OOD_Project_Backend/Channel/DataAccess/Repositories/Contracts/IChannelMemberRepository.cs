@@ -16,4 +16,5 @@ public interface IChannelMemberRepository : IBaseRepository<ChannelMemberEntity>
     Task<bool> IsOwner(int userId, int channelId);
     Task<bool> IsAdmin(int userId,int channelId);
     Task<List<ChannelMemberEntity>> FindByChannelIdAndRole(int channelId, params Role[] roles);
+    Task<List<ChannelMemberEntity>> FindByChannelId(int channelId);
 }

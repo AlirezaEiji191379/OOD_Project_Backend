@@ -13,7 +13,6 @@ public class ChannelRepository : BaseRepository<ChannelEntity>,IChannelRepositor
     {
         _appDbContext = dbContext;
     }
-
     public async Task<ChannelEntity> FindChannelByJoinLink(string joinLink)
     {
         return await _appDbContext.Channels.AsNoTracking()

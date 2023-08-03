@@ -1,15 +1,15 @@
 ﻿using OOD_Project_Backend.Core.DataAccess.Contracts;
 using OOD_Project_Backend.Finanace.DataAccess.Entities;
-using OOD_Project_Backend.Finanace.Facade.Abstractions;
+using OOD_Project_Backend.Finance.Business.Contracts;
 using OOD_Project_Backend.User.DataAccess.Entities;
 
-namespace OOD_Project_Backend.Finanace.Facade;
+namespace OOD_Project_Backend.Finance;
 
-public class FinanaceFacade : IFinanaceFacade
+public class FinanceFacade : IFinanceFacade
 {
     private readonly IBaseRepository<WalletEntity> _walletRepository;
 
-    public FinanaceFacade(IBaseRepository<WalletEntity> walletRepository)
+    public FinanceFacade(IBaseRepository<WalletEntity> walletRepository)
     {
         _walletRepository = walletRepository;
     }
@@ -22,5 +22,10 @@ public class FinanaceFacade : IFinanaceFacade
             User = user
         };
         await _walletRepository.Create(wallet);
+    }
+
+    public async Task<bool> Buy(int userId, int amount,Dictionary<int,double> incomeShareByUserId)
+    {
+        return false;
     }
 }

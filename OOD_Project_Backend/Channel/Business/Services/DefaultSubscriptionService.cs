@@ -5,6 +5,7 @@ using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.Validation.Contracts;
+using OOD_Project_Backend.Finance.Business.Contracts;
 using OOD_Project_Backend.User.Business.Contracts;
 
 namespace OOD_Project_Backend.Channel.Business.Services;
@@ -15,16 +16,22 @@ public class DefaultSubscriptionService : ISubscriptionService
     private readonly IChannelMembershipService _channelMembershipService;
     private readonly IValidator _validator;
     private readonly ISubscriptionRepository _subscriptionRepository;
-
+    private readonly IChannelMemberRepository _channelMemberRepository;
+    private readonly IFinanceFacade _financeFacade;
+    
     public DefaultSubscriptionService(IUserFacade userFacade, 
         IChannelMembershipService channelMembershipService, 
         IValidator validator, 
-        ISubscriptionRepository subscriptionRepository)
+        ISubscriptionRepository subscriptionRepository, 
+        IChannelMemberRepository channelMemberRepository,
+        IFinanceFacade financeFacade)
     {
         _userFacade = userFacade;
         _channelMembershipService = channelMembershipService;
         _validator = validator;
         _subscriptionRepository = subscriptionRepository;
+        _channelMemberRepository = channelMemberRepository;
+        _financeFacade = financeFacade;
     }
 
 
@@ -87,9 +94,25 @@ public class DefaultSubscriptionService : ISubscriptionService
         }
     }
 
-    public Task<Response> BuySubscription(int subscriptionId)
+    public async Task<Response> BuySubscription(int subscriptionId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var subscription = await _subscriptionRepository.FindById(subscriptionId);
+            if (subscription == null)
+            {
+                return new Response(400,new {Message = "subscription not found!"});
+            }
+            var amount = subscription.Price;
+            var userId = _userFacade.GetCurrentUserId();
+            var members = await _channelMemberRepository.FindByChannelId(subscription.ChannelId);
+            //var buyResult = _financeFacade.
+            return null;
+        }
+        catch (Exception e)
+        {
+            return new Response(400,new {Message = "buy subscription failed!"});
+        }
     }
 
     public Task<Response> BuyContent(int contentId)

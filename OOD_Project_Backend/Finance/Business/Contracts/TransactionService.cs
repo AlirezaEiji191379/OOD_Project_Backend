@@ -1,7 +1,7 @@
 ﻿using OOD_Project_Backend.Finanace.DataAccess.Entities;
 using OOD_Project_Backend.Finanace.DataAccess.Entities.Enums;
 
-namespace OOD_Project_Backend.Finanace.Business.Abstractions;
+namespace OOD_Project_Backend.Finance.Business.Contracts;
 
 public interface TransactionService
 {

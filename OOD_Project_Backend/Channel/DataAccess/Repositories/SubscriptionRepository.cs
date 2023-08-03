@@ -18,4 +18,12 @@ public class SubscriptionRepository : BaseRepository<SubscriptionEntity>,ISubscr
     {
         return _dbContext.Subscriptions.Where(x => x.ChannelId == channelId).ToListAsync();
     }
+
+    public Task<SubscriptionEntity> FindById(int subscriptionId)
+    {
+        return _dbContext
+            .Subscriptions
+            .Where(x => x.Id == subscriptionId)
+            .SingleOrDefaultAsync();
+    }
 }
