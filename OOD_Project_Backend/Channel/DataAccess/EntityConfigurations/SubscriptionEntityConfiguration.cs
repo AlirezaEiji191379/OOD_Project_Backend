@@ -11,8 +11,9 @@ public class SubscriptionEntityConfiguration : IEntityTypeConfiguration<Subscrip
     {
         builder.HasKey(x => x.Id);
         builder.HasOne(x => x.ChannelEntity)
-            .WithOne()
-            .HasForeignKey<SubscriptionEntity>(x => x.ChannelId);
+            .WithMany()
+            .HasForeignKey(x => x.ChannelId);
+        
         builder.Property(x => x.Period)
             .HasConversion(t => t.ToString(),
                 t => (SubscriptionPeriod)Enum.Parse(typeof(SubscriptionPeriod), t));
