@@ -91,14 +91,24 @@ public class DefaultProfileService : IProfileService
     {
         try
         {
-            var userProfile = await _userRepository.GetUserProfile(userId);
-            if (userProfile == null)
+            var userEntity = await _userRepository.FindByUserId(userId,false);
+            if (userEntity == null)
             {
                 return new Response(404, new { Message = "User not found!" });
             }
+
+            var userDto = new UserProfile()
+            {
+                Biography = userEntity.Biography,
+                Email = userEntity.Email,
+                PhoneNumber = userEntity.PhoneNumber,
+                Name = userEntity.Name,
+                NationalCode = userEntity.NationalCode,
+                Id = userEntity.Id
+            };
             return new Response(200, new
             {
-                Message = userProfile
+                Message = userDto
             });
         }
         catch (Exception e)
