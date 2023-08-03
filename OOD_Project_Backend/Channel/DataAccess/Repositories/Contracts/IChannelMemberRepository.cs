@@ -6,4 +6,5 @@ namespace OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
 public interface IChannelMemberRepository : IBaseRepository<ChannelMemberEntity>
 {
     Task<bool> CheckIfUserIsChannelOwner(int userId, int channelId);
+    Task<bool> IsChannelMember(int userId, int channelId);
 }

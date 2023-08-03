@@ -13,12 +13,15 @@ public class ChannelController : ControllerBase
 {
     private readonly IChannelService _channelService;
     private readonly IUserFacade _userFacade;
+    private readonly IChannelMembershipService _channelMembershipService;
 
     public ChannelController(IChannelService channelService,
-        IUserFacade userFacade)
+        IUserFacade userFacade,
+        IChannelMembershipService channelMembershipService)
     {
         _channelService = channelService;
         _userFacade = userFacade;
+        _channelMembershipService = channelMembershipService;
     }
 
     [HttpPost]
@@ -37,6 +40,16 @@ public class ChannelController : ControllerBase
     {
         var userId = _userFacade.GetCurrentUserId(HttpContext);
         var result = await _channelService.AddChannelPicture(file, userId, channelId);
+        return result;
+    }
+
+    [HttpPost]
+    [Route("Join/{joinLink}")]
+    [Authorize]
+    public async Task<Response> JoinChannel(string joinLink)
+    {
+        var userId = _userFacade.GetCurrentUserId(HttpContext);
+        var result = await _channelMembershipService.JoinChannel(joinLink, userId);
         return result;
     }
 

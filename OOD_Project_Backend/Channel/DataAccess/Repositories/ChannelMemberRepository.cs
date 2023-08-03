@@ -19,9 +19,16 @@ public class ChannelMemberRepository : BaseRepository<ChannelMemberEntity>, ICha
     public Task<bool> CheckIfUserIsChannelOwner(int userId, int channelId)
     {
         return _appDbContext.ChannelMembers.AsNoTracking()
-            .Where(channelMember => channelMember.ChannelId == channelId && 
+            .Where(channelMember => channelMember.ChannelId == channelId &&
                                     channelMember.UserId == userId &&
                                     channelMember.Role == Role.OWNER)
+            .AnyAsync();
+    }
+
+    public Task<bool> IsChannelMember(int userId,int channelId)
+    {
+        return _appDbContext.ChannelMembers.AsNoTracking()
+            .Where(cm => cm.UserId == userId && cm.ChannelId == channelId)
             .AnyAsync();
     }
 }

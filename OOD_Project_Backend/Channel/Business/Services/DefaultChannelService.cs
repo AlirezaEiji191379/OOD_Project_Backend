@@ -13,12 +13,12 @@ namespace OOD_Project_Backend.Channel.Business.Services;
 
 public class DefaultChannelService : IChannelService
 {
-    private readonly IBaseRepository<ChannelEntity> _channelRepository;
+    private readonly IChannelRepository _channelRepository;
     private readonly IChannelMemberRepository _channelMemberRepository;
     private readonly IConfiguration _configuration;
     private readonly IValidator _validator;
 
-    public DefaultChannelService(IBaseRepository<ChannelEntity> channelRepository,
+    public DefaultChannelService(IChannelRepository channelRepository,
         IChannelMemberRepository channelMemberRepository, 
         IValidator validator,
         IConfiguration configuration)
@@ -108,4 +108,7 @@ public class DefaultChannelService : IChannelService
             return new Response(400, "we can not retrive list of channels due to problems please try later");
         }
     }
+    
+    
+    
 }

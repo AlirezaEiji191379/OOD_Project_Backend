@@ -19,5 +19,6 @@ public class ChannelMemberConfiguration : IEntityTypeConfiguration<ChannelMember
             .WithMany(x => x.ChannelMemberEntities)
             .HasForeignKey(fk => fk.UserId);
         builder.HasKey(x => new { x.UserId, x.ChannelId });
+        
     }
 }

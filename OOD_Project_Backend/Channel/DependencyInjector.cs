@@ -13,7 +13,8 @@ public class DependencyInjector : IDependencyInstaller
     public void Install(IServiceCollection services)
     {
         services.AddScoped<IChannelService,DefaultChannelService>();
+        services.AddScoped<IChannelMembershipService, DefaultChannelMembershipService>();
         services.AddScoped<IChannelMemberRepository, ChannelMemberRepository>();
-        services.AddScoped<IBaseRepository<ChannelEntity>,ChannelRepository>();
+        services.AddScoped<IChannelRepository,ChannelRepository>();
     }
 }
