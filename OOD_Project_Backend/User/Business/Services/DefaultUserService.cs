@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.DataAccess.Contracts;
 using OOD_Project_Backend.Core.Validation;
@@ -7,23 +6,22 @@ using OOD_Project_Backend.Core.Validation.Contracts;
 using OOD_Project_Backend.Finanace.Facade.Abstractions;
 using OOD_Project_Backend.User.Business.Contracts;
 using OOD_Project_Backend.User.Business.Requests;
-using OOD_Project_Backend.User.Business.Validation;
-using OOD_Project_Backend.User.Business.Validation.Rules;
+using OOD_Project_Backend.User.Business.Validations.Conditions;
 using OOD_Project_Backend.User.DataAccess.Entities;
 using OOD_Project_Backend.User.DataAccess.Repositories.Contract;
 
-namespace OOD_Project_Backend.User.Business;
+namespace OOD_Project_Backend.User.Business.Services;
 
 public class DefaultUserService : IUserService
 {
-    private readonly IBaseRepository<UserEntity> _userRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IFinanaceFacade _finanaceFacade;
     private readonly IValidator _validator;
     private readonly IPasswordService _passwordService;
     private readonly IAuthenticator _jwtAutenticator;
     private readonly ITokenRepository _tokenRepository;
 
-    public DefaultUserService(IBaseRepository<UserEntity> userRepository,
+    public DefaultUserService(IUserRepository userRepository,
         IPasswordService passwordService,
         IAuthenticator jwtAuthenticator, IFinanaceFacade finanaceFacade,
         ITokenRepository tokenRepository)

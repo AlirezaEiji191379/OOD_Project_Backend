@@ -4,7 +4,7 @@ namespace OOD_Project_Backend.User.Business.Services;
 
 public class DefaultAuthenticationService : IAuthenticationService
 {
-    public int GetCurrentUser(HttpContext httpContext)
+    public int GetCurrentUserId(HttpContext httpContext)
     {
         try
         {

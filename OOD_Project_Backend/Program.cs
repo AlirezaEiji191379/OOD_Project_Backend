@@ -15,6 +15,7 @@ static void UseMiddlewares(WebApplicationBuilder builder)
     app.UseCors("AllowAnyUrl");
     app.UseStaticFiles(new StaticFileOptions()
     {
+        // todo : config
         FileProvider = new PhysicalFileProvider(
             Path.Combine(Directory.GetCurrentDirectory(), "./Resources")),
         RequestPath = new PathString("")

@@ -2,18 +2,18 @@
 
 namespace OOD_Project_Backend.User.Business.Validations.Conditions;
 
-public class PasswordRule : IRule
+public class NameRule : IRule
 {
-    private string _password;
+    private string _name;
 
-    public PasswordRule(string password)
+    public NameRule(string name)
     {
-        _password = password;
+        _name = name;
     }
 
     public bool Apply()
     {
-        if (_password.Length < 6 || _password.Length > 20)
+        if (string.IsNullOrEmpty(_name))
         {
             return false;
         }

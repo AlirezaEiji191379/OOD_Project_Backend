@@ -13,7 +13,7 @@ namespace OOD_Project_Backend.User
 
         public int GetCurrentUserId(HttpContext httpContext)
         {
-            return _authenticationService.GetCurrentUser(httpContext);
+            return _authenticationService.GetCurrentUserId(httpContext);
         }
     }
 }

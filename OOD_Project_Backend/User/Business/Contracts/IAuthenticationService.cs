@@ -2,5 +2,5 @@
 
 public interface IAuthenticationService
 {
-    int GetCurrentUser(HttpContext httpContext);
+    int GetCurrentUserId(HttpContext httpContext);
 }

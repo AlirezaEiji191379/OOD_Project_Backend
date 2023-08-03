@@ -1,8 +1,7 @@
 ﻿using System.Text.RegularExpressions;
-using OOD_Project_Backend.Core.Validation;
 using OOD_Project_Backend.Core.Validation.Contracts;
 
-namespace OOD_Project_Backend.User.Business.Validation.Rules;
+namespace OOD_Project_Backend.User.Business.Validations.Conditions;
 
 public class PhoneNumberRule : IRule
 {
