@@ -25,10 +25,17 @@ public class ChannelMemberRepository : BaseRepository<ChannelMemberEntity>, ICha
             .AnyAsync();
     }
 
-    public Task<bool> IsChannelMember(int userId,int channelId)
+    public Task<bool> IsChannelMember(int userId, int channelId)
     {
         return _appDbContext.ChannelMembers.AsNoTracking()
             .Where(cm => cm.UserId == userId && cm.ChannelId == channelId)
             .AnyAsync();
+    }
+
+    public Task<List<ChannelMemberEntity>> FindByMemberId(int userId)
+    {
+        return  _appDbContext.ChannelMembers.AsNoTracking().Where(x => x.UserId == userId)
+            .Include(x => x.Channel)
+            .ToListAsync();
     }
 }

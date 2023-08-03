@@ -7,4 +7,5 @@ public interface IChannelMemberRepository : IBaseRepository<ChannelMemberEntity>
 {
     Task<bool> CheckIfUserIsChannelOwner(int userId, int channelId);
     Task<bool> IsChannelMember(int userId, int channelId);
+    Task<List<ChannelMemberEntity>> FindByMemberId(int userId);
 }

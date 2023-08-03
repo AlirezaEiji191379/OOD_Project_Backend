@@ -89,18 +89,14 @@ public class DefaultChannelService : IChannelService
     {
         try
         {
-            var ownedChannelIds = await _channelMemberRepository
-                .FindByCondition(x => x.Role == Role.OWNER && x.UserId == userId, false)
-                .Select(x => x.ChannelId)
-                .ToListAsync();
-            var channels = await _channelRepository
-                .FindByCondition(x => ownedChannelIds.Contains(x.Id), false)
-                .Select(x => new
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    JoinLink = x.JoinLink
-                }).ToListAsync();
+            var channelMemberEntities = await _channelMemberRepository
+                .FindByMemberId(userId);
+            var channels = channelMemberEntities.Select(x => new
+            {
+                Id = x.ChannelId,
+                JoinLink = x.Channel.JoinLink,
+                Name = x.Channel.Name
+            });
             return new Response(200, new { Message = channels });
         }
         catch (Exception e)
