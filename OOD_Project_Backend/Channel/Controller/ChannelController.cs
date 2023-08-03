@@ -30,6 +30,16 @@ public class ChannelController : ControllerBase
         return await _channelService.CreateChannel(channelCreateRequest.ChannelName, userId);
     }
 
+    [HttpPost]
+    [Route("AddPicture/{channelId}")]
+    [Authorize]
+    public async Task<Response> AddChannelPhoto([FromForm] IFormFile file, int channelId)
+    {
+        var userId = _userFacade.GetCurrentUserId(HttpContext);
+        var result = await _channelService.AddChannelPicture(file, userId, channelId);
+        return result;
+    }
+
     [HttpGet]
     [Route("getAll")]
     [Authorize]

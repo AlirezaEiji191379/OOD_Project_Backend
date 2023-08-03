@@ -1,11 +1,11 @@
 ﻿using OOD_Project_Backend.Core.Validation.Contracts;
 
-namespace OOD_Project_Backend.User.Business.Validations.Conditions;
+namespace OOD_Project_Backend.Core.Validation.Common;
 
-public class ProfilePictureRule : IRule
+public class PictureRule : IRule
 {
     private IFormFile _picture;
-    public ProfilePictureRule(IFormFile picture)
+    public PictureRule(IFormFile picture)
     {
         _picture = picture;
     }

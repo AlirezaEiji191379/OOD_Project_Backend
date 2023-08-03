@@ -6,4 +6,5 @@ public interface IChannelService
 {
     Task<Response> CreateChannel(string name,int userId);
     Task<Response> GetAllUsersChannels(int userId);
+    Task<Response> AddChannelPicture(IFormFile formFile, int userId, int channelId);
 }

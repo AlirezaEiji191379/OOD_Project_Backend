@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.DataAccess.Contracts;
+using OOD_Project_Backend.Core.Validation.Common;
 using OOD_Project_Backend.Core.Validation.Contracts;
 using OOD_Project_Backend.User.Business.Context;
 using OOD_Project_Backend.User.Business.Contracts;
@@ -66,7 +67,7 @@ public class DefaultProfileService : IProfileService
     {
         try
         {
-            if (!_validator.Validate(new ProfilePictureRule(picture)))
+            if (!_validator.Validate(new PictureRule(picture)))
             {
                 return new Response(400,new {Message = "image file size must be at most 5 mb and .png and .jpg extension are supported"});
             }
