@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OOD_Project_Backend.Channel.Business.Abstractions;
+using OOD_Project_Backend.Channel.Business.Contracts;
 using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Core.Context;
@@ -7,7 +7,7 @@ using OOD_Project_Backend.Core.DataAccess.Contracts;
 
 namespace OOD_Project_Backend.Channel.Business.Services;
 
-public class DefaultChannelService : ChannelService
+public class DefaultChannelService : IChannelService
 {
     private readonly IBaseRepository<ChannelEntity> _channelRepository;
     private readonly IBaseRepository<ChannelMemberEntity> _channelMemberRepository;
@@ -30,11 +30,10 @@ public class DefaultChannelService : ChannelService
                 JoinLink = joinLink
             };
             await _channelRepository.Create(channel);
-            await _channelRepository.SaveChangesAsync();
             var channelMember = new ChannelMemberEntity()
             {
                 UserId = userId,
-                ChannelId = channel.Id,
+                Channel = channel,
                 Role = Role.OWNER
             };
             await _channelMemberRepository.Create(channelMember);

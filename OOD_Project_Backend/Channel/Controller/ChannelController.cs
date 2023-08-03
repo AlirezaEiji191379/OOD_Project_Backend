@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OOD_Project_Backend.Channel.Business.Abstractions;
+using OOD_Project_Backend.Channel.Business.Context;
+using OOD_Project_Backend.Channel.Business.Contracts;
 using OOD_Project_Backend.Core.Common.Authentication;
 using OOD_Project_Backend.Core.Context;
+using OOD_Project_Backend.User.Business.Contracts;
 
 namespace OOD_Project_Backend.Channel.Controller;
 
@@ -9,19 +11,23 @@ namespace OOD_Project_Backend.Channel.Controller;
 [Route("Channel")]
 public class ChannelController : ControllerBase
 {
-    private readonly ChannelService _channelService;
+    private readonly IChannelService _channelService;
+    private readonly IUserFacade _userFacade;
 
-    public ChannelController(ChannelService channelService)
+    public ChannelController(IChannelService channelService,
+        IUserFacade userFacade)
     {
         _channelService = channelService;
+        _userFacade = userFacade;
     }
 
     [HttpPost]
-    [Route("{name}")]
+    [Route("Add")]
     [Authorize]
-    public async Task<Response> CreateChannel(string name)
+    public async Task<Response> CreateChannel([FromBody] ChannelCreateRequest channelCreateRequest)
     {
-        return await _channelService.CreateChannel(name,(int)HttpContext.Items["User"]);
+        var userId = _userFacade.GetCurrentUserId(HttpContext);
+        return await _channelService.CreateChannel(channelCreateRequest.ChannelName, userId);
     }
 
     [HttpGet]
@@ -29,7 +35,7 @@ public class ChannelController : ControllerBase
     [Authorize]
     public async Task<Response> GetAllChannels()
     {
-        return await _channelService.GetAllUsersChannels((int)HttpContext.Items["User"]);
+        var userId = _userFacade.GetCurrentUserId(HttpContext);
+        return await _channelService.GetAllUsersChannels(userId);
     }
-
 }

@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Folder Include="Content\Controller\" />
+    <Folder Include="Resources\Channels\" />
     <Folder Include="Resources\Profiles\" />
   </ItemGroup>
 
