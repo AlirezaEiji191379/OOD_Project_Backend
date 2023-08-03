@@ -101,7 +101,7 @@ public class DefaultChannelMembershipService : IChannelMembershipService
         try
         {
             var userId = _userFacade.GetCurrentUserId();
-            if (await IsOwner(channelMembershipRequest.ChannelId, userId))
+            if (await IsOwner(channelMembershipRequest.ChannelId, userId) == false)
             {
                 return new Response(403, new { Message = "just owner can set income shares!" });
             }

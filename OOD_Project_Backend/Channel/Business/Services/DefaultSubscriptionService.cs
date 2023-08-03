@@ -2,6 +2,7 @@
 using OOD_Project_Backend.Channel.Business.Contracts;
 using OOD_Project_Backend.Channel.Business.Validations.Conditions;
 using OOD_Project_Backend.Channel.DataAccess.Entities;
+using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.Validation.Contracts;
@@ -17,14 +18,16 @@ public class DefaultSubscriptionService : ISubscriptionService
     private readonly IValidator _validator;
     private readonly ISubscriptionRepository _subscriptionRepository;
     private readonly IChannelMemberRepository _channelMemberRepository;
+    private readonly IChannelPremiumUsersRepository _channelPremiumUsersRepository;
     private readonly IFinanceFacade _financeFacade;
-    
-    public DefaultSubscriptionService(IUserFacade userFacade, 
-        IChannelMembershipService channelMembershipService, 
-        IValidator validator, 
-        ISubscriptionRepository subscriptionRepository, 
+
+    public DefaultSubscriptionService(IUserFacade userFacade,
+        IChannelMembershipService channelMembershipService,
+        IValidator validator,
+        ISubscriptionRepository subscriptionRepository,
         IChannelMemberRepository channelMemberRepository,
-        IFinanceFacade financeFacade)
+        IFinanceFacade financeFacade, 
+        IChannelPremiumUsersRepository channelPremiumUsersRepository)
     {
         _userFacade = userFacade;
         _channelMembershipService = channelMembershipService;
@@ -32,6 +35,7 @@ public class DefaultSubscriptionService : ISubscriptionService
         _subscriptionRepository = subscriptionRepository;
         _channelMemberRepository = channelMemberRepository;
         _financeFacade = financeFacade;
+        _channelPremiumUsersRepository = channelPremiumUsersRepository;
     }
 
 
@@ -86,37 +90,78 @@ public class DefaultSubscriptionService : ISubscriptionService
                 Period = x.Period,
                 Price = x.Price
             }).ToList();
-            return new Response(200,new {Message = subDtos});
+            return new Response(200, new { Message = subDtos });
         }
         catch (Exception e)
         {
-            return new Response(404,new {Message = "channel not found!"});
+            return new Response(404, new { Message = "channel not found!" });
         }
     }
 
     public async Task<Response> BuySubscription(int subscriptionId)
     {
+        await using var transaction = await _subscriptionRepository.BeginTransactionAsync();
         try
         {
             var subscription = await _subscriptionRepository.FindById(subscriptionId);
             if (subscription == null)
             {
-                return new Response(400,new {Message = "subscription not found!"});
+                return new Response(400, new { Message = "subscription not found!" });
             }
+
             var amount = subscription.Price;
             var userId = _userFacade.GetCurrentUserId();
             var members = await _channelMemberRepository.FindByChannelId(subscription.ChannelId);
-            //var buyResult = _financeFacade.
-            return null;
+            var incomeShares = members.ToDictionary(x => x.UserId, x => x.IncomeShare);
+            var buyResult = await _financeFacade.Buy(userId, amount, incomeShares);
+            if (!buyResult)
+            {
+                return new Response(400,new {Message = "buy failed!"});
+            }
+
+            var startTime = DateTime.Now.ToUniversalTime();
+            var extraMonth = ComputeExtraMonth(subscription);
+            var premiumUserEntity = new ChannelPremiumUsersEntity()
+            {
+                ChannelId = subscription.ChannelId,
+                Active = true,
+                UserId = userId,
+                StartTime = startTime,
+                EndTime = startTime.AddMonths(extraMonth)
+            };
+            await _channelPremiumUsersRepository.Create(premiumUserEntity);
+            await _channelPremiumUsersRepository.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return new Response(200,new {Message = "buy successfull!"});
         }
         catch (Exception e)
         {
-            return new Response(400,new {Message = "buy subscription failed!"});
+            await transaction.RollbackAsync();
+            return new Response(400, new { Message = "buy subscription failed!" });
         }
     }
+    
 
     public Task<Response> BuyContent(int contentId)
     {
         throw new NotImplementedException();
+    }
+    
+    private static int ComputeExtraMonth(SubscriptionEntity subscription)
+    {
+        var extraMonth = 0;
+        if (subscription.Period == SubscriptionPeriod.MONTH_3)
+        {
+            extraMonth = 3;
+        }
+        else if (subscription.Period == SubscriptionPeriod.MONTH_6)
+        {
+            extraMonth = 6;
+        }
+        else
+        {
+            extraMonth = 12;
+        }
+        return extraMonth;
     }
 }

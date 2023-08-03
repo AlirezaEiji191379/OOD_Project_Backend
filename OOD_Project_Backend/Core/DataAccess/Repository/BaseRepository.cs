@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data.Common;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Storage;
 using OOD_Project_Backend.Core.DataAccess.Contracts;
 
 namespace OOD_Project_Backend.Core.DataAccess.Repository
@@ -7,7 +9,7 @@ namespace OOD_Project_Backend.Core.DataAccess.Repository
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         private readonly AppDbContext _dbContext;
-
+        
         public BaseRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -40,6 +42,11 @@ namespace OOD_Project_Backend.Core.DataAccess.Repository
             return trackChanges
                 ? _dbContext.Set<T>()
                 : _dbContext.Set<T>().AsNoTracking();
+        }
+
+        public Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return _dbContext.Database.BeginTransactionAsync();
         }
 
         public Task SaveChangesAsync()
