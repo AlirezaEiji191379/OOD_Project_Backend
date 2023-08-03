@@ -54,11 +54,11 @@ public class ChannelController : ControllerBase
     }
 
     [HttpGet]
-    [Route("getAll")]
+    [Route("GetJoinedChannels")]
     [Authorize]
     public async Task<Response> GetAllChannels()
     {
         var userId = _userFacade.GetCurrentUserId(HttpContext);
-        return await _channelService.GetAllUsersChannels(userId);
+        return await _channelService.ShowChannelsList(userId);
     }
 }

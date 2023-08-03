@@ -85,7 +85,7 @@ public class DefaultChannelService : IChannelService
         }
     }
 
-    public async Task<Response> GetAllUsersChannels(int userId)
+    public async Task<Response> ShowChannelsList(int userId)
     {
         try
         {
