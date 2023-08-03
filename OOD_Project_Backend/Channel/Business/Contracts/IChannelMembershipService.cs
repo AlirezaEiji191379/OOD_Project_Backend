@@ -4,6 +4,6 @@ namespace OOD_Project_Backend.Channel.Business.Contracts;
 
 public interface IChannelMembershipService
 {
-    Task<Response> JoinChannel(string joinLink, int userId);
+    Task<Response> JoinChannel(string joinLink);
     Task<Response> ShowMembers(int channelId);
 }

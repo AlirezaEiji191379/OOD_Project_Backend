@@ -8,6 +8,7 @@ using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.DataAccess.Contracts;
 using OOD_Project_Backend.Core.Validation.Common;
 using OOD_Project_Backend.Core.Validation.Contracts;
+using OOD_Project_Backend.User.Business.Contracts;
 
 namespace OOD_Project_Backend.Channel.Business.Services;
 
@@ -17,19 +18,22 @@ public class DefaultChannelService : IChannelService
     private readonly IChannelMemberRepository _channelMemberRepository;
     private readonly IConfiguration _configuration;
     private readonly IValidator _validator;
+    private readonly IUserFacade _userFacade;
 
     public DefaultChannelService(IChannelRepository channelRepository,
         IChannelMemberRepository channelMemberRepository, 
         IValidator validator,
-        IConfiguration configuration)
+        IConfiguration configuration, 
+        IUserFacade userFacade)
     {
         _channelRepository = channelRepository;
         _channelMemberRepository = channelMemberRepository;
         _validator = validator;
         _configuration = configuration;
+        _userFacade = userFacade;
     }
 
-    public async Task<Response> CreateChannel(string name, int userId)
+    public async Task<Response> CreateChannel(string name)
     {
         try
         {
@@ -40,6 +44,7 @@ public class DefaultChannelService : IChannelService
                 JoinLink = joinLink
             };
             await _channelRepository.Create(channel);
+            var userId = _userFacade.GetCurrentUserId();
             var channelMember = new ChannelMemberEntity()
             {
                 UserId = userId,
@@ -52,14 +57,15 @@ public class DefaultChannelService : IChannelService
         }
         catch (Exception e)
         {
-            return new Response(400, new { Message = "the channel can not be created due to system failures!" });
+            return new Response(400, new { Message = "the channel with that name was created!" });
         }
     }
 
-    public async Task<Response> AddChannelPicture(IFormFile picture, int userId, int channelId)
+    public async Task<Response> AddChannelPicture(IFormFile picture,int channelId)
     {
         try
         {
+            var userId = _userFacade.GetCurrentUserId();
             if (await _channelMemberRepository.CheckIfUserIsChannelOwner(userId, channelId) == false)
             {
                 return new Response(403, new { Message = "only channel owners can upload channel picture!" });
@@ -85,10 +91,11 @@ public class DefaultChannelService : IChannelService
         }
     }
 
-    public async Task<Response> ShowChannelsList(int userId)
+    public async Task<Response> ShowChannelsList()
     {
         try
         {
+            var userId = _userFacade.GetCurrentUserId();
             var channelMemberEntities = await _channelMemberRepository
                 .FindByMemberId(userId);
             var channels = channelMemberEntities.Select(x => new

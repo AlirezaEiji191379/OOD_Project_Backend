@@ -12,15 +12,12 @@ namespace OOD_Project_Backend.Channel.Controller;
 public class ChannelController : ControllerBase
 {
     private readonly IChannelService _channelService;
-    private readonly IUserFacade _userFacade;
     private readonly IChannelMembershipService _channelMembershipService;
 
     public ChannelController(IChannelService channelService,
-        IUserFacade userFacade,
         IChannelMembershipService channelMembershipService)
     {
         _channelService = channelService;
-        _userFacade = userFacade;
         _channelMembershipService = channelMembershipService;
     }
 
@@ -29,8 +26,7 @@ public class ChannelController : ControllerBase
     [Authorize]
     public async Task<Response> CreateChannel([FromBody] ChannelCreateRequest channelCreateRequest)
     {
-        var userId = _userFacade.GetCurrentUserId(HttpContext);
-        return await _channelService.CreateChannel(channelCreateRequest.ChannelName, userId);
+        return await _channelService.CreateChannel(channelCreateRequest.ChannelName);
     }
 
     [HttpPost]
@@ -38,8 +34,7 @@ public class ChannelController : ControllerBase
     [Authorize]
     public async Task<Response> AddChannelPhoto([FromForm] IFormFile file, int channelId)
     {
-        var userId = _userFacade.GetCurrentUserId(HttpContext);
-        var result = await _channelService.AddChannelPicture(file, userId, channelId);
+        var result = await _channelService.AddChannelPicture(file,channelId);
         return result;
     }
 
@@ -48,8 +43,7 @@ public class ChannelController : ControllerBase
     [Authorize]
     public async Task<Response> JoinChannel(string joinLink)
     {
-        var userId = _userFacade.GetCurrentUserId(HttpContext);
-        var result = await _channelMembershipService.JoinChannel(joinLink, userId);
+        var result = await _channelMembershipService.JoinChannel(joinLink);
         return result;
     }
 
@@ -58,8 +52,7 @@ public class ChannelController : ControllerBase
     [Authorize]
     public async Task<Response> GetAllChannels()
     {
-        var userId = _userFacade.GetCurrentUserId(HttpContext);
-        return await _channelService.ShowChannelsList(userId);
+        return await _channelService.ShowChannelsList();
     }
 
     [HttpGet]

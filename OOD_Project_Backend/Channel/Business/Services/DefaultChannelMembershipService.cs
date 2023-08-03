@@ -3,6 +3,7 @@ using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Core.Context;
+using OOD_Project_Backend.User.Business.Contracts;
 
 namespace OOD_Project_Backend.Channel.Business.Services;
 
@@ -10,27 +11,36 @@ public class DefaultChannelMembershipService : IChannelMembershipService
 {
     private readonly IChannelMemberRepository _memberRepository;
     private readonly IChannelRepository _channelRepository;
+    private readonly IUserFacade _userFacade;
 
-    public DefaultChannelMembershipService(IChannelMemberRepository memberRepository, IChannelRepository channelRepository)
+    public DefaultChannelMembershipService(IChannelMemberRepository memberRepository, IChannelRepository channelRepository, IUserFacade userFacade)
     {
         _memberRepository = memberRepository;
         _channelRepository = channelRepository;
+        _userFacade = userFacade;
     }
-    
-    public async Task<Response> JoinChannel(string joinLink, int userId)
+
+    public async Task<Response> JoinChannel(string joinLink)
     {
         try
         {
             var channelEntity = await _channelRepository.FindChannelByJoinLink(joinLink);
-            if (await _memberRepository.IsChannelMember(userId, channelEntity.Id))
+            if (channelEntity == null)
             {
-                return new Response(400,new {Message = "the member was joined later to channel!"});
+                return new Response(404, "Channel Not Found!");
+            }
+
+            var channelId = channelEntity.Id;
+            var userId = _userFacade.GetCurrentUserId();
+            if (await _memberRepository.IsChannelMember(userId, channelId))
+            {
+                return new Response(400, new { Message = "the member was joined later to channel!" });
             }
 
             var channelMember = new ChannelMemberEntity()
             {
                 UserId = userId,
-                ChannelId = channelEntity.Id,
+                ChannelId = channelId,
                 Role = Role.MEMBER
             };
             await _memberRepository.Create(channelMember);
@@ -48,12 +58,11 @@ public class DefaultChannelMembershipService : IChannelMembershipService
         try
         {
             var userContracts = await _memberRepository.FindUsersByChannelId(channelId);
-            return new Response(200,new {Message = userContracts});
+            return new Response(200, new { Message = userContracts });
         }
         catch (Exception e)
         {
-            return new Response(404,new {Message = "channel not found!"});
+            return new Response(404, new { Message = "channel not found!" });
         }
     }
-    
 }

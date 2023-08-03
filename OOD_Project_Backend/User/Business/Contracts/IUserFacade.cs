@@ -2,6 +2,6 @@
 {
     public interface IUserFacade
     {
-        int GetCurrentUserId(HttpContext httpContext);
+        int GetCurrentUserId();
     }
 }

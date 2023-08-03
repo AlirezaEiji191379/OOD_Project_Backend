@@ -36,6 +36,7 @@ static WebApplicationBuilder AddServices(string[] args)
     builder.Services.AddOODServices(builder.Configuration);
     builder.Services.AddControllers();
     builder.Services.AddScoped<SecurityMiddleware>();
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddCors(options =>
