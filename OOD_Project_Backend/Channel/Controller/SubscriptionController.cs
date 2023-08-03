@@ -23,6 +23,14 @@ public class SubscriptionController : ControllerBase
     public async Task<Response> AddSubscription([FromBody] SubscriptionRequest request)
     {
         return await _subscriptionService.AddSubscription(request);
-    } 
+    }
+
+    [HttpGet]
+    [Route("{channelId}")]
+    [Authorize]
+    public async Task<Response> ShowSubscription(int channelId)
+    {
+        return await _subscriptionService.ShowSubscription(channelId);
+    }
 
 }

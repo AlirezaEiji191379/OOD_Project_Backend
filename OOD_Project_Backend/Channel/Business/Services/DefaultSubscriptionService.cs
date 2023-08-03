@@ -69,9 +69,22 @@ public class DefaultSubscriptionService : ISubscriptionService
         throw new NotImplementedException();
     }
 
-    public Task<Response> ShowSubscription(int channelId)
+    public async Task<Response> ShowSubscription(int channelId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var subEntities = await _subscriptionRepository.FindByChannelId(channelId);
+            var subDtos = subEntities.Select(x => new
+            {
+                Period = x.Period,
+                Price = x.Price
+            }).ToList();
+            return new Response(200,new {Message = subDtos});
+        }
+        catch (Exception e)
+        {
+            return new Response(404,new {Message = "channel not found!"});
+        }
     }
 
     public Task<Response> BuySubscription(int subscriptionId)
