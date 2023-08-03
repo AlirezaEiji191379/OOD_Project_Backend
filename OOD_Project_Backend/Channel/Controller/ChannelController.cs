@@ -63,4 +63,12 @@ public class ChannelController : ControllerBase
         return await _channelMembershipService.ShowMembers(channelId);
     }
 
+    [HttpPost]
+    [Route("AddAdmin")]
+    [Authorize]
+    public async Task<Response> AddAdminToChannel([FromBody] ChannelMembershipRequest channelMembershipRequest)
+    {
+        return await _channelMembershipService.AddAdminToChannel(channelMembershipRequest);
+    }
+
 }

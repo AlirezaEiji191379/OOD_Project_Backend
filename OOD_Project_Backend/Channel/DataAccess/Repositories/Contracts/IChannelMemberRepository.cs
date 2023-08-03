@@ -1,4 +1,5 @@
 ﻿using OOD_Project_Backend.Channel.DataAccess.Entities;
+using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Core.DataAccess.Contracts;
 using OOD_Project_Backend.User.Business.Context;
 
@@ -10,4 +11,6 @@ public interface IChannelMemberRepository : IBaseRepository<ChannelMemberEntity>
     Task<bool> IsChannelMember(int userId, int channelId);
     Task<List<ChannelMemberEntity>> FindByMemberId(int userId);
     Task<List<UserContract>> FindUsersByChannelId(int channelId);
+    Task<ChannelMemberEntity> FindByUserIdAndChannelId(int userId, int channelId);
+    void UpdateRoleOfUserInChannel(int userId, int channelId, Role role);
 }

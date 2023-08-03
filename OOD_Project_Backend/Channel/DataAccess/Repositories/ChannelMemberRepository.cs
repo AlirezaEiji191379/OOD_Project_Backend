@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OOD_Project_Backend.Channel.Business.Context;
 using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
@@ -35,7 +36,7 @@ public class ChannelMemberRepository : BaseRepository<ChannelMemberEntity>, ICha
 
     public Task<List<ChannelMemberEntity>> FindByMemberId(int userId)
     {
-        return  _appDbContext.ChannelMembers.AsNoTracking().Where(x => x.UserId == userId)
+        return _appDbContext.ChannelMembers.AsNoTracking().Where(x => x.UserId == userId)
             .Include(x => x.Channel)
             .ToListAsync();
     }
@@ -48,9 +49,27 @@ public class ChannelMemberRepository : BaseRepository<ChannelMemberEntity>, ICha
             .Select(x => new UserContract()
             {
                 UserId = x.UserId,
-                Name = x.User.Name 
+                Name = x.User.Name
             })
             .ToListAsync();
     }
 
+    public Task<ChannelMemberEntity> FindByUserIdAndChannelId(int userId, int channelId)
+    {
+        return _appDbContext.ChannelMembers.AsNoTracking()
+            .Where(cm => cm.ChannelId == channelId && cm.UserId == userId)
+            .SingleAsync();
+    }
+
+    public void UpdateRoleOfUserInChannel(int userId, int channelId, Role role)
+    {
+        var channelMemberEntity = new ChannelMemberEntity()
+        {
+            UserId = userId,
+            ChannelId = channelId,
+            Role = role
+        };
+        _appDbContext.Attach(channelMemberEntity);
+        _appDbContext.Entry(channelMemberEntity).Property(x => x.Role).IsModified = true;
+    }
 }

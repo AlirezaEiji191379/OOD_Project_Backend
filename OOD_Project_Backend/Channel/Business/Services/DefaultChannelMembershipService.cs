@@ -1,4 +1,5 @@
-﻿using OOD_Project_Backend.Channel.Business.Contracts;
+﻿using OOD_Project_Backend.Channel.Business.Context;
+using OOD_Project_Backend.Channel.Business.Contracts;
 using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
@@ -63,6 +64,31 @@ public class DefaultChannelMembershipService : IChannelMembershipService
         catch (Exception e)
         {
             return new Response(404, new { Message = "channel not found!" });
+        }
+    }
+
+    public async Task<Response> AddAdminToChannel(ChannelMembershipRequest channelMembershipRequest)
+    {
+        try
+        {
+            var userId = _userFacade.GetCurrentUserId();
+            var channelMemberEntity = await _memberRepository.FindByUserIdAndChannelId(userId, channelMembershipRequest.ChannelId);
+            if (channelMemberEntity.Role != Role.OWNER)
+            {
+                return new Response(403, new { Message = "you do not have permission to add admin to Channel" });
+            }
+
+            foreach (var memberId in channelMembershipRequest.MemberIds)
+            {
+                _memberRepository.UpdateRoleOfUserInChannel(memberId, channelMembershipRequest.ChannelId, Role.ADMIN);
+            }
+
+            await _memberRepository.SaveChangesAsync();
+            return new Response(200, new { Message = "Admins are added!" });
+        }
+        catch (Exception e)
+        {
+            return new Response(400, "");
         }
     }
 }
