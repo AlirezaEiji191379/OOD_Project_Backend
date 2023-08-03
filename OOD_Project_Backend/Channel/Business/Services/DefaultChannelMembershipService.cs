@@ -91,4 +91,55 @@ public class DefaultChannelMembershipService : IChannelMembershipService
             return new Response(400, "");
         }
     }
+
+    public async Task<Response> SetIncomeShare(ChannelMembershipRequest channelMembershipRequest)
+    {
+        try
+        {
+            var userId = _userFacade.GetCurrentUserId();
+            var owners = await _memberRepository.FindByChannelIdAndRole(channelMembershipRequest.ChannelId, Role.OWNER);
+            var owner = owners.Single(x => x.UserId == userId);
+            var admins = await _memberRepository.FindByChannelIdAndRole(channelMembershipRequest.ChannelId,Role.ADMIN);
+            var incomeShareSum = channelMembershipRequest.IncomeShares.Values.Sum();
+            if (incomeShareSum != 100)
+            {
+                return new Response(400, new { Message = "income shares must adds up to 100" });
+            }
+
+            foreach (var memberId in channelMembershipRequest.IncomeShares.Keys)
+            {
+                if (!admins.Any(x => x.UserId == memberId) && owner.UserId != memberId)
+                {
+                    return new Response(400,new {Message = "all the admins and owners must be defined for incomeshares!"});
+                }
+            }
+            
+            foreach (var member in channelMembershipRequest.IncomeShares.Keys)
+            {
+                if (member == owner.UserId)
+                {
+                    owner.IncomeShare = channelMembershipRequest.IncomeShares[member];
+                    _memberRepository.Update(owner);
+                }
+                else
+                {
+                    var admin = admins.Single(x => x.UserId == member);
+                    admin.IncomeShare = channelMembershipRequest.IncomeShares[member];
+                    _memberRepository.Update(admin);
+                }
+            }
+
+            await _memberRepository.SaveChangesAsync();
+            return new Response(200,new {Message = "income shares are now updated!"});
+        }
+        catch (Exception e)
+        {
+            return new Response(400, new { Message = "add income share failed!" });
+        }
+    }
+
+    public async Task<bool> IsOwner(int channelId, int userId)
+    {
+        return await _memberRepository.IsOwner(userId, channelId);
+    }
 }

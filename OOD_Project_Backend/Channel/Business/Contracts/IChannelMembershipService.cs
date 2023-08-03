@@ -8,4 +8,6 @@ public interface IChannelMembershipService
     Task<Response> JoinChannel(string joinLink);
     Task<Response> ShowMembers(int channelId);
     Task<Response> AddAdminToChannel(ChannelMembershipRequest channelMembershipRequest);
+    Task<Response> SetIncomeShare(ChannelMembershipRequest channelMembershipRequest);
+    Task<bool> IsOwner(int channelId, int userId);
 }

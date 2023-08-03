@@ -13,4 +13,7 @@ public interface IChannelMemberRepository : IBaseRepository<ChannelMemberEntity>
     Task<List<UserContract>> FindUsersByChannelId(int channelId);
     Task<ChannelMemberEntity> FindByUserIdAndChannelId(int userId, int channelId);
     void UpdateRoleOfUserInChannel(int userId, int channelId, Role role);
+    Task<bool> IsOwner(int userId, int channelId);
+    Task<bool> IsAdmin(int userId,int channelId);
+    Task<List<ChannelMemberEntity>> FindByChannelIdAndRole(int channelId,Role role);
 }

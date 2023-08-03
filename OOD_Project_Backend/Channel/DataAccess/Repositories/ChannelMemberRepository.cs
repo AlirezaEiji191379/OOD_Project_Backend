@@ -72,4 +72,21 @@ public class ChannelMemberRepository : BaseRepository<ChannelMemberEntity>, ICha
         _appDbContext.Attach(channelMemberEntity);
         _appDbContext.Entry(channelMemberEntity).Property(x => x.Role).IsModified = true;
     }
+
+    public Task<bool> IsOwner(int userId, int channelId)
+    {
+        return _appDbContext.ChannelMembers.AnyAsync(x => x.ChannelId == channelId && x.UserId == userId && x.Role == Role.OWNER);
+    }
+
+    public Task<bool> IsAdmin(int userId, int channelId)
+    {
+        return _appDbContext.ChannelMembers.AnyAsync(x => x.ChannelId == channelId && x.UserId == userId && x.Role == Role.ADMIN);
+    }
+    
+    public Task<List<ChannelMemberEntity>> FindByChannelIdAndRole(int channelId, Role role)
+    {
+        return _appDbContext.ChannelMembers.Where(x => x.ChannelId == channelId && x.Role == role)
+            .ToListAsync();
+
+    }
 }

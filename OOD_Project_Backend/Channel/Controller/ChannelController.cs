@@ -71,4 +71,12 @@ public class ChannelController : ControllerBase
         return await _channelMembershipService.AddAdminToChannel(channelMembershipRequest);
     }
 
+    [HttpPost]
+    [Route("SetIncomeShare")]
+    [Authorize]
+    public async Task<Response> SetIncomeShares([FromBody] ChannelMembershipRequest channelMembershipRequest)
+    {
+        return await _channelMembershipService.SetIncomeShare(channelMembershipRequest);
+    }
+
 }
