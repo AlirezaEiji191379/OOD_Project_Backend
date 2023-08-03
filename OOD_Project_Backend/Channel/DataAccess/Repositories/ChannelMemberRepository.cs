@@ -83,9 +83,9 @@ public class ChannelMemberRepository : BaseRepository<ChannelMemberEntity>, ICha
         return _appDbContext.ChannelMembers.AnyAsync(x => x.ChannelId == channelId && x.UserId == userId && x.Role == Role.ADMIN);
     }
     
-    public Task<List<ChannelMemberEntity>> FindByChannelIdAndRole(int channelId, Role role)
+    public Task<List<ChannelMemberEntity>> FindByChannelIdAndRole(int channelId,params Role[] roles)
     {
-        return _appDbContext.ChannelMembers.Where(x => x.ChannelId == channelId && x.Role == role)
+        return _appDbContext.ChannelMembers.Where(x => x.ChannelId == channelId && roles.Contains(x.Role))
             .ToListAsync();
 
     }

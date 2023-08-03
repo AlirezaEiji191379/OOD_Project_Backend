@@ -10,4 +10,7 @@ public interface IChannelMembershipService
     Task<Response> AddAdminToChannel(ChannelMembershipRequest channelMembershipRequest);
     Task<Response> SetIncomeShare(ChannelMembershipRequest channelMembershipRequest);
     Task<bool> IsOwner(int channelId, int userId);
+    Task<Response> ShowAdmins(int channelId);
+    Task<Response> RemoveMember(ChannelMembershipRequest membershipRequest);
+    Task<Response> RemoveAdmin(ChannelMembershipRequest membershipRequest);
 }

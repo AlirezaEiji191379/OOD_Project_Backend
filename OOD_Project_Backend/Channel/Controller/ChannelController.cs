@@ -79,4 +79,28 @@ public class ChannelController : ControllerBase
         return await _channelMembershipService.SetIncomeShare(channelMembershipRequest);
     }
 
+    [HttpGet]
+    [Route("ShowAdmins/{channelId}")]
+    [Authorize]
+    public async Task<Response> ShowAdmins(int channelId)
+    {
+        return await _channelMembershipService.ShowAdmins(channelId);
+    }
+
+    [HttpDelete]
+    [Route("Member")]
+    [Authorize]
+    public async Task<Response> RemoveMember(ChannelMembershipRequest membershipRequest)
+    {
+        return await _channelMembershipService.RemoveMember(membershipRequest);
+    }
+
+    [HttpDelete]
+    [Route("Admin")]
+    [Authorize]
+    public async Task<Response> RemoveAdmin(ChannelMembershipRequest membershipRequest)
+    {
+        return await _channelMembershipService.RemoveAdmin(membershipRequest);
+    }
+    
 }

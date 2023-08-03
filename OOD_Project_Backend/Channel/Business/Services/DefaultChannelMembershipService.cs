@@ -4,6 +4,7 @@ using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Core.Context;
+using OOD_Project_Backend.User.Business.Context;
 using OOD_Project_Backend.User.Business.Contracts;
 
 namespace OOD_Project_Backend.Channel.Business.Services;
@@ -97,9 +98,11 @@ public class DefaultChannelMembershipService : IChannelMembershipService
         try
         {
             var userId = _userFacade.GetCurrentUserId();
-            var owners = await _memberRepository.FindByChannelIdAndRole(channelMembershipRequest.ChannelId, Role.OWNER);
-            var owner = owners.Single(x => x.UserId == userId);
-            var admins = await _memberRepository.FindByChannelIdAndRole(channelMembershipRequest.ChannelId,Role.ADMIN);
+            if (await IsOwner(channelMembershipRequest.ChannelId, userId))
+            {
+                return new Response(403, new { Message = "just owner can set income shares!" });
+            }
+            var admins = await _memberRepository.FindByChannelIdAndRole(channelMembershipRequest.ChannelId, Role.ADMIN, Role.OWNER);
             var incomeShareSum = channelMembershipRequest.IncomeShares.Values.Sum();
             if (incomeShareSum != 100)
             {
@@ -108,29 +111,21 @@ public class DefaultChannelMembershipService : IChannelMembershipService
 
             foreach (var memberId in channelMembershipRequest.IncomeShares.Keys)
             {
-                if (!admins.Any(x => x.UserId == memberId) && owner.UserId != memberId)
+                if (!admins.Any(x => x.UserId == memberId))
                 {
-                    return new Response(400,new {Message = "all the admins and owners must be defined for incomeshares!"});
-                }
-            }
-            
-            foreach (var member in channelMembershipRequest.IncomeShares.Keys)
-            {
-                if (member == owner.UserId)
-                {
-                    owner.IncomeShare = channelMembershipRequest.IncomeShares[member];
-                    _memberRepository.Update(owner);
-                }
-                else
-                {
-                    var admin = admins.Single(x => x.UserId == member);
-                    admin.IncomeShare = channelMembershipRequest.IncomeShares[member];
-                    _memberRepository.Update(admin);
+                    return new Response(400, new { Message = "all the admins and owners must be defined for incomeshares!" });
                 }
             }
 
+            foreach (var memberId in channelMembershipRequest.IncomeShares.Keys)
+            {
+                var admin = admins.Single(x => x.UserId == memberId);
+                admin.IncomeShare = channelMembershipRequest.IncomeShares[memberId];
+                _memberRepository.Update(admin);
+            }
+
             await _memberRepository.SaveChangesAsync();
-            return new Response(200,new {Message = "income shares are now updated!"});
+            return new Response(200, new { Message = "income shares are now updated!" });
         }
         catch (Exception e)
         {
@@ -142,4 +137,100 @@ public class DefaultChannelMembershipService : IChannelMembershipService
     {
         return await _memberRepository.IsOwner(userId, channelId);
     }
+
+    public async Task<bool> IsAdmin(int channelId,int userId)
+    {
+        return await _memberRepository.IsAdmin(userId,channelId);
+    }
+
+    public async Task<Response> ShowAdmins(int channelId)
+    {
+        try
+        {
+            var admins = await _memberRepository.FindByChannelIdAndRole(channelId, Role.ADMIN, Role.OWNER);
+            var adminProfiles = new List<UserContract>();
+            admins.ForEach(async (x) =>
+            {
+                var result = await _userFacade.GetUser(x.UserId);
+                adminProfiles.Add(result);
+            });
+            return new Response(200, new { Messsage = adminProfiles });
+        }
+        catch (Exception e)
+        {
+            return new Response(400, new { Message = "channel not found" });
+        }
+    }
+
+    public async Task<Response> RemoveMember(ChannelMembershipRequest membershipRequest)
+    {
+        try
+        {
+            var userId = _userFacade.GetCurrentUserId();
+            var channelId = membershipRequest.ChannelId;
+            var isCurrentUserAdmin = await IsAdmin(channelId,userId);
+            var isCurrentUserOwner = await IsOwner(channelId,userId);
+            if (!isCurrentUserAdmin && !isCurrentUserOwner)
+            {
+                return new Response(403, new { Message = "only admins and owners can delete users!" });
+            }
+            foreach (var memberId in membershipRequest.MemberIds)
+            {
+                var isAdmin = await IsAdmin(channelId,memberId);
+                var isOwner = await IsOwner(channelId,memberId);
+                if (!isAdmin && !isOwner)
+                {
+                    _memberRepository.Delete(new ChannelMemberEntity()
+                    {
+                        UserId = memberId,
+                        ChannelId = channelId
+                    });
+                }
+                else
+                {
+                    return new Response(403,new {Message = "can not delete owner or admin! you must degrade them first!"});
+                }
+            }
+            await _memberRepository.SaveChangesAsync();
+            return new Response(200,new {Message = "Users deleted!"});
+        }
+        catch (Exception e)
+        {
+            return new Response(400, new { Message = "user or channel not found" });
+        }
+    }
+    
+    public async Task<Response> RemoveAdmin(ChannelMembershipRequest membershipRequest)
+    {
+        try
+        {
+            var userId = _userFacade.GetCurrentUserId();
+            var channelId = membershipRequest.ChannelId;
+            var isCurrentUserOwner = await IsOwner(channelId,userId);
+            if (!isCurrentUserOwner)
+            {
+                return new Response(403, new { Message = "only owners can delete admins!" });
+            }
+            foreach (var memberId in membershipRequest.AdminIds)
+            {
+                var isAdmin = await IsAdmin(channelId,memberId);
+                if (isAdmin)
+                {
+                    _memberRepository.UpdateRoleOfUserInChannel(memberId,channelId,Role.MEMBER);
+                }
+                else
+                {
+                    return new Response(403, new { Message = "the user is not admin!" });
+                }
+            }
+            await _memberRepository.SaveChangesAsync();
+            return new Response(200,new {Message = "Users deleted!"});
+        }
+        catch (Exception e)
+        {
+            return new Response(400, new { Message = "user or channel not found" });
+        }
+    }
+    
+    
 }
