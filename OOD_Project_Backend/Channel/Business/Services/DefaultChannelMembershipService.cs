@@ -16,8 +16,7 @@ public class DefaultChannelMembershipService : IChannelMembershipService
         _memberRepository = memberRepository;
         _channelRepository = channelRepository;
     }
-
-
+    
     public async Task<Response> JoinChannel(string joinLink, int userId)
     {
         try
@@ -43,4 +42,18 @@ public class DefaultChannelMembershipService : IChannelMembershipService
             return new Response(404, new { Message = "Channel Not Found!" });
         }
     }
+
+    public async Task<Response> ShowMembers(int channelId)
+    {
+        try
+        {
+            var userContracts = await _memberRepository.FindUsersByChannelId(channelId);
+            return new Response(200,new {Message = userContracts});
+        }
+        catch (Exception e)
+        {
+            return new Response(404,new {Message = "channel not found!"});
+        }
+    }
+    
 }

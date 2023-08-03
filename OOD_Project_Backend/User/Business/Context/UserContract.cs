@@ -1,6 +1,6 @@
 ﻿namespace OOD_Project_Backend.User.Business.Context;
 
-public class UserProfile
+public class UserContract
 {
     public int UserId { get; init; }
     public string Name { get; init; }

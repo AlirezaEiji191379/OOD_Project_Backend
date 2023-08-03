@@ -61,4 +61,13 @@ public class ChannelController : ControllerBase
         var userId = _userFacade.GetCurrentUserId(HttpContext);
         return await _channelService.ShowChannelsList(userId);
     }
+
+    [HttpGet]
+    [Route("GetChannelMembers/{channelId}")]
+    [Authorize]
+    public async Task<Response> GetChannelMembers(int channelId)
+    {
+        return await _channelMembershipService.ShowMembers(channelId);
+    }
+
 }
