@@ -30,5 +30,6 @@ namespace OOD_Project_Backend.Core.DataAccess
         public DbSet<RefundEntity> Refunds { get; set; }
         public DbSet<TransactionEntity> Transactions { get; set; }
         public DbSet<WalletEntity> Wallets { get; set; }
+        public DbSet<SubscriptionEntity> Subscriptions { get; set; }
     }
 }

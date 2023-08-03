@@ -16,5 +16,7 @@ public class DependencyInjector : IDependencyInstaller
         services.AddScoped<IChannelMembershipService, DefaultChannelMembershipService>();
         services.AddScoped<IChannelMemberRepository, ChannelMemberRepository>();
         services.AddScoped<IChannelRepository,ChannelRepository>();
+        services.AddScoped<ISubscriptionService, DefaultSubscriptionService>();
+        services.AddScoped<ISubscriptionRepository,SubscriptionRepository>();
     }
 }
