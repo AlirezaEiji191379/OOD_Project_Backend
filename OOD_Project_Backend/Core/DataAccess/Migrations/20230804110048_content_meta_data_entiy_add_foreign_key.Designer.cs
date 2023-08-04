@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OOD_Project_Backend.Core.DataAccess;
@@ -11,9 +12,10 @@ using OOD_Project_Backend.Core.DataAccess;
 namespace OOD_Project_Backend.Core.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230804110048_content_meta_data_entiy_add_foreign_key")]
+    partial class content_meta_data_entiy_add_foreign_key
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,7 +166,10 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ChannelEntityId")
+                    b.Property<int>("ChannelId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ContentMetaDataId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
@@ -180,17 +185,23 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChannelEntityId");
+                    b.HasIndex("ChannelId");
 
                     b.ToTable("Contents");
                 });
 
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.ContentMetaDataEntity", b =>
                 {
-                    b.Property<int>("ContentId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
                     b.Property<int>("ChannelId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ContentId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ContentType")
@@ -206,9 +217,13 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
-                    b.HasKey("ContentId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ChannelId");
+                    b.HasIndex("ChannelId")
+                        .IsUnique();
+
+                    b.HasIndex("ContentId")
+                        .IsUnique();
 
                     b.ToTable("ContentMetaDatas");
                 });
@@ -511,21 +526,25 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.ContentEntity", b =>
                 {
-                    b.HasOne("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelEntity", null)
+                    b.HasOne("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelEntity", "Channel")
                         .WithMany("ContentEntities")
-                        .HasForeignKey("ChannelEntityId");
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Channel");
                 });
 
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.ContentMetaDataEntity", b =>
                 {
                     b.HasOne("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelEntity", "Channel")
-                        .WithMany()
-                        .HasForeignKey("ChannelId")
+                        .WithOne()
+                        .HasForeignKey("OOD_Project_Backend.Content.DataAccess.Entities.ContentMetaDataEntity", "ChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("OOD_Project_Backend.Content.DataAccess.Entities.ContentEntity", "Content")
-                        .WithOne()
+                        .WithOne("ContentMetaData")
                         .HasForeignKey("OOD_Project_Backend.Content.DataAccess.Entities.ContentMetaDataEntity", "ContentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -621,6 +640,12 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.Navigation("ChannelMemberEntities");
 
                     b.Navigation("ContentEntities");
+                });
+
+            modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.ContentEntity", b =>
+                {
+                    b.Navigation("ContentMetaData")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OOD_Project_Backend.User.DataAccess.Entities.UserEntity", b =>

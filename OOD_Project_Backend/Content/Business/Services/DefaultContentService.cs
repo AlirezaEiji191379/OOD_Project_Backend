@@ -4,7 +4,7 @@ using OOD_Project_Backend.Content.Business.Requests;
 using OOD_Project_Backend.Content.DataAccess.Entities;
 using OOD_Project_Backend.Content.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Content.DataAccess.Repository;
-using OOD_Project_Backend.Content.DataAccess.Repository.Abstractions;
+using OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.DataAccess.Contracts;
 
@@ -13,8 +13,8 @@ namespace OOD_Project_Backend.Content.Business.Services;
 public class DefaultContentService : ContentService
 {
     private readonly IContentRepository _contentRepository;
-    private readonly IBaseRepository<ContentMetaDataEntity> _contentMetadataRepository;
-    public DefaultContentService(IContentRepository contentRepository, IBaseRepository<ContentMetaDataEntity> contentMetadataRepository)
+    private readonly IContentMetaDataRepository _contentMetadataRepository;
+    public DefaultContentService(IContentRepository contentRepository, IContentMetaDataRepository contentMetadataRepository)
     {
         _contentRepository = contentRepository;
         _contentMetadataRepository = contentMetadataRepository;
@@ -29,7 +29,7 @@ public class DefaultContentService : ContentService
                 Description = request.Description,
                 Title = request.Title,
                 CreatedAt = DateTime.Now.ToUniversalTime(),
-                ChannelId = request.ChannelId
+                //ChannelId = request.ChannelId
             };
             var contentMetaData = new ContentMetaDataEntity()
             {
@@ -46,7 +46,7 @@ public class DefaultContentService : ContentService
                 Size = request.File.Length,
                 Format = ".exe"
             };
-            content.ContentMetaData = contentMetaData;
+            //content.ContentMetaData = contentMetaData;
             await _contentRepository.Create(content);
             await _contentMetadataRepository.Create(contentMetaData);
             /*if (request.Type == ContentType.Music)

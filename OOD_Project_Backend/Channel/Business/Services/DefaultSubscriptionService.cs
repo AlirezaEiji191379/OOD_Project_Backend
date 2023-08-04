@@ -4,6 +4,7 @@ using OOD_Project_Backend.Channel.Business.Validations.Conditions;
 using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
+using OOD_Project_Backend.Content.Business.Contracts;
 using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.Validation.Contracts;
 using OOD_Project_Backend.Finance.Business.Contracts;
@@ -20,6 +21,7 @@ public class DefaultSubscriptionService : ISubscriptionService
     private readonly IChannelMemberRepository _channelMemberRepository;
     private readonly IChannelPremiumUsersRepository _channelPremiumUsersRepository;
     private readonly IFinanceFacade _financeFacade;
+    private readonly IContentFacade _contentFacade;
 
     public DefaultSubscriptionService(IUserFacade userFacade,
         IChannelMembershipService channelMembershipService,
@@ -27,7 +29,8 @@ public class DefaultSubscriptionService : ISubscriptionService
         ISubscriptionRepository subscriptionRepository,
         IChannelMemberRepository channelMemberRepository,
         IFinanceFacade financeFacade, 
-        IChannelPremiumUsersRepository channelPremiumUsersRepository)
+        IChannelPremiumUsersRepository channelPremiumUsersRepository, 
+        IContentFacade contentFacade)
     {
         _userFacade = userFacade;
         _channelMembershipService = channelMembershipService;
@@ -36,6 +39,7 @@ public class DefaultSubscriptionService : ISubscriptionService
         _channelMemberRepository = channelMemberRepository;
         _financeFacade = financeFacade;
         _channelPremiumUsersRepository = channelPremiumUsersRepository;
+        _contentFacade = contentFacade;
     }
 
 
@@ -142,9 +146,30 @@ public class DefaultSubscriptionService : ISubscriptionService
     }
     
 
-    public Task<Response> BuyContent(int contentId)
+    public  async Task<Response> BuyContent(int contentId)
     {
-        throw new NotImplementedException();
+        await using var transaction = await _subscriptionRepository.BeginTransactionAsync();
+        try
+        {
+            var contentDetails = await _contentFacade.GetContentDetails(contentId);
+
+            var amount = contentDetails.Price;
+            var userId = _userFacade.GetCurrentUserId();
+            var members = await _channelMemberRepository.FindByChannelId(contentDetails.ChannelId);
+            var incomeShares = members.Where(x => x.IncomeShare > 0).ToDictionary(x => x.UserId, x => x.IncomeShare);
+            var buyResult = await _financeFacade.Buy(userId, amount, incomeShares);
+            if (!buyResult)
+            {
+                throw new Exception("buy failed!");
+            }
+            await transaction.CommitAsync();
+            return new Response(200,new {Message = "buy successfull!"});
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync();
+            return new Response(400, new { Message = e.Message });
+        }
     }
     
     private static int ComputeExtraMonth(SubscriptionEntity subscription)

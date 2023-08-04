@@ -9,8 +9,5 @@ public class ContentEntityConfiguration : IEntityTypeConfiguration<ContentEntity
     public void Configure(EntityTypeBuilder<ContentEntity> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.HasOne(x => x.Channel)
-            .WithMany(x => x.ContentEntities)
-            .HasForeignKey(x => x.ChannelId);
     }
 }

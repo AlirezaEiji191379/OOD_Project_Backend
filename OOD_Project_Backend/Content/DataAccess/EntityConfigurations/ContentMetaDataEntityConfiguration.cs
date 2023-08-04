@@ -8,9 +8,12 @@ public class ContentMetaDataEntityConfiguration : IEntityTypeConfiguration<Conte
 {
     public void Configure(EntityTypeBuilder<ContentMetaDataEntity> builder)
     {
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => x.ContentId);
         builder.HasOne(x => x.Content)
-            .WithOne(x => x.ContentMetaData)
+            .WithOne()
             .HasForeignKey<ContentMetaDataEntity>(x => x.ContentId);
+        builder.HasOne(x => x.Channel)
+            .WithMany()
+            .HasForeignKey(x => x.ChannelId);
     }
 }
