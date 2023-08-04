@@ -15,5 +15,8 @@ public class ContentMetaDataEntityConfiguration : IEntityTypeConfiguration<Conte
         builder.HasOne(x => x.Channel)
             .WithMany()
             .HasForeignKey(x => x.ChannelId);
+        builder.HasOne(x => x.Category)
+            .WithMany()
+            .HasForeignKey(x => x.CategoryId);
     }
 }

@@ -9,7 +9,8 @@ public class ContentMetaDataEntity
     public ContentEntity Content { get; set; }
     public int ChannelId { get; set; }
     public ChannelEntity Channel { get; set; }
-    //public CategoryEntity Category { get; set; }*/
+    public int? CategoryId { get; set; }
+    public CategoryEntity? Category { get; set; }
     public ContentType ContentType { get; set; }
     public int Price { get; set; }
     public bool Premium { get; set; }

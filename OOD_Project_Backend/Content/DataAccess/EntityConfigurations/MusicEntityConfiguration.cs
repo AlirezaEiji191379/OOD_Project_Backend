@@ -8,7 +8,8 @@ public class MusicEntityConfiguration : IEntityTypeConfiguration<MusicEntity>
 {
     public void Configure(EntityTypeBuilder<MusicEntity> builder)
     {
-        builder.HasNoKey();
+        builder.HasKey(x => x.ContentId);
+        builder.HasAlternateKey(x => x.FileId);
         builder.HasOne(x => x.File)
             .WithOne()
             .HasForeignKey<MusicEntity>(x => x.FileId);

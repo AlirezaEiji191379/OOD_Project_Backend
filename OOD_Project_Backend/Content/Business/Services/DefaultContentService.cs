@@ -22,56 +22,7 @@ public class DefaultContentService : IContentService
 
     public async Task<Response> Add(ContentCreationRequest request)
     {
-        try
-        {
-            var content = new ContentEntity()
-            {
-                Description = request.Description,
-                Title = request.Title,
-                CreatedAt = DateTime.Now.ToUniversalTime(),
-                //ChannelId = request.ChannelId
-            };
-            var contentMetaData = new ContentMetaDataEntity()
-            {
-                ContentType = request.Type,
-                Premium = false,
-                Price = 0,
-                Content = content,
-                FileName = request.File.FileName
-            };
-            var fileEntity = new FileEntity()
-            {
-                Quality = FileQuality._128,
-                FilePath = "Resources/" + request.File.FileName,
-                Size = request.File.Length,
-                Format = ".exe"
-            };
-            //content.ContentMetaData = contentMetaData;
-            await _contentRepository.Create(content);
-            await _contentMetadataRepository.Create(contentMetaData);
-            /*if (request.Type == ContentType.Music)
-            {
-                var musicEntity = new MusicEntity()
-                {
-                    Content = content,
-                    File = fileEntity,
-                    Length = 100,
-                    ArtistName = "as",
-                    MusicText = "asdfasdfasdf"
-                };
-            }*/
-            using (var stream = new FileStream("./Resources/" +request.File.FileName, FileMode.Create))
-            {
-                await request.File.CopyToAsync(stream);
-            }
-            
-            await _contentMetadataRepository.SaveChangesAsync();
-            return new Response(200,new {Message = "the content is added"});
-        }
-        catch (Exception e)
-        {
-            return new Response(400, new { Message = "the file can not created at time" });
-        }
+        return null;
     }
 
     public async Task<Response> GetChannelContentsMetadata(int channelId)

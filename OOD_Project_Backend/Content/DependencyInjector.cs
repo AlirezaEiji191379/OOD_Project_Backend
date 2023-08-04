@@ -15,6 +15,12 @@ public class DependencyInjector : IDependencyInstaller
         services.AddScoped<IContentService,DefaultContentService>();
         services.AddScoped<IContentRepository,ContentRepository>();
         services.AddScoped<IContentMetaDataRepository,ContentMetaDataRepository>();
+        services.AddScoped<ICategoryRepository,CategoryRepository>();
+        services.AddScoped<IFileEntityRepository,FileRepository>();
+        services.AddScoped<IMusicRepository,MusicRepository>();
+        services.AddScoped<ISubtitleRepository,SubtitleRepository>();
+        services.AddScoped<ITextEntityRepository,TextEntityRepository>();
+        services.AddScoped<IVideoEntityRepository,VideoRepository>();
         services.AddScoped<IContentFacade, ContentFacade>();
     }
 }
