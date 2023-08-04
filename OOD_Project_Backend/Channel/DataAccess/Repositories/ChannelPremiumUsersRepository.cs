@@ -1,4 +1,5 @@
-﻿using OOD_Project_Backend.Channel.DataAccess.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Core.DataAccess;
 using OOD_Project_Backend.Core.DataAccess.Repository;
@@ -13,8 +14,13 @@ public class ChannelPremiumUsersRepository : BaseRepository<ChannelPremiumUsersE
         _appDbContext = dbContext;
     }
 
-    public ValueTask<ChannelMemberEntity?> Find(int userId, int channelId)
+    public ValueTask<ChannelPremiumUsersEntity?> Find(int userId, int channelId)
     {
-        return _appDbContext.ChannelMembers.FindAsync(userId,channelId);
+        return _appDbContext.ChannelPremiumUsers.FindAsync(userId,channelId);
+    }
+
+    public Task<List<ChannelPremiumUsersEntity>> FindAfterDate(DateTime dateTime)
+    {
+        return _appDbContext.ChannelPremiumUsers.Where(x => x.EndTime > dateTime).ToListAsync();
     }
 }

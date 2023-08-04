@@ -1,4 +1,5 @@
 ﻿using OOD_Project_Backend.Channel.Business.Contracts;
+using OOD_Project_Backend.Channel.Business.Jobs;
 using OOD_Project_Backend.Channel.Business.Services;
 using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Repositories;
@@ -20,5 +21,6 @@ public class DependencyInjector : IDependencyInstaller
         services.AddScoped<ISubscriptionRepository,SubscriptionRepository>();
         services.AddScoped<IChannelPremiumUsersRepository,ChannelPremiumUsersRepository>();
         services.AddScoped<INonPremiumUsersPremiumContentsRepository,NonPremiumUsersPremiumContentsRepository>();
+        services.AddScoped<ISubscriptionDeactivationJob, SubscriptionDeactivationJob>();
     }
 }
