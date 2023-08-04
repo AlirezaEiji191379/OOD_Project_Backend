@@ -5,5 +5,5 @@ namespace OOD_Project_Backend.Content.Business.Creation;
 
 public interface IContentCreation
 {
-    Task Generate(ContentCreationRequest request);
+    Task<int> Generate(ContentCreationRequest request);
 }

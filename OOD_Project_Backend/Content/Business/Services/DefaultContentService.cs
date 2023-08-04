@@ -30,8 +30,8 @@ public class DefaultContentService : IContentService
     {
         try
         {
-            await _contentCreation.Generate(request);
-            return new Response(201,new {Message = "Created"});
+            var contentId = await _contentCreation.Generate(request);
+            return new Response(201,new {Message = contentId});
         }
         catch (Exception e)
         {

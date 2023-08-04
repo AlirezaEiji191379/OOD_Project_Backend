@@ -16,7 +16,7 @@ public class MusicCreationStrategy : IContentCreationStrategy
         _musicRepository = musicRepository;
     }
 
-    public async Task Generate(ContentCreationRequest contentCreationRequest,FileEntity fileEntity,ContentEntity content)
+    public async Task Generate(ContentCreationRequest request,FileEntity fileEntity,ContentEntity content)
     {
         var musicEntity = new MusicEntity()
         {
@@ -25,6 +25,10 @@ public class MusicCreationStrategy : IContentCreationStrategy
             ArtistName = "",
             MusicText = ""
         };
+        using (var stream = new FileStream(fileEntity.FilePath, FileMode.Create))
+        {
+            await request.File!.CopyToAsync(stream);
+        }
         await _musicRepository.Create(musicEntity);
     }
 }
