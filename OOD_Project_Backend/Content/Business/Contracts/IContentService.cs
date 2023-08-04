@@ -1,9 +1,9 @@
-﻿using OOD_Project_Backend.Content.Business.Requests;
+﻿using OOD_Project_Backend.Content.Business.Contexts;
 using OOD_Project_Backend.Core.Context;
 
-namespace OOD_Project_Backend.Content.Business.Abstractions;
+namespace OOD_Project_Backend.Content.Business.Contracts;
 
-public interface ContentService
+public interface IContentService
 {
     Task<Response> Add(ContentCreationRequest request);
     Task<Response> GetChannelContentsMetadata(int channelId);

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OOD_Project_Backend.Content.Business.Abstractions;
-using OOD_Project_Backend.Content.Business.Requests;
+using OOD_Project_Backend.Content.Business.Contexts;
+using OOD_Project_Backend.Content.Business.Contracts;
 using OOD_Project_Backend.Content.DataAccess.Entities;
 using OOD_Project_Backend.Content.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Content.DataAccess.Repository;
@@ -10,7 +10,7 @@ using OOD_Project_Backend.Core.DataAccess.Contracts;
 
 namespace OOD_Project_Backend.Content.Business.Services;
 
-public class DefaultContentService : ContentService
+public class DefaultContentService : IContentService
 {
     private readonly IContentRepository _contentRepository;
     private readonly IContentMetaDataRepository _contentMetadataRepository;
