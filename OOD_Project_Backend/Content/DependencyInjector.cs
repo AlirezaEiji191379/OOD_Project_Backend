@@ -1,12 +1,10 @@
 ﻿using OOD_Project_Backend.Content.Business.Contracts;
 using OOD_Project_Backend.Content.Business.Services;
-using OOD_Project_Backend.Content.DataAccess.Entities;
 using OOD_Project_Backend.Content.DataAccess.Repository;
 using OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 using OOD_Project_Backend.Core.Common.DependencyInjection.Abstractions;
-using OOD_Project_Backend.Core.DataAccess.Contracts;
 
-namespace OOD_Project_Backend.Content.DiManager;
+namespace OOD_Project_Backend.Content;
 
 public class DependencyInjector : IDependencyInstaller
 {
