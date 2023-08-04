@@ -40,4 +40,13 @@ public class SubscriptionController : ControllerBase
     {
         return await _subscriptionService.BuySubscription(subscriptionId);
     }
+
+    [HttpPost]
+    [Route("BuyContent/{contentId}")]
+    [Authorize]
+    public async Task<Response> BuyContent(int contentId)
+    {
+        return await _subscriptionService.BuyContent(contentId);
+    }
+    
 }

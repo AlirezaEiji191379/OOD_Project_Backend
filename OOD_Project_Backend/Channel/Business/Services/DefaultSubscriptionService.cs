@@ -22,6 +22,7 @@ public class DefaultSubscriptionService : ISubscriptionService
     private readonly IChannelPremiumUsersRepository _channelPremiumUsersRepository;
     private readonly IFinanceFacade _financeFacade;
     private readonly IContentFacade _contentFacade;
+    private readonly INonPremiumUsersPremiumContentsRepository _contentsRepository;
 
     public DefaultSubscriptionService(IUserFacade userFacade,
         IChannelMembershipService channelMembershipService,
@@ -30,7 +31,8 @@ public class DefaultSubscriptionService : ISubscriptionService
         IChannelMemberRepository channelMemberRepository,
         IFinanceFacade financeFacade, 
         IChannelPremiumUsersRepository channelPremiumUsersRepository, 
-        IContentFacade contentFacade)
+        IContentFacade contentFacade,
+        INonPremiumUsersPremiumContentsRepository contentsRepository)
     {
         _userFacade = userFacade;
         _channelMembershipService = channelMembershipService;
@@ -40,6 +42,7 @@ public class DefaultSubscriptionService : ISubscriptionService
         _financeFacade = financeFacade;
         _channelPremiumUsersRepository = channelPremiumUsersRepository;
         _contentFacade = contentFacade;
+        _contentsRepository = contentsRepository;
     }
 
 
@@ -162,6 +165,14 @@ public class DefaultSubscriptionService : ISubscriptionService
             {
                 throw new Exception("buy failed!");
             }
+
+            var nonPremiumContentUser = new NonPremiumUsersPremiumContentsEntity()
+            {
+                UserId = userId,
+                ContentId = contentId
+            };
+            await _contentsRepository.Create(nonPremiumContentUser);
+            await _contentsRepository.SaveChangesAsync();
             await transaction.CommitAsync();
             return new Response(200,new {Message = "buy successfull!"});
         }
