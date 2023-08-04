@@ -5,4 +5,5 @@ namespace OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
 
 public interface IChannelPremiumUsersRepository : IBaseRepository<ChannelPremiumUsersEntity>
 {
+    ValueTask<ChannelMemberEntity?> Find(int userId, int channelId);
 }

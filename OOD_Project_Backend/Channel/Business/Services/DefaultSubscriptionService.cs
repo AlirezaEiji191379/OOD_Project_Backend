@@ -29,8 +29,8 @@ public class DefaultSubscriptionService : ISubscriptionService
         IValidator validator,
         ISubscriptionRepository subscriptionRepository,
         IChannelMemberRepository channelMemberRepository,
-        IFinanceFacade financeFacade, 
-        IChannelPremiumUsersRepository channelPremiumUsersRepository, 
+        IFinanceFacade financeFacade,
+        IChannelPremiumUsersRepository channelPremiumUsersRepository,
         IContentFacade contentFacade,
         INonPremiumUsersPremiumContentsRepository contentsRepository)
     {
@@ -46,9 +46,19 @@ public class DefaultSubscriptionService : ISubscriptionService
     }
 
 
-    public Task<bool> CheckContentToShowUser(int userId, int channelId, int contentId)
+    public async Task<bool> CheckContentToShowUser(int userId, int channelId, int contentId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var nonPremium = await _contentsRepository.Find(contentId, userId);
+            var premiumUser = await _channelPremiumUsersRepository.Find(userId, channelId);
+            var membership = await _channelMemberRepository.FindByUserIdAndChannelId(userId, channelId);
+            return membership != null && (nonPremium != null || premiumUser != null);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
     public async Task<Response> AddSubscription(SubscriptionRequest request)
@@ -139,7 +149,7 @@ public class DefaultSubscriptionService : ISubscriptionService
             await _channelPremiumUsersRepository.Create(premiumUserEntity);
             await _channelPremiumUsersRepository.SaveChangesAsync();
             await transaction.CommitAsync();
-            return new Response(200,new {Message = "buy successfull!"});
+            return new Response(200, new { Message = "buy successfull!" });
         }
         catch (Exception e)
         {
@@ -148,7 +158,7 @@ public class DefaultSubscriptionService : ISubscriptionService
         }
     }
 
-    public  async Task<Response> BuyContent(int contentId)
+    public async Task<Response> BuyContent(int contentId)
     {
         await using var transaction = await _subscriptionRepository.BeginTransactionAsync();
         try
@@ -173,7 +183,7 @@ public class DefaultSubscriptionService : ISubscriptionService
             await _contentsRepository.Create(nonPremiumContentUser);
             await _contentsRepository.SaveChangesAsync();
             await transaction.CommitAsync();
-            return new Response(200,new {Message = "buy successfull!"});
+            return new Response(200, new { Message = "buy successfull!" });
         }
         catch (Exception e)
         {
@@ -181,7 +191,7 @@ public class DefaultSubscriptionService : ISubscriptionService
             return new Response(400, new { Message = e.Message });
         }
     }
-    
+
     private static int ComputeExtraMonth(SubscriptionEntity subscription)
     {
         var extraMonth = 0;
@@ -197,6 +207,7 @@ public class DefaultSubscriptionService : ISubscriptionService
         {
             extraMonth = 12;
         }
+
         return extraMonth;
     }
 }

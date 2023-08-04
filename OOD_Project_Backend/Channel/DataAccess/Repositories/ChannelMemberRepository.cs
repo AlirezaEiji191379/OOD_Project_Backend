@@ -54,11 +54,11 @@ public class ChannelMemberRepository : BaseRepository<ChannelMemberEntity>, ICha
             .ToListAsync();
     }
 
-    public Task<ChannelMemberEntity> FindByUserIdAndChannelId(int userId, int channelId)
+    public Task<ChannelMemberEntity?> FindByUserIdAndChannelId(int userId, int channelId)
     {
         return _appDbContext.ChannelMembers.AsNoTracking()
             .Where(cm => cm.ChannelId == channelId && cm.UserId == userId)
-            .SingleAsync();
+            .SingleOrDefaultAsync();
     }
 
     public void UpdateRoleOfUserInChannel(int userId, int channelId, Role role)

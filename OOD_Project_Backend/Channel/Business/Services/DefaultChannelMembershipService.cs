@@ -77,6 +77,10 @@ public class DefaultChannelMembershipService : IChannelMembershipService
             var userId = _userFacade.GetCurrentUserId();
             var channelMemberEntity =
                 await _memberRepository.FindByUserIdAndChannelId(userId, channelMembershipRequest.ChannelId);
+            if (channelMemberEntity == null)
+            {
+                return new Response(404, new { Message = "membership not found!" });
+            }
             if (channelMemberEntity.Role != Role.OWNER)
             {
                 return new Response(403, new { Message = "you do not have permission to add admin to Channel" });
