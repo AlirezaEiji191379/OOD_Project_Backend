@@ -106,17 +106,17 @@ public class DefaultSubscriptionService : ISubscriptionService
             var subscription = await _subscriptionRepository.FindById(subscriptionId);
             if (subscription == null)
             {
-                return new Response(400, new { Message = "subscription not found!" });
+                throw new Exception("subscription not found!");
             }
 
             var amount = subscription.Price;
             var userId = _userFacade.GetCurrentUserId();
             var members = await _channelMemberRepository.FindByChannelId(subscription.ChannelId);
-            var incomeShares = members.ToDictionary(x => x.UserId, x => x.IncomeShare);
+            var incomeShares = members.Where(x => x.IncomeShare > 0).ToDictionary(x => x.UserId, x => x.IncomeShare);
             var buyResult = await _financeFacade.Buy(userId, amount, incomeShares);
             if (!buyResult)
             {
-                return new Response(400,new {Message = "buy failed!"});
+                throw new Exception("buy failed!");
             }
 
             var startTime = DateTime.Now.ToUniversalTime();
@@ -137,7 +137,7 @@ public class DefaultSubscriptionService : ISubscriptionService
         catch (Exception e)
         {
             await transaction.RollbackAsync();
-            return new Response(400, new { Message = "buy subscription failed!" });
+            return new Response(400, new { Message = e.Message });
         }
     }
     

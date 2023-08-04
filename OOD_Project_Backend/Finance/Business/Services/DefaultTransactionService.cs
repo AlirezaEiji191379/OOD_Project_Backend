@@ -3,9 +3,9 @@ using OOD_Project_Backend.Finanace.DataAccess.Entities;
 using OOD_Project_Backend.Finanace.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Finance.Business.Contracts;
 
-namespace OOD_Project_Backend.Finanace.Business.Services;
+namespace OOD_Project_Backend.Finance.Business.Services;
 
-public class DefaultTransactionService : TransactionService
+public class DefaultTransactionService : ITransactionService
 {
     private readonly IBaseRepository<TransactionEntity> _trasactionBaseRepository;
 

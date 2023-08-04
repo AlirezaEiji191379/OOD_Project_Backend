@@ -7,5 +7,5 @@ public class WalletEntity
     public int Id { get; set; }
     public int UserId { get; set; }
     public UserEntity User { get; set; }
-    public int Balance { get; set; }
+    public double Balance { get; set; }
 }

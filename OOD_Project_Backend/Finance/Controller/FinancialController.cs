@@ -9,9 +9,9 @@ namespace OOD_Project_Backend.Finanace.Controller;
 [Route("Wallet")]
 public class FinancialController : ControllerBase
 {
-    private readonly WalletService _walletService;
+    private readonly IWalletService _walletService;
 
-    public FinancialController(WalletService walletService)
+    public FinancialController(IWalletService walletService)
     {
         _walletService = walletService;
     }
@@ -23,6 +23,6 @@ public class FinancialController : ControllerBase
     public async Task<Response> Withdraw(int amount)
     {
         var userId = (int)HttpContext.Items["User"];
-        return await _walletService.Withdraw(amount, userId);
+        return await _walletService.Withdraw(amount);
     }
 }

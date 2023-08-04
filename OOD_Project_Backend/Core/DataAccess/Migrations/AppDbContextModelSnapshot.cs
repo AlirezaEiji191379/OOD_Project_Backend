@@ -379,8 +379,8 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Balance")
-                        .HasColumnType("integer");
+                    b.Property<double>("Balance")
+                        .HasColumnType("double precision");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");

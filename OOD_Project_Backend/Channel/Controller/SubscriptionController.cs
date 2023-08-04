@@ -33,6 +33,11 @@ public class SubscriptionController : ControllerBase
         return await _subscriptionService.ShowSubscription(channelId);
     }
 
-    
-    
+    [HttpPost]
+    [Route("BuySubscription/{subscriptionId}")]
+    [Authorize]
+    public async Task<Response> BuySubscription(int subscriptionId)
+    {
+        return await _subscriptionService.BuySubscription(subscriptionId);
+    }
 }
