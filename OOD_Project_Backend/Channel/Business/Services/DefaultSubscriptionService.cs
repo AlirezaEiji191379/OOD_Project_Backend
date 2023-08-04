@@ -78,7 +78,7 @@ public class DefaultSubscriptionService : ISubscriptionService
         }
         catch (Exception e)
         {
-            return new Response(400, new { Message = "failed to add subscription!" });
+            return new Response(400, new { Message = "duplicated subscription!" });
         }
     }
 
@@ -147,7 +147,6 @@ public class DefaultSubscriptionService : ISubscriptionService
             return new Response(400, new { Message = e.Message });
         }
     }
-    
 
     public  async Task<Response> BuyContent(int contentId)
     {

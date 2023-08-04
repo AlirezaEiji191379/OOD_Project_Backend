@@ -13,7 +13,7 @@ public class SubscriptionEntityConfiguration : IEntityTypeConfiguration<Subscrip
         builder.HasOne(x => x.ChannelEntity)
             .WithMany()
             .HasForeignKey(x => x.ChannelId);
-        
+        builder.HasIndex(x => new { x.ChannelId, x.Period }).IsUnique();
         builder.Property(x => x.Period)
             .HasConversion(t => t.ToString(),
                 t => (SubscriptionPeriod)Enum.Parse(typeof(SubscriptionPeriod), t));

@@ -133,7 +133,8 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChannelId");
+                    b.HasIndex("ChannelId", "Period")
+                        .IsUnique();
 
                     b.ToTable("Subscriptions");
                 });
