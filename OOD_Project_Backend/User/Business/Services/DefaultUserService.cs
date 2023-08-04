@@ -3,7 +3,7 @@ using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.DataAccess.Contracts;
 using OOD_Project_Backend.Core.Validation;
 using OOD_Project_Backend.Core.Validation.Contracts;
-using OOD_Project_Backend.Finanace.Facade.Abstractions;
+using OOD_Project_Backend.Finance.Business.Contracts;
 using OOD_Project_Backend.User.Business.Contracts;
 using OOD_Project_Backend.User.Business.Requests;
 using OOD_Project_Backend.User.Business.Validations.Conditions;
@@ -15,7 +15,6 @@ namespace OOD_Project_Backend.User.Business.Services;
 public class DefaultUserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IFinanaceFacade _finanaceFacade;
     private readonly IValidator _validator;
     private readonly IPasswordService _passwordService;
     private readonly IAuthenticator _jwtAutenticator;
@@ -23,13 +22,12 @@ public class DefaultUserService : IUserService
 
     public DefaultUserService(IUserRepository userRepository,
         IPasswordService passwordService,
-        IAuthenticator jwtAuthenticator, IFinanaceFacade finanaceFacade,
+        IAuthenticator jwtAuthenticator, IFinanceFacade financeFacade,
         ITokenRepository tokenRepository)
     {
         _userRepository = userRepository;
         _passwordService = passwordService;
         _jwtAutenticator = jwtAuthenticator;
-        _finanaceFacade = finanaceFacade;
         _tokenRepository = tokenRepository;
         //TODO : correct the DI for the dependency!
         _validator = new Validator();
@@ -58,7 +56,6 @@ public class DefaultUserService : IUserService
         try
         {
             await _userRepository.Create(user);
-            await _finanaceFacade.CreateWallet(user);
             await _userRepository.SaveChangesAsync();
             return new Response(201, new { Message = "User Created" });
         }

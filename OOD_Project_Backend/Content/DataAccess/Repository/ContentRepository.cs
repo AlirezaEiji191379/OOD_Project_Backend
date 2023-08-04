@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OOD_Project_Backend.Content.DataAccess.Dtos;
 using OOD_Project_Backend.Content.DataAccess.Entities;
-using OOD_Project_Backend.Content.DataAccess.Repository.Abstractions;
+using OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 using OOD_Project_Backend.Core.DataAccess;
 using OOD_Project_Backend.Core.DataAccess.Repository;
 
@@ -17,7 +17,8 @@ public class ContentRepository : BaseRepository<ContentEntity>,IContentRepositor
 
     public async Task<List<ContentDto>> GetChannelContents(int channelId)
     {
-        var query = await _appDbContext.Contents
+        return null;
+        /*var query = await _appDbContext.ContentMetaDatas
             .Where(x => x.ChannelId == channelId)
             .Include(x => x.ContentMetaData)
             .ToListAsync();
@@ -27,6 +28,6 @@ public class ContentRepository : BaseRepository<ContentEntity>,IContentRepositor
             CreatedAt = x.CreatedAt,
             ContentId = x.Id,
             FileName = x.ContentMetaData.FileName
-        }).ToList();
+        }).ToList();*/
     }
 }

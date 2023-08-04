@@ -2,7 +2,10 @@
 
 public class UserProfile
 {
-    public int UserId { get; init; }
-    public string Name { get; init; }
+    public string Name { get; set; }
+    public int Id { get; set; }
+    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
     public string Biography { get; set; }
+    public string NationalCode { get; set; }
 }

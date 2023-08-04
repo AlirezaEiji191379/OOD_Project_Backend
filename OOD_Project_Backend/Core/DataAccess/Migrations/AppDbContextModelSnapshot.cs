@@ -46,6 +46,9 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("JoinLink")
+                        .IsUnique();
+
                     b.ToTable("Channels");
                 });
 
@@ -69,6 +72,71 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.HasIndex("ChannelId");
 
                     b.ToTable("ChannelMembers");
+                });
+
+            modelBuilder.Entity("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelPremiumUsersEntity", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ChannelId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("UserId", "ChannelId");
+
+                    b.HasIndex("ChannelId");
+
+                    b.ToTable("ChannelPremiumUsers");
+                });
+
+            modelBuilder.Entity("OOD_Project_Backend.Channel.DataAccess.Entities.NonPremiumUsersPremiumContentsEntity", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ContentId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "ContentId");
+
+                    b.HasIndex("ContentId");
+
+                    b.ToTable("NonPremiumUsersPremiumContents");
+                });
+
+            modelBuilder.Entity("OOD_Project_Backend.Channel.DataAccess.Entities.SubscriptionEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChannelId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Period")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChannelId", "Period")
+                        .IsUnique();
+
+                    b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.CategoryEntity", b =>
@@ -97,10 +165,7 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ChannelId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ContentMetaDataId")
+                    b.Property<int?>("ChannelEntityId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
@@ -116,20 +181,17 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChannelId");
+                    b.HasIndex("ChannelEntityId");
 
                     b.ToTable("Contents");
                 });
 
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.ContentMetaDataEntity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("ContentId")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ContentId")
+                    b.Property<int>("ChannelId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ContentType")
@@ -145,10 +207,9 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("ContentId");
 
-                    b.HasIndex("ContentId")
-                        .IsUnique();
+                    b.HasIndex("ChannelId");
 
                     b.ToTable("ContentMetaDatas");
                 });
@@ -312,8 +373,8 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Balance")
-                        .HasColumnType("integer");
+                    b.Property<double>("Balance")
+                        .HasColumnType("double precision");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -344,6 +405,9 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NationalCode")
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
@@ -386,6 +450,55 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelPremiumUsersEntity", b =>
+                {
+                    b.HasOne("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelEntity", "Channel")
+                        .WithMany()
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OOD_Project_Backend.User.DataAccess.Entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Channel");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OOD_Project_Backend.Channel.DataAccess.Entities.NonPremiumUsersPremiumContentsEntity", b =>
+                {
+                    b.HasOne("OOD_Project_Backend.Content.DataAccess.Entities.ContentEntity", "Content")
+                        .WithMany()
+                        .HasForeignKey("ContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OOD_Project_Backend.User.DataAccess.Entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Content");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OOD_Project_Backend.Channel.DataAccess.Entities.SubscriptionEntity", b =>
+                {
+                    b.HasOne("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelEntity", "ChannelEntity")
+                        .WithMany()
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChannelEntity");
+                });
+
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.CategoryEntity", b =>
                 {
                     b.HasOne("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelEntity", "Channel")
@@ -399,22 +512,26 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.ContentEntity", b =>
                 {
-                    b.HasOne("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelEntity", "Channel")
+                    b.HasOne("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelEntity", null)
                         .WithMany("ContentEntities")
-                        .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Channel");
+                        .HasForeignKey("ChannelEntityId");
                 });
 
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.ContentMetaDataEntity", b =>
                 {
+                    b.HasOne("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelEntity", "Channel")
+                        .WithMany()
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OOD_Project_Backend.Content.DataAccess.Entities.ContentEntity", "Content")
-                        .WithOne("ContentMetaData")
+                        .WithOne()
                         .HasForeignKey("OOD_Project_Backend.Content.DataAccess.Entities.ContentMetaDataEntity", "ContentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Channel");
 
                     b.Navigation("Content");
                 });
@@ -505,12 +622,6 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.Navigation("ChannelMemberEntities");
 
                     b.Navigation("ContentEntities");
-                });
-
-            modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.ContentEntity", b =>
-                {
-                    b.Navigation("ContentMetaData")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("OOD_Project_Backend.User.DataAccess.Entities.UserEntity", b =>

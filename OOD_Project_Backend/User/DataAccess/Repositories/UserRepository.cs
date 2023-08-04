@@ -22,9 +22,9 @@ internal class UserRepository : BaseRepository<UserEntity>,IUserRepository
             : await _appDbContext.Users.Where(user => user.Id == userId).AsNoTracking().FirstOrDefaultAsync())!;
     }
 
-    public async Task<UserProfile> GetUserProfile(int userId)
+    public async Task<UserContract> GetUserProfile(int userId)
     {
-        return await _appDbContext.Users.Where(user => user.Id == userId).AsNoTracking().Select(x => new UserProfile()
+        return await _appDbContext.Users.Where(user => user.Id == userId).AsNoTracking().Select(x => new UserContract()
         {
             Biography = x.Biography,
             Name = x.Name,

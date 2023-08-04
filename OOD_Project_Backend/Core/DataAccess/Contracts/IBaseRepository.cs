@@ -1,4 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿using System.Data.Common;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace OOD_Project_Backend.Core.DataAccess.Contracts
 {
@@ -10,5 +12,6 @@ namespace OOD_Project_Backend.Core.DataAccess.Contracts
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges);
         IQueryable<T> GetAll(bool trackChanges);
         Task SaveChangesAsync();
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OOD_Project_Backend.Channel.Business.Abstractions;
+using OOD_Project_Backend.Channel.Business.Context;
+using OOD_Project_Backend.Channel.Business.Contracts;
 using OOD_Project_Backend.Core.Common.Authentication;
 using OOD_Project_Backend.Core.Context;
+using OOD_Project_Backend.User.Business.Contracts;
 
 namespace OOD_Project_Backend.Channel.Controller;
 
@@ -9,27 +11,104 @@ namespace OOD_Project_Backend.Channel.Controller;
 [Route("Channel")]
 public class ChannelController : ControllerBase
 {
-    private readonly ChannelService _channelService;
+    private readonly IChannelService _channelService;
+    private readonly IChannelMembershipService _channelMembershipService;
 
-    public ChannelController(ChannelService channelService)
+    public ChannelController(IChannelService channelService,
+        IChannelMembershipService channelMembershipService)
     {
         _channelService = channelService;
+        _channelMembershipService = channelMembershipService;
     }
 
     [HttpPost]
-    [Route("{name}")]
+    [Route("Add")]
     [Authorize]
-    public async Task<Response> CreateChannel(string name)
+    public async Task<Response> CreateChannel([FromBody] ChannelCreateRequest channelCreateRequest)
     {
-        return await _channelService.CreateChannel(name,(int)HttpContext.Items["User"]);
+        return await _channelService.CreateChannel(channelCreateRequest.ChannelName);
+    }
+
+    [HttpPost]
+    [Route("AddPicture/{channelId}")]
+    [Authorize]
+    public async Task<Response> AddChannelPhoto([FromForm] IFormFile file, int channelId)
+    {
+        var result = await _channelService.AddChannelPicture(file,channelId);
+        return result;
+    }
+
+    [HttpPost]
+    [Route("Join/{joinLink}")]
+    [Authorize]
+    public async Task<Response> JoinChannel(string joinLink)
+    {
+        var result = await _channelMembershipService.JoinChannel(joinLink);
+        return result;
     }
 
     [HttpGet]
-    [Route("getAll")]
+    [Route("GetJoinedChannels")]
     [Authorize]
     public async Task<Response> GetAllChannels()
     {
-        return await _channelService.GetAllUsersChannels((int)HttpContext.Items["User"]);
+        return await _channelService.ShowChannelsList();
     }
 
+    [HttpGet]
+    [Route("GetChannelMembers/{channelId}")]
+    [Authorize]
+    public async Task<Response> GetChannelMembers(int channelId)
+    {
+        return await _channelMembershipService.ShowMembers(channelId);
+    }
+
+    [HttpPost]
+    [Route("AddAdmin")]
+    [Authorize]
+    public async Task<Response> AddAdminToChannel([FromBody] ChannelMembershipRequest channelMembershipRequest)
+    {
+        return await _channelMembershipService.AddAdminToChannel(channelMembershipRequest);
+    }
+
+    [HttpGet]
+    [Route("AllChannels")]
+    [Authorize]
+    public async Task<Response> GetChannelsList()
+    {
+        return await _channelMembershipService.GetChannelsList();
+    }
+
+    [HttpPost]
+    [Route("SetIncomeShare")]
+    [Authorize]
+    public async Task<Response> SetIncomeShares([FromBody] ChannelMembershipRequest channelMembershipRequest)
+    {
+        return await _channelMembershipService.SetIncomeShare(channelMembershipRequest);
+    }
+
+    [HttpGet]
+    [Route("ShowAdmins/{channelId}")]
+    [Authorize]
+    public async Task<Response> ShowAdmins(int channelId)
+    {
+        return await _channelMembershipService.ShowAdmins(channelId);
+    }
+
+    [HttpDelete]
+    [Route("Member")]
+    [Authorize]
+    public async Task<Response> RemoveMember(ChannelMembershipRequest membershipRequest)
+    {
+        return await _channelMembershipService.RemoveMember(membershipRequest);
+    }
+
+    [HttpDelete]
+    [Route("Admin")]
+    [Authorize]
+    public async Task<Response> RemoveAdmin(ChannelMembershipRequest membershipRequest)
+    {
+        return await _channelMembershipService.RemoveAdmin(membershipRequest);
+    }
+    
 }
