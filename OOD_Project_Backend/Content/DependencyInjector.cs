@@ -1,4 +1,7 @@
 ﻿using OOD_Project_Backend.Content.Business.Contracts;
+using OOD_Project_Backend.Content.Business.Creation;
+using OOD_Project_Backend.Content.Business.Creation.Strategies;
+using OOD_Project_Backend.Content.Business.Creation.Strategies.Contracts;
 using OOD_Project_Backend.Content.Business.Services;
 using OOD_Project_Backend.Content.DataAccess.Repository;
 using OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
@@ -20,5 +23,10 @@ public class DependencyInjector : IDependencyInstaller
         services.AddScoped<ITextEntityRepository,TextEntityRepository>();
         services.AddScoped<IVideoEntityRepository,VideoRepository>();
         services.AddScoped<IContentFacade, ContentFacade>();
+        services.AddScoped<IContentCreationStrategyProvider, ContentCreationStrategyProvider>();
+        services.AddScoped<IContentCreationStrategy, MusicCreationStrategy>();
+        services.AddScoped<IContentCreationStrategy, VideoCreationStrategy>();
+        services.AddScoped<IContentCreationStrategy, TextCreationStrategy>();
+        services.AddScoped<IContentCreation, ContentCreation>();
     }
 }

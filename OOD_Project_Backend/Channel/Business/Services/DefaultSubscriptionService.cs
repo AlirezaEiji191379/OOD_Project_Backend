@@ -104,6 +104,8 @@ public class DefaultSubscriptionService : ISubscriptionService
             var subEntities = await _subscriptionRepository.FindByChannelId(channelId);
             var subDtos = subEntities.Select(x => new
             {
+                Id = x.Id,
+                ChannelId = x.ChannelId,
                 Period = x.Period,
                 Price = x.Price
             }).ToList();

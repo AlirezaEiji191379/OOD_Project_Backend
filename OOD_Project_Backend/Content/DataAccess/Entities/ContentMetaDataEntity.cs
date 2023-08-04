@@ -12,7 +12,7 @@ public class ContentMetaDataEntity
     public int? CategoryId { get; set; }
     public CategoryEntity? Category { get; set; }
     public ContentType ContentType { get; set; }
-    public int Price { get; set; }
+    public double Price { get; set; }
     public bool Premium { get; set; }
     public string FileName { get; set; }
 }

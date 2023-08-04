@@ -172,7 +172,6 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
@@ -207,8 +206,8 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.Property<bool>("Premium")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("integer");
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
 
                     b.HasKey("ContentId");
 
@@ -257,9 +256,6 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("FileId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Length")
                         .HasColumnType("integer");
 
                     b.Property<string>("MusicText")
@@ -315,9 +311,6 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("FileId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Length")
                         .HasColumnType("integer");
 
                     b.Property<int?>("SubtitleId")

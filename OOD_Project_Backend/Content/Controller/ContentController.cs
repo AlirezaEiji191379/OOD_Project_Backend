@@ -19,20 +19,11 @@ public class ContentController : ControllerBase
     }
 
     [HttpPost]
-    [Route("Add/{channelId}")]
+    [Route("Add")]
     [Authorize]
-    public async Task<Response> AddContent(int channelId,[FromForm] IFormFile file,
-        [FromForm] string Title,[FromForm] string Description,[FromForm] ContentType Type)
+    public async Task<Response> AddContent([FromForm] ContentCreationRequest creationRequest )
     {
-        return await _contentService.Add(new ContentCreationRequest()
-        {
-            Type = Type,
-            Description = Description,
-            Title = Title,
-            File = file,
-            Value = "",
-            ChannelId = channelId
-        });
+        return await _contentService.Add(creationRequest);
     }
 
     [HttpGet]
