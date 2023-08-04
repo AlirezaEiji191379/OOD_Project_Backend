@@ -25,10 +25,6 @@ public class MusicCreationStrategy : IContentCreationStrategy
             ArtistName = "",
             MusicText = ""
         };
-        using (var stream = new FileStream(fileEntity.FilePath, FileMode.Create))
-        {
-            await request.File!.CopyToAsync(stream);
-        }
         await _musicRepository.Create(musicEntity);
     }
 }

@@ -22,10 +22,6 @@ public class VideoCreationStrategy : IContentCreationStrategy
             Content = content,
             File = fileEntity,
         };
-        using (var stream = new FileStream(fileEntity.FilePath, FileMode.Create))
-        {
-            await request.File!.CopyToAsync(stream);
-        }
         await _videoEntityRepository.Create(videoEntity);
     }
 }

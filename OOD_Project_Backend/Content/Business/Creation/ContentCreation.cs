@@ -33,9 +33,7 @@ public class ContentCreation : IContentCreation
 
     public async Task<int> Generate(ContentCreationRequest request)
     {
-        var filePath = request.Type != ContentType.Text
-            ? _configuration.GetValue<string>("Contents") + $"{Guid.NewGuid().ToString().Replace("-","")}.{Path.GetExtension(request.File!.FileName)}"
-            : string.Empty;
+        string filePath = string.Empty;
         await using var transaction = await _contentRepository.BeginTransactionAsync();
         try
         {
@@ -55,6 +53,12 @@ public class ContentCreation : IContentCreation
                 ContentType = request.Type,
                 FileName = request.Type != ContentType.Text ? request.File!.FileName : string.Empty
             };
+            await _contentRepository.Create(content);
+            await _contentMetaDataRepository.Create(contentMetadata);
+            await _contentRepository.SaveChangesAsync();
+            filePath = request.Type != ContentType.Text
+                ? _configuration.GetValue<string>("Contents") + $"{content.Id}{Path.GetExtension(request.File!.FileName)}"
+                : string.Empty;
             var fileEntity = new FileEntity()
             {
                 Format = request.Type != ContentType.Text ? Path.GetExtension(request.File.FileName) : string.Empty,
@@ -62,17 +66,19 @@ public class ContentCreation : IContentCreation
                 Size = request.Type != ContentType.Text ? request.File.Length : Encoding.Unicode.GetBytes(request.Value).Length,
                 FilePath = filePath
             };
-            await _contentRepository.Create(content);
-            await _contentMetaDataRepository.Create(contentMetadata);
-            await _fileEntityRepository.Create(fileEntity);
             await contentCreationStrategy.Generate(request,fileEntity,content);
+            await _fileEntityRepository.Create(fileEntity);
             await _contentRepository.SaveChangesAsync();
+            using (var stream = new FileStream(fileEntity.FilePath, FileMode.Create))
+            {
+                await request.File!.CopyToAsync(stream);
+            }
             await transaction.CommitAsync();
             return content.Id;
         }
         catch (Exception e)
         {
-            if (File.Exists(filePath))
+            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
