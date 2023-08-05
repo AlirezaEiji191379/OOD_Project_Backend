@@ -37,7 +37,8 @@ public class DefaultProfileService : IProfileService
                 new BiographyRule(profileRequest.Biography),
                 new NationalCodeRule(profileRequest.NationalCode),
                 new EmailRule(profileRequest.Email),
-                new PhoneNumberRule(profileRequest.PhoneNumber)
+                new PhoneNumberRule(profileRequest.PhoneNumber),
+                new CardNumberRules(profileRequest.CardNumber)
             };
             if (!_validator.Validate(rules.ToArray()))
             {
@@ -53,6 +54,7 @@ public class DefaultProfileService : IProfileService
             userEntity.Email = profileRequest.Email;
             userEntity.PhoneNumber = profileRequest.PhoneNumber;
             userEntity.Name = profileRequest.Name;
+            userEntity.CardNumber = profileRequest.CardNumber;
             _userRepository.Update(userEntity);
             await _userRepository.SaveChangesAsync();
             return new Response(200, new { Message = "Profile is Updated!" });
