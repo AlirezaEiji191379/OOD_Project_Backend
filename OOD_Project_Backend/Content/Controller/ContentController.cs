@@ -27,9 +27,9 @@ public class ContentController : ControllerBase
     }
 
     [HttpGet]
-    [Route("GetAll/{channelId}")]
+    [Route("GetContentsMetaData/{channelId}")]
     [Authorize]
-    public async Task<Response> GetContnetsOfChannels(int channelId)
+    public async Task<Response> GetChannelContentMetadata(int channelId)
     {
         return await _contentService.GetChannelContentsMetadata(channelId);
     }

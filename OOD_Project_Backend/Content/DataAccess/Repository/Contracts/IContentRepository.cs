@@ -6,5 +6,4 @@ namespace OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 
 public interface IContentRepository : IBaseRepository<ContentEntity>
 {
-    Task<List<ContentDto>> GetChannelContents(int channelId);
 }
