@@ -1,4 +1,5 @@
-﻿using OOD_Project_Backend.Finance.Business.Contracts;
+﻿using OOD_Project_Backend.Finanace.DataAccess.Entities;
+using OOD_Project_Backend.Finance.Business.Contracts;
 
 namespace OOD_Project_Backend.Finance.Business.Services;
 
@@ -24,6 +25,17 @@ public class BankService : IBankService
             Success = true,
             DateTime = DateTime.Now.ToUniversalTime()
         };
+    }
+
+    public async Task<bool> PayToUser(RefundEntity refundEntity)
+    {
+        await Task.Delay(4000);
+        var mockRandom = new Random().Next(0, 100);
+        if (mockRandom < 5)
+        {
+            return false;
+        }
+        return true;
     }
 
     public string GetGhasedakBankAccount()
