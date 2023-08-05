@@ -19,11 +19,11 @@ public class FinancialController : ControllerBase
 
 
     [HttpPut]
-    [Route("Withdraw/{amount}")]
+    [Route("Withdraw")]
     [Authorize]
-    public async Task<Response> Withdraw(int amount)
+    public async Task<Response> Withdraw(WithdrawWalletRequest withdrawWalletRequest)
     {
-        return await _walletService.Withdraw(amount);
+        return await _walletService.Withdraw(withdrawWalletRequest);
     }
 
     [HttpPut]

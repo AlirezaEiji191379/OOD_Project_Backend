@@ -14,12 +14,12 @@ public class DefaultWalletService : IWalletService
 {
     private readonly ITransactionService _transactionService;
     private readonly IWalletRepository _walletRepository;
-    private readonly IBaseRepository<RefundEntity> _refundRepository;
+    private readonly IRefundRepository _refundRepository;
     private readonly IBankService _bankService;
     private readonly IUserFacade _userFacade;
 
     public DefaultWalletService(ITransactionService transactionService, IWalletRepository walletRepository,
-        IBaseRepository<RefundEntity> refundRepository, IUserFacade userFacade, IBankService bankService)
+        IRefundRepository refundRepository, IUserFacade userFacade, IBankService bankService)
     {
         _transactionService = transactionService;
         _walletRepository = walletRepository;
@@ -44,9 +44,14 @@ public class DefaultWalletService : IWalletService
     
     public async Task<Response> ChargeWallet(ChargeWalletRequest request)
     {
-        await using var transaction = await _walletRepository.BeginTransactionAsync();
+        
         var userId = _userFacade.GetCurrentUserId();
         var userContract = await _userFacade.GetCurrentUser();
+        if (string.IsNullOrEmpty(userContract.CardNumber))
+        {
+            return new Response(400,new {Message = "you must first add card number!"});
+        }
+        await using var transaction = await _walletRepository.BeginTransactionAsync();
         try
         {
             var cardNumber = userContract.CardNumber;
@@ -75,8 +80,9 @@ public class DefaultWalletService : IWalletService
         }
     }
     
-    public async Task<Response> Withdraw(int amount)
+    public async Task<Response> Withdraw(WithdrawWalletRequest withdrawWalletRequest)
     {
+        var amount = withdrawWalletRequest.Amount;
         await using var transaction = await _walletRepository.BeginTransactionAsync();
         var userContract = await _userFacade.GetCurrentUser();
         try

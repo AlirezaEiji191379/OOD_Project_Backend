@@ -10,7 +10,7 @@ public class RefundEntity
     public TransactionEntity Transaction { get; set; }
     public int UserId{ get; set; }
     public UserEntity User { get; set; }
-    public int Amount{ get; set; }
+    public double Amount{ get; set; }
     public DateTime CreatedAt{ get; set; }
     public RefundStatus Status { get; set; }
 }
