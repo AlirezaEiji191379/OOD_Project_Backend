@@ -11,11 +11,11 @@ namespace OOD_Project_Backend.Content.Business.Models;
 public class MusicModel : IContentModel
 {
     private readonly IMusicRepository _musicRepository;
-    
-    
-    public MusicModel(IMusicRepository musicRepository)
+    private readonly IFileEntityRepository _fileEntityRepository;
+    public MusicModel(IMusicRepository musicRepository, IFileEntityRepository fileEntityRepository)
     {
         _musicRepository = musicRepository;
+        _fileEntityRepository = fileEntityRepository;
     }
 
     public ContentType ContentType => ContentType.Music;
@@ -48,8 +48,11 @@ public class MusicModel : IContentModel
         return new FileContentResult(await File.ReadAllBytesAsync(filePath),contentType);
     }
 
-    public Task Delete(int contentId)
+    public async Task Delete(int contentId)
     {
-        throw new NotImplementedException();
+        var musicEntity = await _musicRepository.FindById(contentId);
+        _fileEntityRepository.Delete(musicEntity.File);
+        File.Delete(musicEntity.File.FilePath);
+        await _fileEntityRepository.SaveChangesAsync();
     }
 }

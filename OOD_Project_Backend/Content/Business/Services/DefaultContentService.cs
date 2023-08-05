@@ -98,6 +98,7 @@ public class DefaultContentService : IContentService
                 return new Response(403, new { Message = "only admins and owners can remove contents of a channel" });
             }
             var contentModel = _contentModelProvider.GetContentModel(contentMetaDataEntity.ContentType);
+            await contentModel.Delete(contentId);
             return new Response(200, new { Message = "deleted successfully!" });
         }
         catch (Exception e)

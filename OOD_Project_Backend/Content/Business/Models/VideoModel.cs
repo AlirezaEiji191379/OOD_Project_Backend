@@ -10,10 +10,11 @@ namespace OOD_Project_Backend.Content.Business.Models;
 public class VideoModel : IContentModel
 {
     private readonly IVideoEntityRepository _videoEntityRepository;
-
-    public VideoModel(IVideoEntityRepository videoEntityRepository)
+    private readonly IFileEntityRepository _fileEntityRepository;
+    public VideoModel(IVideoEntityRepository videoEntityRepository, IFileEntityRepository fileEntityRepository)
     {
         _videoEntityRepository = videoEntityRepository;
+        _fileEntityRepository = fileEntityRepository;
     }
 
     public ContentType ContentType => ContentType.Video;
@@ -52,8 +53,12 @@ public class VideoModel : IContentModel
         return new FileContentResult(await File.ReadAllBytesAsync(filePath),contentType);
     }
 
-    public Task Delete(int contentId)
+    public async Task Delete(int contentId)
     {
-        throw new NotImplementedException();
+        var videoEntity = await _videoEntityRepository.FindById(contentId);
+        var fileEntity = videoEntity.File;
+        File.Delete(videoEntity.File.FilePath);
+        _fileEntityRepository.Delete(fileEntity);
+        await _fileEntityRepository.SaveChangesAsync();
     }
 }

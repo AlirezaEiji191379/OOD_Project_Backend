@@ -5,4 +5,5 @@ namespace OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 
 public interface ITextEntityRepository : IBaseRepository<TextEntity>
 {
+    Task<TextEntity> FindByContentId(int contentId);
 }
