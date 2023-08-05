@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NAudio.Wave;
 using OOD_Project_Backend.Content.Business.Models.Contract;
+using OOD_Project_Backend.Content.DataAccess.Entities;
 using OOD_Project_Backend.Content.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 
@@ -11,10 +12,12 @@ public class VideoModel : IContentModel
 {
     private readonly IVideoEntityRepository _videoEntityRepository;
     private readonly IFileEntityRepository _fileEntityRepository;
-    public VideoModel(IVideoEntityRepository videoEntityRepository, IFileEntityRepository fileEntityRepository)
+    private readonly IContentRepository _contentRepository;
+    public VideoModel(IVideoEntityRepository videoEntityRepository, IFileEntityRepository fileEntityRepository, IContentRepository contentRepository)
     {
         _videoEntityRepository = videoEntityRepository;
         _fileEntityRepository = fileEntityRepository;
+        _contentRepository = contentRepository;
     }
 
     public ContentType ContentType => ContentType.Video;
@@ -58,6 +61,10 @@ public class VideoModel : IContentModel
         var videoEntity = await _videoEntityRepository.FindById(contentId);
         var fileEntity = videoEntity.File;
         File.Delete(videoEntity.File.FilePath);
+        _contentRepository.Delete(new ContentEntity()
+        {
+            Id = contentId
+        });
         _fileEntityRepository.Delete(fileEntity);
         await _fileEntityRepository.SaveChangesAsync();
     }

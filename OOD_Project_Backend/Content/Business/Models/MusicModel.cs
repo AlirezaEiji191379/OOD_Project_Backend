@@ -3,6 +3,7 @@ using NAudio.Utils;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using OOD_Project_Backend.Content.Business.Models.Contract;
+using OOD_Project_Backend.Content.DataAccess.Entities;
 using OOD_Project_Backend.Content.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 
@@ -12,10 +13,12 @@ public class MusicModel : IContentModel
 {
     private readonly IMusicRepository _musicRepository;
     private readonly IFileEntityRepository _fileEntityRepository;
-    public MusicModel(IMusicRepository musicRepository, IFileEntityRepository fileEntityRepository)
+    private readonly IContentRepository _contentRepository;
+    public MusicModel(IMusicRepository musicRepository, IFileEntityRepository fileEntityRepository, IContentRepository contentRepository)
     {
         _musicRepository = musicRepository;
         _fileEntityRepository = fileEntityRepository;
+        _contentRepository = contentRepository;
     }
 
     public ContentType ContentType => ContentType.Music;
@@ -52,6 +55,10 @@ public class MusicModel : IContentModel
     {
         var musicEntity = await _musicRepository.FindById(contentId);
         _fileEntityRepository.Delete(musicEntity.File);
+        _contentRepository.Delete(new ContentEntity()
+        {
+            Id = contentId
+        });
         File.Delete(musicEntity.File.FilePath);
         await _fileEntityRepository.SaveChangesAsync();
     }
