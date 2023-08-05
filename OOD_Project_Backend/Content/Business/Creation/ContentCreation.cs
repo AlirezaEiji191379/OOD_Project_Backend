@@ -13,27 +13,20 @@ public class ContentCreation : IContentCreation
 {
     private readonly IContentMetaDataRepository _contentMetaDataRepository;
     private readonly IContentRepository _contentRepository;
-    private readonly IFileEntityRepository _fileEntityRepository;
     private readonly IContentCreationStrategyProvider _contentCreationStrategyProvider;
-    private readonly IConfiguration _configuration;
 
     public ContentCreation(IContentMetaDataRepository contentMetaDataRepository,
         IContentRepository contentRepository,
-        IContentCreationStrategyProvider contentCreationStrategyProvider,
-        IConfiguration configuration,
-        IFileEntityRepository fileEntityRepository)
+        IContentCreationStrategyProvider contentCreationStrategyProvider)
     {
         _contentMetaDataRepository = contentMetaDataRepository;
         _contentRepository = contentRepository;
         _contentCreationStrategyProvider = contentCreationStrategyProvider;
-        _configuration = configuration;
-        _fileEntityRepository = fileEntityRepository;
     }
 
 
     public async Task<int> Generate(ContentCreationRequest request)
     {
-        string filePath = string.Empty;
         await using var transaction = await _contentRepository.BeginTransactionAsync();
         try
         {
@@ -56,32 +49,13 @@ public class ContentCreation : IContentCreation
             await _contentRepository.Create(content);
             await _contentMetaDataRepository.Create(contentMetadata);
             await _contentRepository.SaveChangesAsync();
-            filePath = request.Type != ContentType.Text
-                ? _configuration.GetValue<string>("Contents") + $"{content.Id}{Path.GetExtension(request.File!.FileName)}"
-                : string.Empty;
-            var fileEntity = new FileEntity()
-            {
-                Format = request.Type != ContentType.Text ? Path.GetExtension(request.File.FileName) : string.Empty,
-                Quality = FileQuality._480,
-                Size = request.Type != ContentType.Text ? request.File.Length : Encoding.Unicode.GetBytes(request.Value).Length,
-                FilePath = filePath
-            };
-            await contentCreationStrategy.Generate(request,fileEntity,content);
-            await _fileEntityRepository.Create(fileEntity);
+            await contentCreationStrategy.Generate(request,content);
             await _contentRepository.SaveChangesAsync();
-            using (var stream = new FileStream(fileEntity.FilePath, FileMode.Create))
-            {
-                await request.File!.CopyToAsync(stream);
-            }
             await transaction.CommitAsync();
             return content.Id;
         }
         catch (Exception e)
         {
-            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
             await transaction.RollbackAsync();
             throw;
         }

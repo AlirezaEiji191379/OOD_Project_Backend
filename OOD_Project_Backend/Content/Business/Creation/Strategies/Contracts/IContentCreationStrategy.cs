@@ -7,5 +7,5 @@ namespace OOD_Project_Backend.Content.Business.Creation.Strategies.Contracts;
 public interface IContentCreationStrategy
 {
     ContentType ContentType { get; }
-    Task Generate(ContentCreationRequest contentCreationRequest,FileEntity fileEntity,ContentEntity content);
+    Task Generate(ContentCreationRequest contentCreationRequest,ContentEntity content);
 }

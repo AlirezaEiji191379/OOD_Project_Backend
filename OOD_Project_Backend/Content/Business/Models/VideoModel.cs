@@ -26,26 +26,13 @@ public class VideoModel : IContentModel
         var videoEntity = await _videoEntityRepository.FindById(contentId);
         var filePath = videoEntity.File.FilePath;
         var contentType = "video/mp4";
-        string ffmpegCommand = $"-ss 00:00:30 -t 00:00:10 -i {filePath} -c:v copy -c:a copy -f mp4 -";
-        var processInfo = new ProcessStartInfo
-        {
-            FileName = "ffmpeg",
-            Arguments = ffmpegCommand,
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        using (var process = new Process { StartInfo = processInfo })
-        {
-            process.Start();
-            using (var memoryStream = new MemoryStream())
-            {
-                process.StandardOutput.BaseStream.CopyTo(memoryStream);
-                await process.WaitForExitAsync();
-                return new FileContentResult(memoryStream.ToArray(), contentType);
-            }
-        }
+        var appendString = "_preview";
+        var fileName = Path.GetFileNameWithoutExtension(filePath);
+        var newFileName = fileName + appendString;
+        var fileDirectory = Path.GetDirectoryName(filePath);
+        var fileExtension = Path.GetExtension(filePath);
+        var previewFilePath = Path.Combine(fileDirectory, newFileName + fileExtension);
+        return new FileContentResult(await File.ReadAllBytesAsync(previewFilePath),contentType);
     }
 
     public async Task<FileResult> ShowNormal(int contentId)

@@ -19,9 +19,12 @@ public class TextModel : IContentModel
     }
 
     public ContentType ContentType => ContentType.Text;
-    public Task<FileResult> ShowPreview(int contentId)
+    public async Task<FileResult> ShowPreview(int contentId)
     {
-        throw new NotImplementedException();
+        var textEntity = await _textEntityRepository.FindByContentId(contentId);
+        byte[] byteArray = Encoding.UTF8.GetBytes(textEntity.Value.Substring(0,4));
+        string contentType = "text/plain";
+        return new FileContentResult(byteArray,contentType);
     }
 
     public async Task<FileResult> ShowNormal(int contentId)

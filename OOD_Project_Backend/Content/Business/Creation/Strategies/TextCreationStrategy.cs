@@ -16,7 +16,7 @@ public class TextCreationStrategy : IContentCreationStrategy
         _textEntityRepository = textEntityRepository;
     }
 
-    public async Task Generate(ContentCreationRequest request,FileEntity fileEntity,ContentEntity content)
+    public async Task Generate(ContentCreationRequest request,ContentEntity content)
     {
         var textEntity = new TextEntity()
         {

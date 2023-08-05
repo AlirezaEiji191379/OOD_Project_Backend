@@ -82,7 +82,7 @@ public class DefaultContentService : IContentService
         }
         catch (Exception e)
         {
-            return null;
+            throw;
         }
     }
 
