@@ -9,6 +9,8 @@
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
       <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
       <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
+      <PackageReference Include="NAudio" Version="2.1.0" />
+      <PackageReference Include="FFmpeg.AutoGen" Version="6.0.0.2" />
   </ItemGroup>
 
 

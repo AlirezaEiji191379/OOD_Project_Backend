@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using OOD_Project_Backend.Content.Business.Abstractions;
-using OOD_Project_Backend.Content.Business.Requests;
+﻿using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using OOD_Project_Backend.Content.Business.Contexts;
+using OOD_Project_Backend.Content.Business.Contracts;
 using OOD_Project_Backend.Content.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Core.Common.Authentication;
 using OOD_Project_Backend.Core.Context;
@@ -11,36 +12,43 @@ namespace OOD_Project_Backend.Content.Controller;
 [Route("Content")]
 public class ContentController : ControllerBase
 {
-    private readonly ContentService _contentService;
+    private readonly IContentService _contentService;
 
-    public ContentController(ContentService contentService)
+    public ContentController(IContentService contentService)
     {
         _contentService = contentService;
     }
 
     [HttpPost]
-    [Route("Add/{channelId}")]
+    [Route("Add")]
     [Authorize]
-    public async Task<Response> AddContent(int channelId,[FromForm] IFormFile file,
-        [FromForm] string Title,[FromForm] string Description,[FromForm] ContentType Type)
+    public async Task<Response> AddContent([FromForm] ContentCreationRequest creationRequest )
     {
-        return await _contentService.Add(new ContentCreationRequest()
-        {
-            Type = Type,
-            Description = Description,
-            Title = Title,
-            File = file,
-            Value = "",
-            ChannelId = channelId
-        });
+        return await _contentService.Add(creationRequest);
     }
 
     [HttpGet]
-    [Route("GetAll/{channelId}")]
+    [Route("GetContentsMetaData/{channelId}")]
     [Authorize]
-    public async Task<Response> GetContnetsOfChannels(int channelId)
+    public async Task<Response> GetChannelContentMetadata(int channelId)
     {
         return await _contentService.GetChannelContentsMetadata(channelId);
     }
 
+    [HttpGet]
+    [Route("ShowContent/{contentId}")]
+    [Authorize]
+    public async Task<FileResult> ShowContent(int contentId)
+    {
+        return await _contentService.Show(contentId);
+    }
+
+    [HttpDelete]
+    [Route("RemoveContent/{contentId}")]
+    [Authorize]
+    public async Task<Response> DeleteContent(int contentId)
+    {
+        return await _contentService.Delete(contentId);
+    }
+    
 }

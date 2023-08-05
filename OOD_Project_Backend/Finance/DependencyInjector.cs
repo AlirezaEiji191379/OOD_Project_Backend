@@ -13,11 +13,12 @@ public class DependencyInjector : IDependencyInstaller
 {
     public void Install(IServiceCollection services)
     {
-        services.AddScoped<IBaseRepository<RefundEntity>, RefundRepository>();
-        services.AddScoped<IBaseRepository<TransactionEntity>, TransactionRepository>();
+        services.AddScoped<IRefundRepository, RefundRepository>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IWalletRepository, WalletRepository>();
         services.AddScoped<ITransactionService,DefaultTransactionService>();
         services.AddScoped<IWalletService,DefaultWalletService>();
         services.AddScoped<IFinanceFacade, FinanceFacade>();
+        services.AddScoped<IBankService, BankService>();
     }
 }

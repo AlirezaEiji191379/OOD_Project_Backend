@@ -14,20 +14,4 @@ public class ContentRepository : BaseRepository<ContentEntity>,IContentRepositor
     {
         _appDbContext = dbContext;
     }
-
-    public async Task<List<ContentDto>> GetChannelContents(int channelId)
-    {
-        return null;
-        /*var query = await _appDbContext.ContentMetaDatas
-            .Where(x => x.ChannelId == channelId)
-            .Include(x => x.ContentMetaData)
-            .ToListAsync();
-        return query.Select(x => new ContentDto()
-        {
-            Type = x.ContentMetaData.ContentType,
-            CreatedAt = x.CreatedAt,
-            ContentId = x.Id,
-            FileName = x.ContentMetaData.FileName
-        }).ToList();*/
-    }
 }

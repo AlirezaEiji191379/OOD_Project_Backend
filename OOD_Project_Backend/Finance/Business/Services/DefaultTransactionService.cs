@@ -2,19 +2,20 @@
 using OOD_Project_Backend.Finanace.DataAccess.Entities;
 using OOD_Project_Backend.Finanace.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Finance.Business.Contracts;
+using OOD_Project_Backend.Finance.DataAccess.Repository.Contracts;
 
 namespace OOD_Project_Backend.Finance.Business.Services;
 
 public class DefaultTransactionService : ITransactionService
 {
-    private readonly IBaseRepository<TransactionEntity> _trasactionBaseRepository;
+    private readonly ITransactionRepository _trasactionBaseRepository;
 
-    public DefaultTransactionService(IBaseRepository<TransactionEntity> trasactionBaseRepository)
+    public DefaultTransactionService(ITransactionRepository trasactionBaseRepository)
     {
         _trasactionBaseRepository = trasactionBaseRepository;
     }
 
-    public async Task<TransactionEntity> CreateTransaction(int amount, int userId, TransactionType type, string src, string dest)
+    public async Task<TransactionEntity> CreateTransaction(double amount, int userId, TransactionType type, string src, string dest,TransactionStatus status = TransactionStatus.WAITING)
     {
         var transaction = new TransactionEntity
         {
@@ -23,11 +24,10 @@ public class DefaultTransactionService : ITransactionService
             UserId = userId,
             Destination = dest,
             Source = src,
-            Status = TransactionStatus.WAITING,
+            Status = status,
             CreatedAt = DateTime.Now.ToUniversalTime()
         };
         await _trasactionBaseRepository.Create(transaction);
-        await _trasactionBaseRepository.SaveChangesAsync();
         return transaction;
     }
     

@@ -14,8 +14,9 @@ namespace OOD_Project_Backend.Channel
             _channelMembershipService = channelMembershipService;
         }
         
-        public Task<bool> CheckAccessToContent(int userId, int channelId, int contentId) {
-            return _subscriptionService.CheckContentToShowUser(userId, channelId, contentId);
+        public async  Task<bool> CheckAccessToContent(int userId, int channelId, int contentId) {
+            return await  IsChannelAdminOrOwner(userId,channelId)  || 
+            await _subscriptionService.CheckContentToShowUser(userId, channelId, contentId);
         }
 
         public async Task<bool> IsChannelAdminOrOwner(int userId, int channelId) {

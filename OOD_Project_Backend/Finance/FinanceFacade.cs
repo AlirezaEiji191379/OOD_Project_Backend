@@ -20,12 +20,12 @@ public class FinanceFacade : IFinanceFacade
         _userFacade = userFacade;
     }
 
-    public async Task CreateWallet(UserEntity user, int initBalance = 100)
+    public async Task CreateWallet(int userId)
     {
         var wallet = new WalletEntity()
         {
-            Balance = initBalance,
-            User = user
+            Balance = 0,
+            UserId = userId
         };
         await _walletRepository.Create(wallet);
     }

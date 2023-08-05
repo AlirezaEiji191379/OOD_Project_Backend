@@ -6,7 +6,7 @@ namespace OOD_Project_Backend.Finanace.DataAccess.Entities;
 public class TransactionEntity
 {
     public int Id{ get; set; }
-    public int Amount{ get; set; }
+    public double Amount{ get; set; }
     public int UserId{ get; set; }
     public UserEntity User { get; set; }
     public TransactionType Type{ get; set; }

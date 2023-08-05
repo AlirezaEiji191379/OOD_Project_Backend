@@ -1,76 +1,55 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OOD_Project_Backend.Content.Business.Abstractions;
-using OOD_Project_Backend.Content.Business.Requests;
-using OOD_Project_Backend.Content.DataAccess.Entities;
-using OOD_Project_Backend.Content.DataAccess.Entities.Enums;
-using OOD_Project_Backend.Content.DataAccess.Repository;
+﻿using Microsoft.AspNetCore.Mvc;
+using OOD_Project_Backend.Channel.Business.Contracts;
+using OOD_Project_Backend.Content.Business.Contexts;
+using OOD_Project_Backend.Content.Business.Contracts;
+using OOD_Project_Backend.Content.Business.Creation;
+using OOD_Project_Backend.Content.Business.Models.Contract;
 using OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 using OOD_Project_Backend.Core.Context;
-using OOD_Project_Backend.Core.DataAccess.Contracts;
+using OOD_Project_Backend.User.Business.Contracts;
 
 namespace OOD_Project_Backend.Content.Business.Services;
 
-public class DefaultContentService : ContentService
+public class DefaultContentService : IContentService
 {
     private readonly IContentRepository _contentRepository;
     private readonly IContentMetaDataRepository _contentMetadataRepository;
-    public DefaultContentService(IContentRepository contentRepository, IContentMetaDataRepository contentMetadataRepository)
+    private readonly IContentCreation _contentCreation;
+    private readonly IUserFacade _userFacade;
+    private readonly IChannelFacade _channelFacade;
+    private readonly IContentModelProvider _contentModelProvider;
+
+    public DefaultContentService(IContentRepository contentRepository,
+        IContentMetaDataRepository contentMetadataRepository,
+        IContentCreation contentCreation,
+        IUserFacade userFacade,
+        IChannelFacade channelFacade,
+        IContentModelProvider contentModelProvider)
     {
         _contentRepository = contentRepository;
         _contentMetadataRepository = contentMetadataRepository;
+        _contentCreation = contentCreation;
+        _userFacade = userFacade;
+        _channelFacade = channelFacade;
+        _contentModelProvider = contentModelProvider;
     }
 
     public async Task<Response> Add(ContentCreationRequest request)
     {
         try
         {
-            var content = new ContentEntity()
+            var userId = _userFacade.GetCurrentUserId();
+            if (await _channelFacade.IsChannelAdminOrOwner(userId, request.ChannelId) == false)
             {
-                Description = request.Description,
-                Title = request.Title,
-                CreatedAt = DateTime.Now.ToUniversalTime(),
-                //ChannelId = request.ChannelId
-            };
-            var contentMetaData = new ContentMetaDataEntity()
-            {
-                ContentType = request.Type,
-                Premium = false,
-                Price = 0,
-                Content = content,
-                FileName = request.File.FileName
-            };
-            var fileEntity = new FileEntity()
-            {
-                Quality = FileQuality._128,
-                FilePath = "Resources/" + request.File.FileName,
-                Size = request.File.Length,
-                Format = ".exe"
-            };
-            //content.ContentMetaData = contentMetaData;
-            await _contentRepository.Create(content);
-            await _contentMetadataRepository.Create(contentMetaData);
-            /*if (request.Type == ContentType.Music)
-            {
-                var musicEntity = new MusicEntity()
-                {
-                    Content = content,
-                    File = fileEntity,
-                    Length = 100,
-                    ArtistName = "as",
-                    MusicText = "asdfasdfasdf"
-                };
-            }*/
-            using (var stream = new FileStream("./Resources/" +request.File.FileName, FileMode.Create))
-            {
-                await request.File.CopyToAsync(stream);
+                return new Response(403, new { Message = "only admin or owner can add content to this channel!" });
             }
-            
-            await _contentMetadataRepository.SaveChangesAsync();
-            return new Response(200,new {Message = "the content is added"});
+
+            var contentId = await _contentCreation.Generate(request);
+            return new Response(201, new { Message = contentId });
         }
         catch (Exception e)
         {
-            return new Response(400, new { Message = "the file can not created at time" });
+            return new Response(400, new { Message = "add content failed!" });
         }
     }
 
@@ -78,12 +57,54 @@ public class DefaultContentService : ContentService
     {
         try
         {
-            var contentDtos = await _contentRepository.GetChannelContents(channelId);
-            return new Response(200,new {Message = contentDtos});
+            var contentDtos = await _contentMetadataRepository.FindByChannelIdIncludeContent(channelId);
+            return new Response(200, new { Message = contentDtos });
         }
         catch (Exception e)
         {
-            return new Response(400,"could not returve");
+            return new Response(400, "could not returve");
         }
     }
+
+    public async Task<FileResult> Show(int contentId)
+    {
+        try
+        {
+            var contentMetaDataEntity = await _contentMetadataRepository.FindByChannelId(contentId);
+            var userId = _userFacade.GetCurrentUserId();
+            var hasAccess = !contentMetaDataEntity.Premium ||
+                            await _channelFacade.CheckAccessToContent(userId, contentMetaDataEntity.ChannelId,
+                                contentId);
+            var contentModel = _contentModelProvider.GetContentModel(contentMetaDataEntity.ContentType);
+            return hasAccess
+                ? await contentModel.ShowNormal(contentId)
+                : await contentModel.ShowPreview(contentId);
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+
+    public async Task<Response> Delete(int contentId)
+    {
+        try
+        {
+            var contentMetaDataEntity = await _contentMetadataRepository.FindByChannelId(contentId);
+            var userId = _userFacade.GetCurrentUserId();
+            var isAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(userId,contentMetaDataEntity.ChannelId);
+            if (!isAdminOrOwner)
+            {
+                return new Response(403, new { Message = "only admins and owners can remove contents of a channel" });
+            }
+            var contentModel = _contentModelProvider.GetContentModel(contentMetaDataEntity.ContentType);
+            await contentModel.Delete(contentId);
+            return new Response(200, new { Message = "deleted successfully!" });
+        }
+        catch (Exception e)
+        {
+            return new Response(403,new {Message = "the content is not found or you are not admin or owner of channel!"});
+        }
+    }
+    
 }

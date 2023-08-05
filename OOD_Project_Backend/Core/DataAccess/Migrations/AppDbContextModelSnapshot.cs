@@ -172,7 +172,6 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
@@ -191,6 +190,9 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.Property<int>("ContentId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("ChannelId")
                         .HasColumnType("integer");
 
@@ -204,10 +206,12 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.Property<bool>("Premium")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("integer");
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
 
                     b.HasKey("ContentId");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("ChannelId");
 
@@ -244,30 +248,61 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.MusicEntity", b =>
                 {
+                    b.Property<int>("ContentId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ArtistName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ContentId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("FileId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Length")
                         .HasColumnType("integer");
 
                     b.Property<string>("MusicText")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasIndex("ContentId")
-                        .IsUnique();
+                    b.HasKey("ContentId");
 
-                    b.HasIndex("FileId")
-                        .IsUnique();
+                    b.HasAlternateKey("FileId");
 
                     b.ToTable("Musics");
+                });
+
+            modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.SubtitleEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FileId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("FileId");
+
+                    b.ToTable("SubtitleEntity");
+                });
+
+            modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.TextEntity", b =>
+                {
+                    b.Property<int>("ContentId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ContentId");
+
+                    b.ToTable("Texts");
                 });
 
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.VideoEntity", b =>
@@ -278,14 +313,14 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.Property<int>("FileId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Length")
+                    b.Property<int?>("SubtitleId")
                         .HasColumnType("integer");
 
-                    b.HasIndex("ContentId")
-                        .IsUnique();
+                    b.HasKey("ContentId");
 
-                    b.HasIndex("FileId")
-                        .IsUnique();
+                    b.HasAlternateKey("FileId");
+
+                    b.HasIndex("SubtitleId");
 
                     b.ToTable("Videos");
                 });
@@ -298,8 +333,8 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -331,8 +366,8 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("BankToken")
                         .IsRequired()
@@ -367,22 +402,13 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
             modelBuilder.Entity("OOD_Project_Backend.Finanace.DataAccess.Entities.WalletEntity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<double>("Balance")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasKey("UserId");
 
                     b.ToTable("Wallets");
                 });
@@ -396,6 +422,9 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Biography")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CardNumber")
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -519,6 +548,10 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
 
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.ContentMetaDataEntity", b =>
                 {
+                    b.HasOne("OOD_Project_Backend.Content.DataAccess.Entities.CategoryEntity", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
                     b.HasOne("OOD_Project_Backend.Channel.DataAccess.Entities.ChannelEntity", "Channel")
                         .WithMany()
                         .HasForeignKey("ChannelId")
@@ -530,6 +563,8 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                         .HasForeignKey("OOD_Project_Backend.Content.DataAccess.Entities.ContentMetaDataEntity", "ContentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("Channel");
 
@@ -555,6 +590,28 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.Navigation("File");
                 });
 
+            modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.SubtitleEntity", b =>
+                {
+                    b.HasOne("OOD_Project_Backend.Content.DataAccess.Entities.FileEntity", "File")
+                        .WithOne()
+                        .HasForeignKey("OOD_Project_Backend.Content.DataAccess.Entities.SubtitleEntity", "FileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("File");
+                });
+
+            modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.TextEntity", b =>
+                {
+                    b.HasOne("OOD_Project_Backend.Content.DataAccess.Entities.ContentEntity", "Content")
+                        .WithOne()
+                        .HasForeignKey("OOD_Project_Backend.Content.DataAccess.Entities.TextEntity", "ContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Content");
+                });
+
             modelBuilder.Entity("OOD_Project_Backend.Content.DataAccess.Entities.VideoEntity", b =>
                 {
                     b.HasOne("OOD_Project_Backend.Content.DataAccess.Entities.ContentEntity", "Content")
@@ -569,9 +626,15 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("OOD_Project_Backend.Content.DataAccess.Entities.SubtitleEntity", "Subtitle")
+                        .WithMany()
+                        .HasForeignKey("SubtitleId");
+
                     b.Navigation("Content");
 
                     b.Navigation("File");
+
+                    b.Navigation("Subtitle");
                 });
 
             modelBuilder.Entity("OOD_Project_Backend.Finanace.DataAccess.Entities.RefundEntity", b =>

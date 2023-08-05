@@ -22,6 +22,17 @@ namespace OOD_Project_Backend.User
             return _authenticationService.GetCurrentUserId(_httpContextAccessor.HttpContext);
         }
 
+        public async Task<UserProfile> GetCurrentUser()
+        {
+            var userId = GetCurrentUserId();
+            var user = await _userRepository.FindByUserId(userId,false);
+            return new UserProfile()
+            {
+                Id = user.Id,
+                CardNumber = user.CardNumber
+            };
+        }
+
         public async Task<UserContract> GetUser(int userId)
         {
             return await _userRepository.GetUserProfile(userId);
