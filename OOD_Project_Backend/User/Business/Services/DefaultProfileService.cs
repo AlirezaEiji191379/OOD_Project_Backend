@@ -106,6 +106,7 @@ public class DefaultProfileService : IProfileService
                 PhoneNumber = userEntity.PhoneNumber,
                 Name = userEntity.Name,
                 NationalCode = userEntity.NationalCode,
+                CardNumber = userEntity.CardNumber,
                 Id = userEntity.Id
             };
             return new Response(200, new

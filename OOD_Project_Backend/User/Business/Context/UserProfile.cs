@@ -8,4 +8,5 @@ public class UserProfile
     public string PhoneNumber { get; set; }
     public string Biography { get; set; }
     public string NationalCode { get; set; }
+    public string CardNumber { get; set; }
 }

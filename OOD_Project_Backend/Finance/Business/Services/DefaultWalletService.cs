@@ -3,6 +3,7 @@ using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.DataAccess.Contracts;
 using OOD_Project_Backend.Finanace.DataAccess.Entities;
 using OOD_Project_Backend.Finanace.DataAccess.Entities.Enums;
+using OOD_Project_Backend.Finance.Business.Context;
 using OOD_Project_Backend.Finance.Business.Contracts;
 using OOD_Project_Backend.Finance.DataAccess.Repository.Contracts;
 using OOD_Project_Backend.User.Business.Contracts;
@@ -14,42 +15,94 @@ public class DefaultWalletService : IWalletService
     private readonly ITransactionService _transactionService;
     private readonly IWalletRepository _walletRepository;
     private readonly IBaseRepository<RefundEntity> _refundRepository;
+    private readonly IBankService _bankService;
     private readonly IUserFacade _userFacade;
 
     public DefaultWalletService(ITransactionService transactionService, IWalletRepository walletRepository,
-        IBaseRepository<RefundEntity> refundRepository, IUserFacade userFacade)
+        IBaseRepository<RefundEntity> refundRepository, IUserFacade userFacade, IBankService bankService)
     {
         _transactionService = transactionService;
         _walletRepository = walletRepository;
         _refundRepository = refundRepository;
         _userFacade = userFacade;
+        _bankService = bankService;
     }
 
+    public async Task<Response> GetWallet()
+    {
+        try
+        {
+            var userId = _userFacade.GetCurrentUserId();
+            var wallet = await _walletRepository.FindByUserId(userId);
+            return new Response(200,new {Message = wallet.Balance});
+        }
+        catch (Exception e)
+        {
+            return new Response(400,new {Message = "failed to get wallet!"});
+        }
+    }
+    
+    public async Task<Response> ChargeWallet(ChargeWalletRequest request)
+    {
+        await using var transaction = await _walletRepository.BeginTransactionAsync();
+        var userId = _userFacade.GetCurrentUserId();
+        var userContract = await _userFacade.GetCurrentUser();
+        try
+        {
+            var cardNumber = userContract.CardNumber;
+            var contract = await _bankService.PayToGhasedakAccount(request.Amount);
+            if (!contract.Success)
+            {
+                throw new Exception("");
+            }
+            await IncreaseBalance(request.Amount,userId);
+            await _transactionService.CreateTransaction(request.Amount,
+                userId,
+                TransactionType.CHARGE,
+                userContract.CardNumber,
+                contract.Destination,
+                TransactionStatus.COMPLETED);
+            await _walletRepository.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return new Response(200,new {Messge = "Wallet charged successfully!"});
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync();
+            await _transactionService.CreateTransaction(request.Amount,userId,TransactionType.CHARGE,userContract.CardNumber,_bankService.GetGhasedakBankAccount(),TransactionStatus.FAILED);
+            await _walletRepository.SaveChangesAsync();
+            return new Response(400, new { Message = "failed to charge wallet" });
+        }
+    }
+    
     public async Task<Response> Withdraw(int amount)
     {
-        var userId = _userFacade.GetCurrentUserId();
-        var wallet = await _walletRepository.FindByCondition(x => x.UserId == userId, true)
-            .FirstOrDefaultAsync();
-        if (wallet.Balance >= amount)
+        await using var transaction = await _walletRepository.BeginTransactionAsync();
+        var userContract = await _userFacade.GetCurrentUser();
+        try
         {
-            wallet.Balance -= amount;
-            _walletRepository.Update(wallet);
-            var transaction =
-                await _transactionService.CreateTransaction(amount, userId, TransactionType.REFUND, "", "");
+            await DecreaseBalance(amount,userContract.Id);
+            var bankTransaction = await _transactionService.CreateTransaction(amount, userContract.Id, TransactionType.REFUND, _bankService.GetGhasedakBankAccount(), userContract.CardNumber,TransactionStatus.WAITING);
             await _refundRepository.Create(new RefundEntity()
             {
-                UserId = userId,
+                UserId = userContract.Id,
                 Amount = amount,
                 CreatedAt = DateTime.Now.ToUniversalTime(),
                 Status = RefundStatus.WAITING,
-                Transaction = transaction
+                Transaction = bankTransaction
             });
             await _refundRepository.SaveChangesAsync();
+            await transaction.CommitAsync();
             return new Response(200,
-                new { Message = "refund crated and after 2 day the money goes back to your banck accout" });
+                new { Message = "refund created and after 2 day the money goes back to your banck accout" });            
         }
-
-        return new Response(200, new { Message = "you can not witdraw more than your wallet" });
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync();
+            await _transactionService.CreateTransaction(amount,userContract.Id,TransactionType.CHARGE,userContract.CardNumber,_bankService.GetGhasedakBankAccount(),TransactionStatus.FAILED);
+            await _walletRepository.SaveChangesAsync();
+            return new Response(400, new { Message = "withdraw failed!"});
+        }
     }
 
     public async Task<bool> IncreaseBalance(double amount, int userId)
@@ -63,7 +116,7 @@ public class DefaultWalletService : IWalletService
         }
         catch (Exception e)
         {
-            return false;
+            throw new Exception();
         }
     }
 
@@ -83,7 +136,7 @@ public class DefaultWalletService : IWalletService
         }
         catch (Exception e)
         {
-            return false;
+            throw new Exception();
         }
     }
 }

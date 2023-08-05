@@ -14,7 +14,7 @@ public class DefaultTransactionService : ITransactionService
         _trasactionBaseRepository = trasactionBaseRepository;
     }
 
-    public async Task<TransactionEntity> CreateTransaction(int amount, int userId, TransactionType type, string src, string dest)
+    public async Task<TransactionEntity> CreateTransaction(double amount, int userId, TransactionType type, string src, string dest,TransactionStatus status = TransactionStatus.WAITING)
     {
         var transaction = new TransactionEntity
         {
@@ -27,7 +27,6 @@ public class DefaultTransactionService : ITransactionService
             CreatedAt = DateTime.Now.ToUniversalTime()
         };
         await _trasactionBaseRepository.Create(transaction);
-        await _trasactionBaseRepository.SaveChangesAsync();
         return transaction;
     }
     

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OOD_Project_Backend.Core.Common.Authentication;
 using OOD_Project_Backend.Core.Context;
+using OOD_Project_Backend.Finance.Business.Context;
 using OOD_Project_Backend.Finance.Business.Contracts;
 
 namespace OOD_Project_Backend.Finanace.Controller;
@@ -22,7 +23,22 @@ public class FinancialController : ControllerBase
     [Authorize]
     public async Task<Response> Withdraw(int amount)
     {
-        var userId = (int)HttpContext.Items["User"];
         return await _walletService.Withdraw(amount);
+    }
+
+    [HttpPut]
+    [Route("ChargeWallet")]
+    [Authorize]
+    public async Task<Response> ChargeWallet([FromBody] ChargeWalletRequest chargeWalletRequest)
+    {
+        return await _walletService.ChargeWallet(chargeWalletRequest);
+    }
+
+    [HttpGet]
+    [Route("GetWallet")]
+    [Authorize]
+    public async Task<Response> GetWallet()
+    {
+        return await _walletService.GetWallet();
     }
 }

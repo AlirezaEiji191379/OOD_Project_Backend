@@ -6,5 +6,6 @@ namespace OOD_Project_Backend.User.Business.Contracts
     {
         int GetCurrentUserId();
         Task<UserContract> GetUser(int userId);
+        Task<UserProfile> GetCurrentUser();
     }
 }
