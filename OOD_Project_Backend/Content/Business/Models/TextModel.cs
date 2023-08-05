@@ -16,4 +16,9 @@ public class TextModel : IContentModel
     {
         throw new NotImplementedException();
     }
+
+    public Task Delete(int contentId)
+    {
+        throw new NotImplementedException();
+    }
 }

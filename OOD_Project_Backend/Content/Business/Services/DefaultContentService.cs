@@ -85,4 +85,25 @@ public class DefaultContentService : IContentService
             return null;
         }
     }
+
+    public async Task<Response> Delete(int contentId)
+    {
+        try
+        {
+            var contentMetaDataEntity = await _contentMetadataRepository.FindByChannelId(contentId);
+            var userId = _userFacade.GetCurrentUserId();
+            var isAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(userId,contentMetaDataEntity.ChannelId);
+            if (!isAdminOrOwner)
+            {
+                return new Response(403, new { Message = "only admins and owners can remove contents of a channel" });
+            }
+            var contentModel = _contentModelProvider.GetContentModel(contentMetaDataEntity.ContentType);
+            return new Response(200, new { Message = "deleted successfully!" });
+        }
+        catch (Exception e)
+        {
+            return new Response(403,new {Message = "the content is not found or you are not admin or owner of channel!"});
+        }
+    }
+    
 }

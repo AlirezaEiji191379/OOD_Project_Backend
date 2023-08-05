@@ -47,4 +47,9 @@ public class MusicModel : IContentModel
         var contentType = "audio/mpeg";
         return new FileContentResult(await File.ReadAllBytesAsync(filePath),contentType);
     }
+
+    public Task Delete(int contentId)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -42,4 +42,13 @@ public class ContentController : ControllerBase
     {
         return await _contentService.Show(contentId);
     }
+
+    [HttpDelete]
+    [Route("RemoveContent/{contentId}")]
+    [Authorize]
+    public async Task<Response> DeleteContent(int contentId)
+    {
+        return await _contentService.Delete(contentId);
+    }
+    
 }

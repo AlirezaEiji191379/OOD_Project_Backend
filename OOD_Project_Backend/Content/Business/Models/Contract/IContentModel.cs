@@ -10,4 +10,5 @@ public interface IContentModel
     ContentType ContentType { get; }
     Task<FileResult> ShowPreview(int contentId);
     Task<FileResult> ShowNormal(int contentId);
+    Task Delete(int contentId);
 }

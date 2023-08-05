@@ -9,4 +9,5 @@ public interface IContentService
     Task<Response> Add(ContentCreationRequest request);
     Task<Response> GetChannelContentsMetadata(int channelId);
     Task<FileResult> Show(int contentId);
+    Task<Response> Delete(int contentId);
 }
