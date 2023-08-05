@@ -50,10 +50,10 @@ public class DefaultSubscriptionService : ISubscriptionService
     {
         try
         {
-            var nonPremium = await _contentsRepository.Find(contentId, userId);
+            var nonPremiumUserContent = await _contentsRepository.Find(contentId, userId);
             var premiumUser = await _channelPremiumUsersRepository.Find(userId, channelId);
             var membership = await _channelMemberRepository.FindByUserIdAndChannelId(userId, channelId);
-            return membership != null && (nonPremium != null || premiumUser != null);
+            return membership != null && (nonPremiumUserContent != null || premiumUser != null);
         }
         catch (Exception e)
         {

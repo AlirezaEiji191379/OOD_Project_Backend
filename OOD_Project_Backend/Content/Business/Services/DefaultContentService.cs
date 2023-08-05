@@ -1,8 +1,12 @@
-﻿using OOD_Project_Backend.Content.Business.Contexts;
+﻿using Microsoft.AspNetCore.Mvc;
+using OOD_Project_Backend.Channel.Business.Contracts;
+using OOD_Project_Backend.Content.Business.Contexts;
 using OOD_Project_Backend.Content.Business.Contracts;
 using OOD_Project_Backend.Content.Business.Creation;
+using OOD_Project_Backend.Content.Business.Models.Contract;
 using OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 using OOD_Project_Backend.Core.Context;
+using OOD_Project_Backend.User.Business.Contracts;
 
 namespace OOD_Project_Backend.Content.Business.Services;
 
@@ -11,26 +15,41 @@ public class DefaultContentService : IContentService
     private readonly IContentRepository _contentRepository;
     private readonly IContentMetaDataRepository _contentMetadataRepository;
     private readonly IContentCreation _contentCreation;
-    
+    private readonly IUserFacade _userFacade;
+    private readonly IChannelFacade _channelFacade;
+    private readonly IContentModelProvider _contentModelProvider;
+
     public DefaultContentService(IContentRepository contentRepository,
         IContentMetaDataRepository contentMetadataRepository,
-        IContentCreation contentCreation)
+        IContentCreation contentCreation,
+        IUserFacade userFacade,
+        IChannelFacade channelFacade,
+        IContentModelProvider contentModelProvider)
     {
         _contentRepository = contentRepository;
         _contentMetadataRepository = contentMetadataRepository;
         _contentCreation = contentCreation;
+        _userFacade = userFacade;
+        _channelFacade = channelFacade;
+        _contentModelProvider = contentModelProvider;
     }
 
     public async Task<Response> Add(ContentCreationRequest request)
     {
         try
         {
+            var userId = _userFacade.GetCurrentUserId();
+            if (await _channelFacade.IsChannelAdminOrOwner(userId, request.ChannelId) == false)
+            {
+                return new Response(403, new { Message = "only admin or owner can add content to this channel!" });
+            }
+
             var contentId = await _contentCreation.Generate(request);
-            return new Response(201,new {Message = contentId});
+            return new Response(201, new { Message = contentId });
         }
         catch (Exception e)
         {
-            return new Response(400,new {Message = "add content failed!"});
+            return new Response(400, new { Message = "add content failed!" });
         }
     }
 
@@ -38,12 +57,32 @@ public class DefaultContentService : IContentService
     {
         try
         {
-            var contentDtos = await _contentMetadataRepository.FindByChannelId(channelId);
-            return new Response(200,new {Message = contentDtos});
+            var contentDtos = await _contentMetadataRepository.FindByChannelIdIncludeContent(channelId);
+            return new Response(200, new { Message = contentDtos });
         }
         catch (Exception e)
         {
-            return new Response(400,"could not returve");
+            return new Response(400, "could not returve");
+        }
+    }
+
+    public async Task<FileResult> Show(int contentId)
+    {
+        try
+        {
+            var contentMetaDataEntity = await _contentMetadataRepository.FindByChannelId(contentId);
+            var userId = _userFacade.GetCurrentUserId();
+            var hasAccess = !contentMetaDataEntity.Premium ||
+                            await _channelFacade.CheckAccessToContent(userId, contentMetaDataEntity.ChannelId,
+                                contentId);
+            var contentModel = _contentModelProvider.GetContentModel(contentMetaDataEntity.ContentType);
+            return hasAccess
+                ? await contentModel.ShowNormal(contentId)
+                : await contentModel.ShowPreview(contentId);
+        }
+        catch (Exception e)
+        {
+            return null;
         }
     }
 }

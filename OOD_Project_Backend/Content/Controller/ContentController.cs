@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using OOD_Project_Backend.Content.Business.Contexts;
 using OOD_Project_Backend.Content.Business.Contracts;
 using OOD_Project_Backend.Content.DataAccess.Entities.Enums;
@@ -34,4 +35,11 @@ public class ContentController : ControllerBase
         return await _contentService.GetChannelContentsMetadata(channelId);
     }
 
+    [HttpGet]
+    [Route("ShowContent/{contentId}")]
+    [Authorize]
+    public async Task<FileResult> ShowContent(int contentId)
+    {
+        return await _contentService.Show(contentId);
+    }
 }

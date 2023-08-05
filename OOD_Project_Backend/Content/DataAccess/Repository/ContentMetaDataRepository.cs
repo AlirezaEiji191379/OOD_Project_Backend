@@ -22,7 +22,7 @@ public class ContentMetaDataRepository : BaseRepository<ContentMetaDataEntity>, 
         return _appDbContext.ContentMetaDatas.Where(x => x.ContentId == contentId).SingleAsync();
     }
 
-    public Task<List<ContentDto>> FindByChannelId(int channelId)
+    public Task<List<ContentDto>> FindByChannelIdIncludeContent(int channelId)
     {
         return _appDbContext
             .ContentMetaDatas
@@ -40,5 +40,12 @@ public class ContentMetaDataRepository : BaseRepository<ContentMetaDataEntity>, 
                 FileName = x.FileName
             })
             .ToListAsync();
+    }
+
+    public Task<ContentMetaDataEntity> FindByChannelId(int contentId)
+    {
+        return _appDbContext.ContentMetaDatas
+            .Where(x => x.ContentId == contentId)
+            .SingleAsync();
     }
 }

@@ -22,5 +22,6 @@ public class DependencyInjector : IDependencyInstaller
         services.AddScoped<IChannelPremiumUsersRepository,ChannelPremiumUsersRepository>();
         services.AddScoped<INonPremiumUsersPremiumContentsRepository,NonPremiumUsersPremiumContentsRepository>();
         services.AddScoped<ISubscriptionDeactivationJob, SubscriptionDeactivationJob>();
+        services.AddScoped<IChannelFacade, ChannelFacade>();
     }
 }

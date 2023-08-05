@@ -17,7 +17,6 @@
     <Folder Include="Content\Controller\" />
     <Folder Include="Content\DataAccess\Dtos\" />
     <Folder Include="Resources\Channels\" />
-    <Folder Include="Resources\Contents\" />
     <Folder Include="Resources\Profiles\" />
   </ItemGroup>
 

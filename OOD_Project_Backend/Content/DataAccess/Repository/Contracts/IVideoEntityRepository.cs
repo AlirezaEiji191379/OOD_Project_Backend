@@ -5,4 +5,5 @@ namespace OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 
 public interface IVideoEntityRepository : IBaseRepository<VideoEntity>
 {
+    Task<VideoEntity> FindById(int contentId);
 }
