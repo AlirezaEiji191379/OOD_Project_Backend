@@ -1,6 +1,6 @@
-﻿using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
+﻿using OOD_Project_Backend.Channel.Subscription.DataAccess.Entities.Enums;
 
-namespace OOD_Project_Backend.Channel.Business.Context;
+namespace OOD_Project_Backend.Channel.Subscription.Business.Context;
 
 public class SubscriptionRequest
 {

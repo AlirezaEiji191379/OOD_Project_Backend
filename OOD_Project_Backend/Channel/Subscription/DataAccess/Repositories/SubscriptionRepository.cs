@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OOD_Project_Backend.Channel.DataAccess.Entities;
-using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
+using OOD_Project_Backend.Channel.Subscription.DataAccess.Entities;
+using OOD_Project_Backend.Channel.Subscription.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Core.DataAccess;
 using OOD_Project_Backend.Core.DataAccess.Repository;
 
-namespace OOD_Project_Backend.Channel.DataAccess.Repositories;
+namespace OOD_Project_Backend.Channel.Subscription.DataAccess.Repositories;
 
 public class SubscriptionRepository : BaseRepository<SubscriptionEntity>,ISubscriptionRepository
 {

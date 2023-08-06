@@ -1,19 +1,19 @@
-﻿using OOD_Project_Backend.Channel.Business.Context;
-using OOD_Project_Backend.Channel.Business.Contracts;
-using OOD_Project_Backend.Channel.ChannelCore.Business.Contracts;
+﻿using OOD_Project_Backend.Channel.ChannelCore.Business.Contracts;
 using OOD_Project_Backend.Channel.ChannelCore.Business.Validations.Conditions;
 using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Entities;
 using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Repositories.Contracts;
-using OOD_Project_Backend.Channel.DataAccess.Entities;
-using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
-using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
+using OOD_Project_Backend.Channel.Subscription.Business.Context;
+using OOD_Project_Backend.Channel.Subscription.Business.Contracts;
+using OOD_Project_Backend.Channel.Subscription.DataAccess.Entities;
+using OOD_Project_Backend.Channel.Subscription.DataAccess.Entities.Enums;
+using OOD_Project_Backend.Channel.Subscription.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Content.Business.Contracts;
 using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.Validation.Contracts;
 using OOD_Project_Backend.Finance.Business.Contracts;
 using OOD_Project_Backend.User.Business.Contracts;
 
-namespace OOD_Project_Backend.Channel.Business.Services;
+namespace OOD_Project_Backend.Channel.Subscription.Business.Services;
 
 public class DefaultSubscriptionService : ISubscriptionService
 {

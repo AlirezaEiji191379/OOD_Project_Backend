@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OOD_Project_Backend.Channel.DataAccess.Entities;
-using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
+using OOD_Project_Backend.Channel.Subscription.DataAccess.Entities;
+using OOD_Project_Backend.Channel.Subscription.DataAccess.Entities.Enums;
 
-namespace OOD_Project_Backend.Channel.DataAccess.EntityConfigurations;
+namespace OOD_Project_Backend.Channel.Subscription.DataAccess.EntityConfigurations;
 
 public class SubscriptionEntityConfiguration : IEntityTypeConfiguration<SubscriptionEntity>
 {

@@ -1,6 +1,4 @@
-﻿using OOD_Project_Backend.Channel.DataAccess.Entities;
-
-namespace OOD_Project_Backend.Content.DataAccess.Entities;
+﻿namespace OOD_Project_Backend.Content.DataAccess.Entities;
 
 public class ContentEntity
 {

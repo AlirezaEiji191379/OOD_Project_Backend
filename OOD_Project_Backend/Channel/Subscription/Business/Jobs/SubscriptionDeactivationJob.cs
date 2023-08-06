@@ -1,8 +1,7 @@
-﻿using OOD_Project_Backend.Channel.Business.Contracts;
-using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Repositories.Contracts;
-using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
+﻿using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Repositories.Contracts;
+using OOD_Project_Backend.Channel.Subscription.Business.Contracts;
 
-namespace OOD_Project_Backend.Channel.Business.Jobs;
+namespace OOD_Project_Backend.Channel.Subscription.Business.Jobs;
 
 public class SubscriptionDeactivationJob : ISubscriptionDeactivationJob
 {
