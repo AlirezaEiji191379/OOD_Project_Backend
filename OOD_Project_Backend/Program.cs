@@ -17,7 +17,7 @@ static void UseMiddlewares(WebApplicationBuilder builder)
     {
         // todo : config
         FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), "./Resources")),
+            Path.Combine(Directory.GetCurrentDirectory(), app.Configuration.GetValue<string>("Resources"))),
         RequestPath = new PathString("")
     });
     if (app.Environment.IsDevelopment())
