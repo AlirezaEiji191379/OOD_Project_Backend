@@ -1,7 +1,7 @@
 ﻿using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Entities;
-using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
+using OOD_Project_Backend.Channel.Subscription.DataAccess.Entities.Enums;
 
-namespace OOD_Project_Backend.Channel.DataAccess.Entities;
+namespace OOD_Project_Backend.Channel.Subscription.DataAccess.Entities;
 
 public class SubscriptionEntity
 {

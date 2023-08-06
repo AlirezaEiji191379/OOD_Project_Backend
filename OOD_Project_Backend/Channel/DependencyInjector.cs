@@ -1,13 +1,12 @@
-﻿using OOD_Project_Backend.Channel.Business.Contracts;
-using OOD_Project_Backend.Channel.Business.Jobs;
-using OOD_Project_Backend.Channel.Business.Services;
-using OOD_Project_Backend.Channel.ChannelCore.Business.Contracts;
+﻿using OOD_Project_Backend.Channel.ChannelCore.Business.Contracts;
 using OOD_Project_Backend.Channel.ChannelCore.Business.Services;
 using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Repositories;
 using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Repositories.Contracts;
-using OOD_Project_Backend.Channel.DataAccess.Entities;
-using OOD_Project_Backend.Channel.DataAccess.Repositories;
-using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
+using OOD_Project_Backend.Channel.Subscription.Business.Contracts;
+using OOD_Project_Backend.Channel.Subscription.Business.Jobs;
+using OOD_Project_Backend.Channel.Subscription.Business.Services;
+using OOD_Project_Backend.Channel.Subscription.DataAccess.Repositories;
+using OOD_Project_Backend.Channel.Subscription.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Core.Common.DependencyInjection.Abstractions;
 using OOD_Project_Backend.Core.DataAccess.Contracts;
 

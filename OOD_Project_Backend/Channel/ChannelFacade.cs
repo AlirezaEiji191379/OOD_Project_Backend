@@ -1,6 +1,5 @@
-﻿using OOD_Project_Backend.Channel.Business.Context;
-using OOD_Project_Backend.Channel.Business.Contracts;
-using OOD_Project_Backend.Channel.ChannelCore.Business.Contracts;
+﻿using OOD_Project_Backend.Channel.ChannelCore.Business.Contracts;
+using OOD_Project_Backend.Channel.Subscription.Business.Contracts;
 
 namespace OOD_Project_Backend.Channel
 {
