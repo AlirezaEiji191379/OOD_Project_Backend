@@ -16,7 +16,9 @@ public class ContentController : ControllerBase
 
     public ContentController(IContentService contentService)
     {
+        
         _contentService = contentService;
+        
     }
 
     [HttpPost]
@@ -32,7 +34,7 @@ public class ContentController : ControllerBase
     [Authorize]
     public async Task<Response> GetChannelContentMetadata(int channelId)
     {
-        return await _contentService.GetChannelContentsMetadata(channelId);
+         return await _contentService.GetChannelContentsMetadata(channelId);
     }
 
     [HttpGet]
@@ -50,5 +52,5 @@ public class ContentController : ControllerBase
     {
         return await _contentService.Delete(contentId);
     }
-    
+
 }
