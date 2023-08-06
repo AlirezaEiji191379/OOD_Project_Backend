@@ -13,7 +13,6 @@ public class UserEntity
     public string? Biography { get; set; }
     public string Password { get; set; }
     public bool IsDeleted { get; set; }
-    public string? NationalCode { get; set; }
     public string? CardNumber { get; set; }
     
     public ICollection<ChannelMemberEntity> ChannelMemberEntities { get; set; }
