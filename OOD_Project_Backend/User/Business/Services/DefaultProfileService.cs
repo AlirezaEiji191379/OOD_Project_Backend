@@ -35,7 +35,6 @@ public class DefaultProfileService : IProfileService
             {
                 new NameRule(profileRequest.Name),
                 new BiographyRule(profileRequest.Biography),
-                new NationalCodeRule(profileRequest.NationalCode),
                 new EmailRule(profileRequest.Email),
                 new PhoneNumberRule(profileRequest.PhoneNumber),
                 new CardNumberRules(profileRequest.CardNumber)
@@ -105,7 +104,6 @@ public class DefaultProfileService : IProfileService
                 Email = userEntity.Email,
                 PhoneNumber = userEntity.PhoneNumber,
                 Name = userEntity.Name,
-                NationalCode = userEntity.NationalCode,
                 CardNumber = userEntity.CardNumber,
                 Id = userEntity.Id
             };
