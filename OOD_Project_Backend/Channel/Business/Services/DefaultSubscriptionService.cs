@@ -1,6 +1,9 @@
 ﻿using OOD_Project_Backend.Channel.Business.Context;
 using OOD_Project_Backend.Channel.Business.Contracts;
-using OOD_Project_Backend.Channel.Business.Validations.Conditions;
+using OOD_Project_Backend.Channel.ChannelCore.Business.Contracts;
+using OOD_Project_Backend.Channel.ChannelCore.Business.Validations.Conditions;
+using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Entities;
+using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Channel.DataAccess.Entities;
 using OOD_Project_Backend.Channel.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Channel.DataAccess.Repositories.Contracts;
