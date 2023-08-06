@@ -184,16 +184,16 @@ public class DefaultChannelMembershipService : IChannelMembershipService
         {
             var admins = await _memberRepository.FindByChannelIdAndRole(channelId, Role.ADMIN, Role.OWNER);
             var adminProfiles = new List<UserContract>();
-            admins.ForEach(async (x) =>
+            foreach (var admin in admins)
             {
-                var result = await _userFacade.GetUser(x.UserId);
+                var result = await _userFacade.GetUser(admin.UserId);
                 adminProfiles.Add(result);
-            });
+            }
             return new Response(200, new { Messsage = adminProfiles });
         }
         catch (Exception e)
         {
-            return new Response(400, new { Message = "channel not found" });
+            return new Response(400, new { Message = "channel or user not found" });
         }
     }
 

@@ -29,6 +29,6 @@ internal class UserRepository : BaseRepository<UserEntity>,IUserRepository
             Biography = x.Biography,
             Name = x.Name,
             UserId = userId
-        }).FirstAsync();
+        }).SingleAsync();
     }
 }
