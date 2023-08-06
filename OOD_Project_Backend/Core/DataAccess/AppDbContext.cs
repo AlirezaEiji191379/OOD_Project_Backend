@@ -2,6 +2,7 @@
 using System.Reflection;
 using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Entities;
 using OOD_Project_Backend.Channel.Subscription.DataAccess.Entities;
+using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
 using OOD_Project_Backend.Content.DataAccess.Entities;
 using OOD_Project_Backend.Finanace.DataAccess.Entities;
 using OOD_Project_Backend.User.DataAccess.Entities;
