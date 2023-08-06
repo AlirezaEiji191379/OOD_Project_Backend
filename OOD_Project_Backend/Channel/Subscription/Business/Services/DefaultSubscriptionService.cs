@@ -159,7 +159,7 @@ public class DefaultSubscriptionService : ISubscriptionService
         catch (Exception e)
         {
             await transaction.RollbackAsync();
-            return new Response(400, new { Message = e.Message });
+            return new Response(400, new { Message = "the subscription was bougth or another error occured!" });
         }
     }
 

@@ -1,13 +1,15 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Mvc.Filters;
 using OOD_Project_Backend.User.Business.Contracts;
+using Serilog;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace OOD_Project_Backend.Core.Middleware;
 
 public class SecurityMiddleware : IMiddleware
 {
     private readonly IAuthenticator _authenticator;
-
+    
     public SecurityMiddleware(IAuthenticator authenticator)
     {
         _authenticator = authenticator;
@@ -19,6 +21,9 @@ public class SecurityMiddleware : IMiddleware
         {
             if (!context.Request.Headers.ContainsKey("X-Auth-Token"))
             {
+                Log.Logger.Information("the X-Auth-Token not setted!");
+                var token1 = context.Request.Headers["X-Auth-Token"].FirstOrDefault();
+                Log.Logger.Information(token1);
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 context.Response.ContentType = "text/plain";
