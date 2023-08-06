@@ -1,4 +1,5 @@
-﻿using OOD_Project_Backend.Content.Business.Contracts;
+﻿using OOD_Project_Backend.Content.ContentCore.Business.Contracts;
+using OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 
 namespace OOD_Project_Backend.Content

@@ -1,4 +1,5 @@
-﻿using OOD_Project_Backend.Content.DataAccess.Entities;
+﻿using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
+using OOD_Project_Backend.Content.DataAccess.Entities;
 
 namespace OOD_Project_Backend.Channel.ChannelCore.DataAccess.Entities;
 

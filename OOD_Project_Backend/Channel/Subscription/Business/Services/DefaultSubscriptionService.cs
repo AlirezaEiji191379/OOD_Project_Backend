@@ -7,7 +7,7 @@ using OOD_Project_Backend.Channel.Subscription.Business.Contracts;
 using OOD_Project_Backend.Channel.Subscription.DataAccess.Entities;
 using OOD_Project_Backend.Channel.Subscription.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Channel.Subscription.DataAccess.Repositories.Contracts;
-using OOD_Project_Backend.Content.Business.Contracts;
+using OOD_Project_Backend.Content.ContentCore.Business.Contracts;
 using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.Validation.Contracts;
 using OOD_Project_Backend.Finance.Business.Contracts;
