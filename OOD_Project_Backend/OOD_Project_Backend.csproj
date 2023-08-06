@@ -14,6 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Channel\Subscription\Business\" />
+    <Folder Include="Channel\Subscription\Controller\" />
+    <Folder Include="Channel\Subscription\DataAccess\" />
     <Folder Include="Content\Controller\" />
     <Folder Include="Resources\Channels\" />
     <Folder Include="Resources\Profiles\" />
