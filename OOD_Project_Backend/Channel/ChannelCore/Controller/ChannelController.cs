@@ -33,7 +33,7 @@ public class ChannelController : ControllerBase
     [Authorize]
     public async Task<Response> AddChannelPhoto([FromForm] IFormFile file, int channelId)
     {
-        var result = await _channelService.AddChannelPicture(file,channelId);
+        var result = await _channelService.AddChannelPicture(file, channelId);
         return result;
     }
 
@@ -109,5 +109,12 @@ public class ChannelController : ControllerBase
     {
         return await _channelMembershipService.RemoveAdmin(membershipRequest);
     }
-    
+
+    [HttpGet]
+    [Route("GetRole/{channelId}")]
+    [Authorize]
+    public async Task<Response> GetUserRole(int channelId)
+    {
+        return await _channelMembershipService.GetUserRole(channelId);
+    }
 }

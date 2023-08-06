@@ -24,6 +24,30 @@ public class DefaultChannelMembershipService : IChannelMembershipService
         _userFacade = userFacade;
     }
 
+    public async Task<Response> GetUserRole(int channelId)
+    {
+        try
+        {
+            var userId = _userFacade.GetCurrentUserId();
+            if (await IsOwner(channelId, userId))
+            {
+                return new Response(200, new { Message = Role.OWNER.ToString() });
+            }
+            else if (await IsAdmin(channelId, userId))
+            {
+                return new Response(200, new { Message = Role.ADMIN.ToString() });
+            }
+            else
+            {
+                return new Response(200, new { Messsage = Role.MEMBER.ToString() });
+            }
+        }
+        catch (Exception e)
+        {
+            return new Response(400, new { Message = "try later! failed!" });
+        }
+    }
+
     public async Task<Response> JoinChannel(string joinLink)
     {
         try

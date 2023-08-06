@@ -15,4 +15,5 @@ public interface IChannelMembershipService
     Task<Response> RemoveMember(ChannelMembershipRequest membershipRequest);
     Task<Response> RemoveAdmin(ChannelMembershipRequest membershipRequest);
     Task<Response> GetChannelsList();
+    Task<Response> GetUserRole(int channelId);
 }
