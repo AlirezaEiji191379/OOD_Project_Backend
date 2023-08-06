@@ -38,7 +38,7 @@ public class ContentController : ControllerBase
     [HttpGet]
     [Route("ShowContent/{contentId}")]
     [Authorize]
-    public async Task<FileResult> ShowContent(int contentId)
+    public async Task<Response> ShowContent(int contentId)
     {
         return await _contentService.Show(contentId);
     }

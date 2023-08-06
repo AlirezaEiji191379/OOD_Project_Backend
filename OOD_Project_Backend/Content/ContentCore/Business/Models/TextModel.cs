@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using OOD_Project_Backend.Content.ContentCore.Business.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Models.Contract;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities.Enums;
@@ -19,20 +20,30 @@ public class TextModel : IContentModel
     }
 
     public ContentType ContentType => ContentType.Text;
-    public async Task<FileResult> ShowPreview(int contentId)
+    public async Task<ShowContentDto> ShowPreview(int contentId)
     {
         var textEntity = await _textRepository.FindByContentId(contentId);
-        byte[] byteArray = Encoding.UTF8.GetBytes(textEntity.Value.Substring(0,4));
-        string contentType = "text/plain";
-        return new FileContentResult(byteArray,contentType);
+        return new ShowContentDto()
+        {
+            Value = textEntity.Value.Substring(0,4),
+            ContentType = ContentType.Text.ToString()
+        };
+        //byte[] byteArray = Encoding.UTF8.GetBytes(textEntity.Value.Substring(0,4));
+        //string contentType = "text/plain";
+        //return new FileContentResult(byteArray,contentType);
     }
 
-    public async Task<FileResult> ShowNormal(int contentId)
+    public async Task<ShowContentDto> ShowNormal(int contentId)
     {
         var textEntity = await _textRepository.FindByContentId(contentId);
-        byte[] byteArray = Encoding.UTF8.GetBytes(textEntity.Value);
+        return new ShowContentDto()
+        {
+            Value = textEntity.Value,
+            ContentType = ContentType.Text.ToString()
+        };
+        /*byte[] byteArray = Encoding.UTF8.GetBytes(textEntity.Value);
         string contentType = "text/plain";
-        return new FileContentResult(byteArray, contentType);
+        return new FileContentResult(byteArray, contentType);*/
     }
 
     public async Task Delete(int contentId)

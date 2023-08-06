@@ -66,7 +66,7 @@ public class DefaultContentService : IContentService
         }
     }
 
-    public async Task<FileResult> Show(int contentId)
+    public async Task<Response> Show(int contentId)
     {
         try
         {
@@ -76,9 +76,10 @@ public class DefaultContentService : IContentService
                             await _channelFacade.CheckAccessToContent(userId, contentMetaDataEntity.ChannelId,
                                 contentId);
             var contentModel = _contentModelProvider.GetContentModel(contentMetaDataEntity.ContentType);
-            return hasAccess
+            var toR = hasAccess
                 ? await contentModel.ShowNormal(contentId)
                 : await contentModel.ShowPreview(contentId);
+            return new Response(200,new {Message = toR});
         }
         catch (Exception e)
         {
