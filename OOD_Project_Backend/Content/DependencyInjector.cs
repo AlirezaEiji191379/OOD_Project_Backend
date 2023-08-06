@@ -1,4 +1,6 @@
-﻿using OOD_Project_Backend.Content.ContentCore.Business.Contracts;
+﻿using OOD_Project_Backend.Content.Category.DataAccess.Repository;
+using OOD_Project_Backend.Content.Category.DataAccess.Repository.Contracts;
+using OOD_Project_Backend.Content.ContentCore.Business.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Creation;
 using OOD_Project_Backend.Content.ContentCore.Business.Creation.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Creation.Strategies;
@@ -9,8 +11,6 @@ using OOD_Project_Backend.Content.ContentCore.Business.Models.Provider;
 using OOD_Project_Backend.Content.ContentCore.Business.Services;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories.Contracts;
-using OOD_Project_Backend.Content.DataAccess.Repository;
-using OOD_Project_Backend.Content.DataAccess.Repository.Contracts;
 using OOD_Project_Backend.Core.Common.DependencyInjection.Abstractions;
 
 namespace OOD_Project_Backend.Content;

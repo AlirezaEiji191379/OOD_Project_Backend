@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OOD_Project_Backend.Content.DataAccess.Entities;
+using OOD_Project_Backend.Content.Category.DataAccess.Entities;
 
-namespace OOD_Project_Backend.Content.DataAccess.EntityConfigurations;
+namespace OOD_Project_Backend.Content.Category.DataAccess.EntityConfigurations;
 
 public class CategoryEntityConfiguration : IEntityTypeConfiguration<CategoryEntity>
 {

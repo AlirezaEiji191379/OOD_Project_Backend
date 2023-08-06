@@ -1,4 +1,4 @@
-﻿namespace OOD_Project_Backend.Content.Business.Contexts;
+﻿namespace OOD_Project_Backend.Content.Category.Business.Contexts;
 
 public class CategoryRequest
 {
