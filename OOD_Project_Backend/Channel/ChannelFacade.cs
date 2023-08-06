@@ -20,7 +20,7 @@ namespace OOD_Project_Backend.Channel
         }
 
         public async Task<bool> IsChannelAdminOrOwner(int userId, int channelId) {
-            return await _channelMembershipService.IsAdmin(userId, channelId) || await _channelMembershipService.IsOwner(userId, channelId);
+            return await _channelMembershipService.IsAdmin(channelId, userId) || await _channelMembershipService.IsOwner(channelId, userId);
         }
         
     }
