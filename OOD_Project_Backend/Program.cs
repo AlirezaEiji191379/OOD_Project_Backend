@@ -3,10 +3,28 @@ using OOD_Project_Backend.Core.Common.DependencyInjection;
 using OOD_Project_Backend.Core.DataAccess;
 using OOD_Project_Backend.Core.DependencyInjection;
 using OOD_Project_Backend.Core.Middleware;
+using Serilog;
 
-WebApplicationBuilder builder = AddServices(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File("log.txt")
+    .CreateLogger();
+try
+{
+    WebApplicationBuilder builder = AddServices(args);
+    builder.Host.UseSerilog();
+    UseMiddlewares(builder);
 
-UseMiddlewares(builder);
+}
+catch (Exception exception)
+{
+    Log.Fatal(exception, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
+
+
 
 static void UseMiddlewares(WebApplicationBuilder builder)
 {
@@ -15,7 +33,7 @@ static void UseMiddlewares(WebApplicationBuilder builder)
     app.UseCors("AllowAnyUrl");
     app.UseStaticFiles(new StaticFileOptions()
     {
-        // todo : config
+        
         FileProvider = new PhysicalFileProvider(
             Path.Combine(Directory.GetCurrentDirectory(), app.Configuration.GetValue<string>("Resources"))),
         RequestPath = new PathString("")
