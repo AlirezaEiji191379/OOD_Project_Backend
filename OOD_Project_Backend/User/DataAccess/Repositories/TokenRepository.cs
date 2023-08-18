@@ -27,4 +27,21 @@ public class TokenRepository : ITokenRepository
         var value = await db.StringGetAsync(key);
         return !value.IsNull;
     }
+
+    public async Task SaveVerificationCode(int userId, int code)
+    {
+        var db = _redis.GetDatabase();
+        var value = code;
+        var ttl = TimeSpan.FromMinutes(15);
+        await db.StringSetAsync(userId.ToString(), code, ttl);
+    }
+
+    public async Task<int?> GetVerificationCode(int userId)
+    {
+        var db = _redis.GetDatabase();
+        var key = userId.ToString();
+        var value = await db.StringGetAsync(key);
+        int.TryParse(value,out int code);
+        return code;
+    }
 }

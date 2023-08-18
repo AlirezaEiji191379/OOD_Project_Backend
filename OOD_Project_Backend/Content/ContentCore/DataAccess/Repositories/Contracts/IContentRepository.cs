@@ -5,4 +5,5 @@ namespace OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories.Contra
 
 public interface IContentRepository : IBaseRepository<ContentEntity>
 {
+    Task<ContentEntity> FindById(int contentId);
 }

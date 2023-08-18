@@ -8,7 +8,7 @@ public interface ISubscriptionService
     Task<bool> CheckContentToShowUser(int userId, int channelId, int contentId);
 
     Task<Response> AddSubscription(SubscriptionRequest request);
-    Task<Response> EditSubscription(SubscriptionRequest request);
+    Task<Response> EditSubscription(SubscriptionUpdateRequest request);
     Task<Response> ShowSubscription(int channelId);
     Task<Response> BuySubscription(int subscriptionId);
     Task<Response> BuyContent(int contentId);

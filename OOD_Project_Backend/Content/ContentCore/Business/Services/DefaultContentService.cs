@@ -4,6 +4,7 @@ using OOD_Project_Backend.Content.ContentCore.Business.Contexts;
 using OOD_Project_Backend.Content.ContentCore.Business.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Creation.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Models.Contract;
+using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.User.Business.Contracts;
@@ -18,13 +19,15 @@ public class DefaultContentService : IContentService
     private readonly IUserFacade _userFacade;
     private readonly IChannelFacade _channelFacade;
     private readonly IContentModelProvider _contentModelProvider;
+    private readonly IInteractionRepository _interactionRepository;
 
     public DefaultContentService(IContentRepository contentRepository,
         IContentMetaDataRepository contentMetadataRepository,
         IContentCreation contentCreation,
         IUserFacade userFacade,
         IChannelFacade channelFacade,
-        IContentModelProvider contentModelProvider)
+        IContentModelProvider contentModelProvider,
+        IInteractionRepository interactionRepository)
     {
         _contentRepository = contentRepository;
         _contentMetadataRepository = contentMetadataRepository;
@@ -32,6 +35,7 @@ public class DefaultContentService : IContentService
         _userFacade = userFacade;
         _channelFacade = channelFacade;
         _contentModelProvider = contentModelProvider;
+        _interactionRepository = interactionRepository;
     }
 
     public async Task<Response> Add(ContentCreationRequest request)
@@ -79,7 +83,8 @@ public class DefaultContentService : IContentService
             var toR = hasAccess
                 ? await contentModel.ShowNormal(contentId)
                 : await contentModel.ShowPreview(contentId);
-            return new Response(200,new {Message = toR});
+            toR.IsLiked = await _interactionRepository.IsUserLikedContent(userId, contentId);
+            return new Response(200, new { Message = toR });
         }
         catch (Exception e)
         {
@@ -93,19 +98,80 @@ public class DefaultContentService : IContentService
         {
             var contentMetaDataEntity = await _contentMetadataRepository.FindByChannelId(contentId);
             var userId = _userFacade.GetCurrentUserId();
-            var isAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(userId,contentMetaDataEntity.ChannelId);
+            var isAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(userId, contentMetaDataEntity.ChannelId);
             if (!isAdminOrOwner)
             {
                 return new Response(403, new { Message = "only admins and owners can remove contents of a channel" });
             }
+
             var contentModel = _contentModelProvider.GetContentModel(contentMetaDataEntity.ContentType);
             await contentModel.Delete(contentId);
             return new Response(200, new { Message = "deleted successfully!" });
         }
         catch (Exception e)
         {
-            return new Response(403,new {Message = "the content is not found or you are not admin or owner of channel!"});
+            return new Response(403,
+                new { Message = "the content is not found or you are not admin or owner of channel!" });
         }
     }
-    
+
+    public async Task<Response> Update(ContentUpdateRequest updateRequest)
+    {
+        try
+        {
+            var contentMetaDataEntity = await _contentMetadataRepository.FindByContentId(updateRequest.ContentId);
+            var userId = _userFacade.GetCurrentUserId();
+            var isAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(userId, contentMetaDataEntity.ChannelId);
+            if (!isAdminOrOwner)
+            {
+                return new Response(403, new { Message = "only admins and owners can update contents of a channel" });
+            }
+
+            await _contentCreation.UpdateContent(updateRequest);
+            return new Response(200, new { Message = "content has been updated successfully!" });
+        }
+        catch (Exception exception)
+        {
+            return new Response(403, new { Message = "update of content failed!" });
+        }
+    }
+
+    public async Task<Response> AddInteraction(int contentId)
+    {
+        try
+        {
+            var userId = _userFacade.GetCurrentUserId();
+            await _interactionRepository.Create(new InteractionEntity()
+            {
+                UserId = userId,
+                ContentId = contentId
+            });
+            await _interactionRepository.SaveChangesAsync();
+            return new Response(200, new { Message = "interaction was added!" });
+        }
+        catch (Exception e)
+        {
+            return new Response(400, new { Message = "interaction add failed!" });
+        }
+    }
+
+
+    public async Task<Response> DeleteInteraction(int contentId)
+    {
+        try
+        {
+            var userId = _userFacade.GetCurrentUserId();
+            _interactionRepository.Delete(new InteractionEntity()
+            {
+                UserId = userId,
+                ContentId = contentId
+            });
+            await _interactionRepository.SaveChangesAsync();
+            return new Response(200, new { Message = "interaction was deleted!" });
+        }
+        catch (Exception e)
+        {
+            return new Response(400, new { Message = "interaction remove failed!" });
+        }
+    }
 }

@@ -12,11 +12,13 @@ public class ProfileController : ControllerBase
 {
     private readonly IProfileService _profileService;
     private readonly IAuthenticationService _authenticationService;
+    private readonly IAuthenticator _jwtAuth;
 
-    public ProfileController(IProfileService profileService, IAuthenticationService authenticationService)
+    public ProfileController(IProfileService profileService, IAuthenticationService authenticationService, IAuthenticator jwtAuth)
     {
         _profileService = profileService;
         _authenticationService = authenticationService;
+        _jwtAuth = jwtAuth;
     }
 
     [HttpPost]
@@ -48,4 +50,24 @@ public class ProfileController : ControllerBase
         var result = await _profileService.ShowProfile(userId);
         return result;
     }
+
+    [HttpDelete]
+    [Route("RemoveProfile")]
+    [Authorize]
+    public async Task<Response> DeleteProfiles()
+    {
+        var userId = _authenticationService.GetCurrentUserId(HttpContext);
+        return await _profileService.RequestDeleteProfile(userId);
+    }
+
+    [HttpDelete]
+    [Route("VerifyRemoveProfile/{code}")]
+    [Authorize]
+    public async Task<Response> VerifyRemoveProfile(int code)
+    {
+        var userId = _authenticationService.GetCurrentUserId(HttpContext);
+        var tokenId = _jwtAuth.FindJwtId(HttpContext.Request.Headers["X-Auth-Token"].FirstOrDefault());
+        return await _profileService.VerifyDeleteProfile(userId,code,tokenId);
+    }
+
 }

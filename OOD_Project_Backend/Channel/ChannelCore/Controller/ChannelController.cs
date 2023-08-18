@@ -37,6 +37,14 @@ public class ChannelController : ControllerBase
         return result;
     }
 
+    [HttpPut]
+    [Route("Edit")]
+    [Authorize]
+    public async Task<Response> UpdateChannel([FromBody] ChannelUpdateRequest updateRequest)
+    {
+        return await _channelService.UpdateChannel(updateRequest);
+    }
+
     [HttpPost]
     [Route("Join/{joinLink}")]
     [Authorize]

@@ -43,12 +43,36 @@ public class ContentController : ControllerBase
         return await _contentService.Show(contentId);
     }
 
+    [HttpPut]
+    [Route("Edit")]
+    [Authorize]
+    public async Task<Response> UpdateContent([FromForm] ContentUpdateRequest contentUpdateRequest)
+    {
+        return await _contentService.Update(contentUpdateRequest);
+    }
+
     [HttpDelete]
     [Route("RemoveContent/{contentId}")]
     [Authorize]
     public async Task<Response> DeleteContent(int contentId)
     {
         return await _contentService.Delete(contentId);
+    }
+
+    [HttpPost]
+    [Route("Like/{contentId}")]
+    [Authorize]
+    public async Task<Response> LikeContent(int contentId)
+    {
+        return await _contentService.AddInteraction(contentId);
+    }
+    
+    [HttpDelete]
+    [Route("UnLike/{contentId}")]
+    [Authorize]
+    public async Task<Response> UnLikeContent(int contentId)
+    {
+        return await _contentService.DeleteInteraction(contentId);
     }
 
 }

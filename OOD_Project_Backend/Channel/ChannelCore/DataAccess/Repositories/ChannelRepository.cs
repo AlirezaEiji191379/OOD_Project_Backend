@@ -18,4 +18,9 @@ public class ChannelRepository : BaseRepository<ChannelEntity>,IChannelRepositor
         return await _appDbContext.Channels.AsNoTracking()
             .SingleAsync(x => x.JoinLink == joinLink);
     }
+
+    public Task<ChannelEntity> FindById(int channelId)
+    {
+        return _appDbContext.Channels.Where(x => x.Id == channelId).SingleAsync();
+    }
 }

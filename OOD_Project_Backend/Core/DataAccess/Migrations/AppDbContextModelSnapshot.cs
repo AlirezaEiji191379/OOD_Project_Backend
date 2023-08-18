@@ -261,6 +261,21 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.ToTable("Images");
                 });
 
+            modelBuilder.Entity("OOD_Project_Backend.Content.ContentCore.DataAccess.Entities.InteractionEntity", b =>
+                {
+                    b.Property<int>("ContentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ContentId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Likes");
+                });
+
             modelBuilder.Entity("OOD_Project_Backend.Content.ContentCore.DataAccess.Entities.MusicEntity", b =>
                 {
                     b.Property<int>("ContentId")
@@ -600,6 +615,25 @@ namespace OOD_Project_Backend.Core.DataAccess.Migrations
                     b.Navigation("Content");
 
                     b.Navigation("File");
+                });
+
+            modelBuilder.Entity("OOD_Project_Backend.Content.ContentCore.DataAccess.Entities.InteractionEntity", b =>
+                {
+                    b.HasOne("OOD_Project_Backend.Content.ContentCore.DataAccess.Entities.ContentEntity", "Content")
+                        .WithMany()
+                        .HasForeignKey("ContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OOD_Project_Backend.User.DataAccess.Entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Content");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OOD_Project_Backend.Content.ContentCore.DataAccess.Entities.MusicEntity", b =>

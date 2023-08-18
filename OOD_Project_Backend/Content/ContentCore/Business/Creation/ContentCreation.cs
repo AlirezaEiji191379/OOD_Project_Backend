@@ -4,6 +4,7 @@ using OOD_Project_Backend.Content.ContentCore.Business.Creation.Strategies.Contr
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories.Contracts;
+using OOD_Project_Backend.Core.Context;
 
 namespace OOD_Project_Backend.Content.ContentCore.Business.Creation;
 
@@ -58,5 +59,57 @@ public class ContentCreation : IContentCreation
             throw;
         }
     }
-    
+
+    public async Task UpdateContent(ContentUpdateRequest updateRequest)
+    {
+        await using var transaction = await _contentRepository.BeginTransactionAsync();
+        try
+        {
+            var contentMetaData = await _contentMetaDataRepository.FindByContentId(updateRequest.ContentId);
+            var content = await _contentRepository.FindById(updateRequest.ContentId);
+            if (updateRequest.Description != null || updateRequest.Title != null)
+            {
+                if (updateRequest.Description != null)
+                {
+                    content.Description = updateRequest.Description;
+                }
+                if (updateRequest.Title != null)
+                {
+                    content.Title = updateRequest.Title;
+                }
+            }
+            if (updateRequest.Price != null || updateRequest.CategoryId != null)
+            {
+                if (updateRequest.Price != null)
+                {
+                    contentMetaData.Price = updateRequest.Price.Value;
+                }
+                if (updateRequest.CategoryId != null)
+                {
+                    contentMetaData.CategoryId = updateRequest.CategoryId;
+                }
+            }
+
+            if (updateRequest.File != null || updateRequest.Value != null)
+            {
+                if (updateRequest.File != null)
+                {
+                    contentMetaData.FileName = updateRequest.File.FileName;
+                }
+                var contentType = contentMetaData.ContentType;
+                var contentCreationStrategy = _contentCreationStrategyProvider.GetContentCreationStrategy(contentType);
+                await contentCreationStrategy.UpdateContent(updateRequest);
+            }
+            _contentRepository.Update(content);
+            _contentMetaDataRepository.Update(contentMetaData);
+            
+            await _contentMetaDataRepository.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
 }

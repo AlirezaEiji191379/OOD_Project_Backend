@@ -1,4 +1,5 @@
-﻿using OOD_Project_Backend.Content.ContentCore.Business.Contracts;
+﻿using OOD_Project_Backend.Content.ContentCore.Business.Contexts;
+using OOD_Project_Backend.Content.ContentCore.Business.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Models.Contract;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities.Enums;
@@ -43,7 +44,7 @@ public class ImageModel : IContentModel
             ContentType = ContentType.Video.ToString()
         };
     }
-
+    
     public async Task Delete(int contentId)
     {
         var imageEntity = await _imageRepository.FindById(contentId);

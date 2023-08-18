@@ -22,5 +22,6 @@ public class DependencyInjector : IDependencyInstaller
         services.AddScoped<IUserFacade, UserFacade>();
         services.AddScoped<ITokenRepository, TokenRepository>();
         services.AddScoped<IProfileService, DefaultProfileService>();
+        services.AddScoped<IEmailService, EmailService>();
     }
 }

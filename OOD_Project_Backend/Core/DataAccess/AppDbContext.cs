@@ -37,5 +37,6 @@ namespace OOD_Project_Backend.Core.DataAccess
         public DbSet<SubscriptionEntity> Subscriptions { get; set; }
         public DbSet<NonPremiumUsersPremiumContentsEntity> NonPremiumUsersPremiumContents { get; set; }
         public DbSet<ChannelPremiumUsersEntity> ChannelPremiumUsers { get; set; }
+        public DbSet<InteractionEntity> Likes { get; set; }
     }
 }

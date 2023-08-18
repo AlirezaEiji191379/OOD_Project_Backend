@@ -48,5 +48,13 @@ public class SubscriptionController : ControllerBase
     {
         return await _subscriptionService.BuyContent(contentId);
     }
-    
+
+    [HttpPut]
+    [Route("Edit")]
+    [Authorize]
+    public async Task<Response> EditSubscription([FromBody] SubscriptionUpdateRequest updateRequest)
+    {
+        return await _subscriptionService.EditSubscription(updateRequest);
+    }
+
 }
