@@ -20,24 +20,28 @@ public class RefundBalanceJob : IRefundBalanceJob
     public async Task Refund()
     {
         var refunds = await _refundRepository.FindAllWaitingIncludeTransaction();
-        var parelellOptions = new ParallelOptions()
+        await using var transaction = await _refundRepository.BeginTransactionAsync();
+        try
         {
-            MaxDegreeOfParallelism = 10
-        };
-        await Parallel.ForEachAsync(refunds, parelellOptions, async (refund,CancellationToken) =>
-        {
-            var result = await _bankService.PayToUser(refund);
-            if (!result)
+            foreach (var refund in refunds)
             {
-                return;
+                var result = await _bankService.PayToUser(refund);
+                if (!result)
+                {
+                    throw new Exception();
+                }
+
+                refund.Transaction.Status = TransactionStatus.COMPLETED;
+                refund.Status = RefundStatus.COMPLETED;
+                _transactionRepository.Update(refund.Transaction);
+                _refundRepository.Update(refund);
             }
-
-            refund.Transaction.Status = TransactionStatus.COMPLETED;
-            refund.Status = RefundStatus.COMPLETED;
-            _transactionRepository.Update(refund.Transaction);
-            _refundRepository.Update(refund);
             await _refundRepository.SaveChangesAsync();
-        });
-
+            await transaction.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
     }
 }
