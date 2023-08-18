@@ -107,5 +107,24 @@ public class DefaultContentService : IContentService
             return new Response(403,new {Message = "the content is not found or you are not admin or owner of channel!"});
         }
     }
-    
+
+    public async Task<Response> Update(ContentUpdateRequest updateRequest)
+    {
+        try
+        {
+            var contentMetaDataEntity = await _contentMetadataRepository.FindByContentId(updateRequest.ContentId);
+            var userId = _userFacade.GetCurrentUserId();
+            var isAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(userId,contentMetaDataEntity.ChannelId);
+            if (!isAdminOrOwner)
+            {
+                return new Response(403, new { Message = "only admins and owners can update contents of a channel" });
+            }
+            await _contentCreation.UpdateContent(updateRequest);
+            return new Response(200,new {Message = "content has been updated successfully!"});
+        }
+        catch (Exception exception)
+        {
+            return new Response(403,new {Message = "update of content failed!"});
+        }
+    }
 }

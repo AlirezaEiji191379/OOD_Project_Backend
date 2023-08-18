@@ -5,4 +5,5 @@ namespace OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories.Contra
 
 public interface IFileEntityRepository : IBaseRepository<FileEntity>
 {
+    Task<FileEntity> FindById(int fileId);
 }

@@ -3,6 +3,7 @@ using OOD_Project_Backend.Content.ContentCore.Business.Creation.Strategies.Contr
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories.Contracts;
+using OOD_Project_Backend.Core.Context;
 
 namespace OOD_Project_Backend.Content.ContentCore.Business.Creation.Strategies;
 
@@ -24,5 +25,12 @@ public class TextCreationStrategy : IContentCreationStrategy
             Value = request.Value
         };
         await _textRepository.Create(textEntity);
+    }
+
+    public async Task UpdateContent(ContentUpdateRequest updateRequest)
+    {
+        var textEntity = await _textRepository.FindByContentId(updateRequest.ContentId);
+        textEntity.Value = updateRequest.Value;
+        _textRepository.Update(textEntity);
     }
 }

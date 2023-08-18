@@ -4,6 +4,7 @@ using OOD_Project_Backend.Content.ContentCore.Business.Creation.Strategies.Contr
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories.Contracts;
+using OOD_Project_Backend.Core.Context;
 
 namespace OOD_Project_Backend.Content.ContentCore.Business.Creation.Strategies;
 
@@ -42,6 +43,31 @@ public class VideoCreationStrategy : IContentCreationStrategy
         {
             await request.File!.CopyToAsync(stream);
         }
+        await CreatePreviewFile(filePath);
+    }
+
+    public async Task UpdateContent(ContentUpdateRequest updateRequest)
+    {
+        var filePath = _configuration.GetValue<string>("Contents") +
+                       $"{updateRequest.ContentId}{Path.GetExtension(updateRequest.File!.FileName)}";
+        var musicEntity = await _videoEntityRepository.FindById(updateRequest.ContentId);
+        var fileEntity = await _fileEntityRepository.FindById(musicEntity.FileId);
+        var oldFilePath = fileEntity.FilePath;
+        fileEntity.FilePath = filePath;
+        fileEntity.Size = updateRequest.File.Length;
+        _fileEntityRepository.Update(fileEntity);
+        if (File.Exists(oldFilePath))
+        {
+            File.Delete(oldFilePath);    
+        }
+
+        var previewOldPath = GetPreviewFilePath(oldFilePath);
+        if (File.Exists(previewOldPath))
+        {
+            File.Delete(previewOldPath);
+        }
+        await using var stream = new FileStream(filePath, FileMode.Create);
+        await updateRequest.File!.CopyToAsync(stream);
         await CreatePreviewFile(filePath);
     }
 

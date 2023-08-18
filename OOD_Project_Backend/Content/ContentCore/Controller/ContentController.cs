@@ -43,6 +43,14 @@ public class ContentController : ControllerBase
         return await _contentService.Show(contentId);
     }
 
+    [HttpPut]
+    [Route("")]
+    [Authorize]
+    public async Task<Response> UpdateContent([FromForm] ContentUpdateRequest contentUpdateRequest)
+    {
+        return await _contentService.Update(contentUpdateRequest);
+    }
+
     [HttpDelete]
     [Route("RemoveContent/{contentId}")]
     [Authorize]

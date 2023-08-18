@@ -1,4 +1,5 @@
-﻿using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Core.DataAccess;
 using OOD_Project_Backend.Core.DataAccess.Repository;
@@ -11,5 +12,10 @@ public class ContentRepository : BaseRepository<ContentEntity>,IContentRepositor
     public ContentRepository(AppDbContext dbContext) : base(dbContext)
     {
         _appDbContext = dbContext;
+    }
+
+    public Task<ContentEntity> FindById(int contentId)
+    {
+        return _appDbContext.Contents.Where(x => x.Id == contentId).SingleAsync();
     }
 }

@@ -3,6 +3,7 @@ using OOD_Project_Backend.Content.ContentCore.Business.Creation.Strategies.Contr
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities.Enums;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories.Contracts;
+using OOD_Project_Backend.Core.Context;
 
 namespace OOD_Project_Backend.Content.ContentCore.Business.Creation.Strategies;
 
@@ -13,14 +14,15 @@ public class MusicCreationStrategy : IContentCreationStrategy
     private readonly IFileEntityRepository _fileEntityRepository;
     private readonly IConfiguration _configuration;
 
-    public MusicCreationStrategy(IMusicRepository musicRepository, IFileEntityRepository fileEntityRepository, IConfiguration configuration)
+    public MusicCreationStrategy(IMusicRepository musicRepository, IFileEntityRepository fileEntityRepository,
+        IConfiguration configuration)
     {
         _musicRepository = musicRepository;
         _fileEntityRepository = fileEntityRepository;
         _configuration = configuration;
     }
 
-    public async Task Generate(ContentCreationRequest request,ContentEntity content)
+    public async Task Generate(ContentCreationRequest request, ContentEntity content)
     {
         var filePath = _configuration.GetValue<string>("Contents") +
                        $"{content.Id}{Path.GetExtension(request.File!.FileName)}";
@@ -40,9 +42,25 @@ public class MusicCreationStrategy : IContentCreationStrategy
         };
         await _fileEntityRepository.Create(fileEntity);
         await _musicRepository.Create(musicEntity);
-        using (var stream = new FileStream(fileEntity.FilePath, FileMode.Create))
+        await using var stream = new FileStream(fileEntity.FilePath, FileMode.Create);
+        await request.File!.CopyToAsync(stream);
+    }
+
+    public async Task UpdateContent(ContentUpdateRequest updateRequest)
+    {
+        var filePath = _configuration.GetValue<string>("Contents") +
+                       $"{updateRequest.ContentId}{Path.GetExtension(updateRequest.File!.FileName)}";
+        var musicEntity = await _musicRepository.FindById(updateRequest.ContentId);
+        var fileEntity = await _fileEntityRepository.FindById(musicEntity.FileId);
+        var oldFilePath = fileEntity.FilePath;
+        fileEntity.FilePath = filePath;
+        fileEntity.Size = updateRequest.File.Length;
+        _fileEntityRepository.Update(fileEntity);
+        if (File.Exists(oldFilePath))
         {
-            await request.File!.CopyToAsync(stream);
+            File.Delete(oldFilePath);    
         }
+        await using var stream = new FileStream(fileEntity.FilePath, FileMode.Create);
+        await updateRequest.File!.CopyToAsync(stream);
     }
 }

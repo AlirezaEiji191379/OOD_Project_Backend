@@ -41,4 +41,22 @@ public class ImageCreationStrategy : IContentCreationStrategy
         await using var stream = new FileStream(fileEntity.FilePath, FileMode.Create);
         await request.File!.CopyToAsync(stream);
     }
+
+    public async Task UpdateContent(ContentUpdateRequest updateRequest)
+    {
+        var filePath = _configuration.GetValue<string>("Contents") +
+                       $"{updateRequest.ContentId}{Path.GetExtension(updateRequest.File!.FileName)}";
+        var musicEntity = await _imageRepository.FindById(updateRequest.ContentId);
+        var fileEntity = await _fileEntityRepository.FindById(musicEntity.FileId);
+        var oldFilePath = fileEntity.FilePath;
+        fileEntity.FilePath = filePath;
+        fileEntity.Size = updateRequest.File.Length;
+        _fileEntityRepository.Update(fileEntity);
+        if (File.Exists(oldFilePath))
+        {
+            File.Delete(oldFilePath);    
+        }
+        await using var stream = new FileStream(fileEntity.FilePath, FileMode.Create);
+        await updateRequest.File!.CopyToAsync(stream);
+    }
 }
