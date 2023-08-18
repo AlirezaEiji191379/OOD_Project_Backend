@@ -25,6 +25,7 @@ public class DependencyInjector : IDependencyInstaller
         services.AddScoped<ICategoryRepository,CategoryRepository>();
         services.AddScoped<IFileEntityRepository,FileRepository>();
         services.AddScoped<IMusicRepository,MusicRepository>();
+        services.AddScoped<IImageRepository,ImageRepository>();
         services.AddScoped<ISubtitleRepository,SubtitleRepository>();
         services.AddScoped<ITextRepository,TextRepository>();
         services.AddScoped<IVideoEntityRepository,VideoRepository>();
@@ -33,8 +34,10 @@ public class DependencyInjector : IDependencyInstaller
         services.AddScoped<IContentCreationStrategy, MusicCreationStrategy>();
         services.AddScoped<IContentCreationStrategy, VideoCreationStrategy>();
         services.AddScoped<IContentCreationStrategy, TextCreationStrategy>();
+        services.AddScoped<IContentCreationStrategy, ImageCreationStrategy>();
         services.AddScoped<IContentCreation, ContentCreation>();
         services.AddScoped<IContentModel,MusicModel>();
+        services.AddScoped<IContentModel,ImageModel>();
         services.AddScoped<IContentModel,VideoModel>();
         services.AddScoped<IContentModel,TextModel>();
         services.AddScoped<IContentModelProvider, ContentModelProvider>();

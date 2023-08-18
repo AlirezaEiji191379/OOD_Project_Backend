@@ -30,6 +30,7 @@ namespace OOD_Project_Backend.Core.DataAccess
         public DbSet<MusicEntity> Musics { get; set; }
         public DbSet<TextEntity> Texts { get; set; }
         public DbSet<VideoEntity> Videos { get; set; }
+        public DbSet<ImageEntity> Images { get; set; }
         public DbSet<RefundEntity> Refunds { get; set; }
         public DbSet<TransactionEntity> Transactions { get; set; }
         public DbSet<WalletEntity> Wallets { get; set; }
