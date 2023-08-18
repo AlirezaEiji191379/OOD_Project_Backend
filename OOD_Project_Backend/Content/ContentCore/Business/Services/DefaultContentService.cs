@@ -26,7 +26,7 @@ public class DefaultContentService : IContentService
         IContentCreation contentCreation,
         IUserFacade userFacade,
         IChannelFacade channelFacade,
-        IContentModelProvider contentModelProvider, 
+        IContentModelProvider contentModelProvider,
         IInteractionRepository interactionRepository)
     {
         _contentRepository = contentRepository;
@@ -83,7 +83,8 @@ public class DefaultContentService : IContentService
             var toR = hasAccess
                 ? await contentModel.ShowNormal(contentId)
                 : await contentModel.ShowPreview(contentId);
-            return new Response(200,new {Message = toR});
+            toR.IsLiked = await _interactionRepository.IsUserLikedContent(userId, contentId);
+            return new Response(200, new { Message = toR });
         }
         catch (Exception e)
         {
@@ -97,18 +98,20 @@ public class DefaultContentService : IContentService
         {
             var contentMetaDataEntity = await _contentMetadataRepository.FindByChannelId(contentId);
             var userId = _userFacade.GetCurrentUserId();
-            var isAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(userId,contentMetaDataEntity.ChannelId);
+            var isAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(userId, contentMetaDataEntity.ChannelId);
             if (!isAdminOrOwner)
             {
                 return new Response(403, new { Message = "only admins and owners can remove contents of a channel" });
             }
+
             var contentModel = _contentModelProvider.GetContentModel(contentMetaDataEntity.ContentType);
             await contentModel.Delete(contentId);
             return new Response(200, new { Message = "deleted successfully!" });
         }
         catch (Exception e)
         {
-            return new Response(403,new {Message = "the content is not found or you are not admin or owner of channel!"});
+            return new Response(403,
+                new { Message = "the content is not found or you are not admin or owner of channel!" });
         }
     }
 
@@ -118,17 +121,18 @@ public class DefaultContentService : IContentService
         {
             var contentMetaDataEntity = await _contentMetadataRepository.FindByContentId(updateRequest.ContentId);
             var userId = _userFacade.GetCurrentUserId();
-            var isAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(userId,contentMetaDataEntity.ChannelId);
+            var isAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(userId, contentMetaDataEntity.ChannelId);
             if (!isAdminOrOwner)
             {
                 return new Response(403, new { Message = "only admins and owners can update contents of a channel" });
             }
+
             await _contentCreation.UpdateContent(updateRequest);
-            return new Response(200,new {Message = "content has been updated successfully!"});
+            return new Response(200, new { Message = "content has been updated successfully!" });
         }
         catch (Exception exception)
         {
-            return new Response(403,new {Message = "update of content failed!"});
+            return new Response(403, new { Message = "update of content failed!" });
         }
     }
 
@@ -143,14 +147,14 @@ public class DefaultContentService : IContentService
                 ContentId = contentId
             });
             await _interactionRepository.SaveChangesAsync();
-            return new Response(200,new {Message = "interaction was added!"});
+            return new Response(200, new { Message = "interaction was added!" });
         }
         catch (Exception e)
         {
-            return new Response(400,new {Message = "interaction add failed!"});
+            return new Response(400, new { Message = "interaction add failed!" });
         }
     }
-    
+
 
     public async Task<Response> DeleteInteraction(int contentId)
     {
@@ -163,11 +167,11 @@ public class DefaultContentService : IContentService
                 ContentId = contentId
             });
             await _interactionRepository.SaveChangesAsync();
-            return new Response(200,new {Message = "interaction was deleted!"});
+            return new Response(200, new { Message = "interaction was deleted!" });
         }
         catch (Exception e)
         {
-            return new Response(400,new {Message = "interaction remove failed!"});
+            return new Response(400, new { Message = "interaction remove failed!" });
         }
     }
 }
