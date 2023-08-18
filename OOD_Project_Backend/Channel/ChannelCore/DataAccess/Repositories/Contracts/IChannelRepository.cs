@@ -6,4 +6,5 @@ namespace OOD_Project_Backend.Channel.ChannelCore.DataAccess.Repositories.Contra
 public interface IChannelRepository : IBaseRepository<ChannelEntity>
 {
     Task<ChannelEntity> FindChannelByJoinLink(string joinLink);
+    Task<ChannelEntity> FindById(int channelId);
 }

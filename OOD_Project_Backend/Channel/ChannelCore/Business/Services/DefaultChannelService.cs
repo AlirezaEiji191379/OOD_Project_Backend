@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using OOD_Project_Backend.Channel.ChannelCore.Business.Context;
 using OOD_Project_Backend.Channel.ChannelCore.Business.Contracts;
 using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Entities;
 using OOD_Project_Backend.Channel.ChannelCore.DataAccess.Entities.Enums;
@@ -57,6 +58,40 @@ public class DefaultChannelService : IChannelService
         {
             return new Response(400, new { Message = "the channel with that name was created!" });
         }
+    }
+
+    public async Task<Response> UpdateChannel(ChannelUpdateRequest updateRequest)
+    {
+        try
+        {
+            var userId = _userFacade.GetCurrentUserId();
+            if (await _channelMemberRepository.CheckIfUserIsChannelOwner(userId, updateRequest.ChannelId) == false)
+            {
+                return new Response(403, new { Message = "only channel owners can update channel!" });
+            }
+
+            if (updateRequest.ChannelName != null || updateRequest.Description != null)
+            {
+                var channel = await _channelRepository.FindById(updateRequest.ChannelId);
+                if (updateRequest.ChannelName != null)
+                {
+                    channel.Name = updateRequest.ChannelName;
+                }
+
+                if (updateRequest.Description != null)
+                {
+                    channel.Description = updateRequest.Description;
+                }
+                _channelRepository.Update(channel);
+                await _channelRepository.SaveChangesAsync();
+            }
+            return new Response(200,new {Message = "channel updated successfully!"});
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }  
     }
 
     public async Task<Response> AddChannelPicture(IFormFile picture,int channelId)
