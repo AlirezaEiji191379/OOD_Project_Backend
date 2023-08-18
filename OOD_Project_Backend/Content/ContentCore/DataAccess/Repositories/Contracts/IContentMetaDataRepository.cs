@@ -9,5 +9,7 @@ public interface IContentMetaDataRepository : IBaseRepository<ContentMetaDataEnt
     Task<ContentMetaDataEntity> FindByContentId(int contentId);
     // include content
     Task<List<ContentDto>> FindByChannelIdIncludeContent(int channelId);
+    Task<List<ContentDto>> FindByChannelIdIncludeContentAndLikeTitle(int channelId, string title);
+    Task<List<ContentDto>> FindByLikeTitle(string title);
     Task<ContentMetaDataEntity> FindByChannelId(int contentId);
 }
