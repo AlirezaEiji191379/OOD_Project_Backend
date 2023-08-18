@@ -12,4 +12,5 @@ public interface IContentMetaDataRepository : IBaseRepository<ContentMetaDataEnt
     Task<List<ContentDto>> FindByChannelIdIncludeContentAndLikeTitle(int channelId, string title);
     Task<List<ContentDto>> FindByLikeTitle(string title);
     Task<ContentMetaDataEntity> FindByChannelId(int contentId);
+    Task<List<ContentDto>> FindRandom();
 }

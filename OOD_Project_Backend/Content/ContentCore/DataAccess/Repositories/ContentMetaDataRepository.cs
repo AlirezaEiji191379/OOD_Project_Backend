@@ -41,6 +41,26 @@ public class ContentMetaDataRepository : BaseRepository<ContentMetaDataEntity>, 
             })
             .ToListAsync();
     }
+    
+    public Task<List<ContentDto>> FindRandom()
+    {
+        return _appDbContext
+            .ContentMetaDatas
+            .Include(x => x.Content)
+            .OrderBy(x => EF.Functions.Random()).Take(6)
+            .Select(x => new ContentDto()
+            {
+                ContentId = x.ContentId,
+                Description = x.Content.Description,
+                CreatedAt = x.Content.CreatedAt,
+                Price = x.Price,
+                IsPremium = x.Premium,
+                Title = x.Content.Title,
+                Type = x.ContentType.ToString(),
+                FileName = x.FileName
+            })
+            .ToListAsync();
+    }
 
     public Task<List<ContentDto>> FindByChannelIdIncludeContentAndLikeTitle(int channelId, string title)
     {
