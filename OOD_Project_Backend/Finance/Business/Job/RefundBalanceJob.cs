@@ -20,7 +20,6 @@ public class RefundBalanceJob : IRefundBalanceJob
     public async Task Refund()
     {
         var refunds = await _refundRepository.FindAllWaitingIncludeTransaction();
-        await using var transaction = await _refundRepository.BeginTransactionAsync();
         try
         {
             foreach (var refund in refunds)
@@ -28,7 +27,7 @@ public class RefundBalanceJob : IRefundBalanceJob
                 var result = await _bankService.PayToUser(refund);
                 if (!result)
                 {
-                    throw new Exception();
+                    continue;
                 }
 
                 refund.Transaction.Status = TransactionStatus.COMPLETED;
@@ -37,11 +36,9 @@ public class RefundBalanceJob : IRefundBalanceJob
                 _refundRepository.Update(refund);
             }
             await _refundRepository.SaveChangesAsync();
-            await transaction.CommitAsync();
         }
         catch (Exception e)
         {
-            throw;
         }
     }
 }
