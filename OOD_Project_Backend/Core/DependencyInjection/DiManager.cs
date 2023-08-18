@@ -2,6 +2,7 @@
 using OOD_Project_Backend.Core.Common.DependencyInjection.Abstractions;
 using OOD_Project_Backend.Core.DataAccess;
 using OOD_Project_Backend.Core.DependencyInjection.Contracts;
+using OOD_Project_Backend.Core.Job;
 using StackExchange.Redis;
 
 namespace OOD_Project_Backend.Core.DependencyInjection
@@ -20,6 +21,7 @@ namespace OOD_Project_Backend.Core.DependencyInjection
                     (options =>
                         options.UseNpgsql(configuration.GetConnectionString("GhasedakDb")));
             serviceCollection.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(configuration.GetConnectionString("RedisConnectionString")));
+            serviceCollection.AddHostedService<JobsRunner>();
         }
 
         private static IEnumerable<IDependencyInstaller> GetAllIDependencyInstallerImplementations()

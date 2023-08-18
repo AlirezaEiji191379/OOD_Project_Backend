@@ -21,6 +21,6 @@ public class ChannelPremiumUsersRepository : BaseRepository<ChannelPremiumUsersE
 
     public Task<List<ChannelPremiumUsersEntity>> FindAfterDate(DateTime dateTime)
     {
-        return _appDbContext.ChannelPremiumUsers.Where(x => x.EndTime > dateTime).ToListAsync();
+        return _appDbContext.ChannelPremiumUsers.Where(x => x.EndTime > dateTime && x.Active == true).ToListAsync();
     }
 }

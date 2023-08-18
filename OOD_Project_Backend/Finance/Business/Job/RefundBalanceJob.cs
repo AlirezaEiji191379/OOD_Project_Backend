@@ -10,7 +10,8 @@ public class RefundBalanceJob : IRefundBalanceJob
     private readonly ITransactionRepository _transactionRepository;
     private readonly IBankService _bankService;
 
-    public RefundBalanceJob(IRefundRepository refundRepository, ITransactionRepository transactionRepository, IBankService bankService)
+    public RefundBalanceJob(IRefundRepository refundRepository, ITransactionRepository transactionRepository,
+        IBankService bankService)
     {
         _refundRepository = refundRepository;
         _transactionRepository = transactionRepository;
@@ -35,7 +36,10 @@ public class RefundBalanceJob : IRefundBalanceJob
                 _transactionRepository.Update(refund.Transaction);
                 _refundRepository.Update(refund);
             }
-            await _refundRepository.SaveChangesAsync();
+            if (refunds.Any())
+            {
+                await _refundRepository.SaveChangesAsync();
+            }
         }
         catch (Exception e)
         {
