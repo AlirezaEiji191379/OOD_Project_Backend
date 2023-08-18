@@ -12,6 +12,7 @@ using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.Core.Validation.Contracts;
 using OOD_Project_Backend.Finance.Business.Contracts;
 using OOD_Project_Backend.User.Business.Contracts;
+using Exception = System.Exception;
 
 namespace OOD_Project_Backend.Channel.Subscription.Business.Services;
 
@@ -95,9 +96,30 @@ public class DefaultSubscriptionService : ISubscriptionService
         }
     }
 
-    public Task<Response> EditSubscription(SubscriptionRequest request)
+    public async Task<Response> EditSubscription(SubscriptionUpdateRequest request)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (!_validator.Validate(new PriceRule(request.Price)))
+            {
+                return new Response(400, new { Message = "invalid subscription request!" });
+            }
+
+            var subscription = await _subscriptionRepository.FindById(request.SubscriptionId);
+            var userId = _userFacade.GetCurrentUserId();
+            if (await _channelMembershipService.IsOwner(subscription.ChannelId, userId) == false)
+            {
+                return new Response(403, new { Message = "only owners can update subscriptions!" });
+            }
+            subscription.Price = request.Price;
+            _subscriptionRepository.Update(subscription);
+            await _subscriptionRepository.SaveChangesAsync();
+            return new Response(200,new {Message = "subscription updated successfully!"});
+        }
+        catch (Exception e)
+        {
+            return new Response(400,new {Message = "subscription update failed!"});
+        }
     }
 
     public async Task<Response> ShowSubscription(int channelId)
