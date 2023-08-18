@@ -22,6 +22,7 @@ public class DependencyInjector : IDependencyInstaller
     public void Install(IServiceCollection services)
     {
         services.AddScoped<IContentService, DefaultContentService>();
+        services.AddScoped<IInteractionRepository, InteractionRepository>();
         services.AddScoped<IContentRepository, ContentRepository>();
         services.AddScoped<IContentMetaDataRepository, ContentMetaDataRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();

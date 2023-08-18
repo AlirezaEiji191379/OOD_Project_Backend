@@ -4,6 +4,7 @@ using OOD_Project_Backend.Content.ContentCore.Business.Contexts;
 using OOD_Project_Backend.Content.ContentCore.Business.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Creation.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Models.Contract;
+using OOD_Project_Backend.Content.ContentCore.DataAccess.Entities;
 using OOD_Project_Backend.Content.ContentCore.DataAccess.Repositories.Contracts;
 using OOD_Project_Backend.Core.Context;
 using OOD_Project_Backend.User.Business.Contracts;
@@ -18,13 +19,15 @@ public class DefaultContentService : IContentService
     private readonly IUserFacade _userFacade;
     private readonly IChannelFacade _channelFacade;
     private readonly IContentModelProvider _contentModelProvider;
+    private readonly IInteractionRepository _interactionRepository;
 
     public DefaultContentService(IContentRepository contentRepository,
         IContentMetaDataRepository contentMetadataRepository,
         IContentCreation contentCreation,
         IUserFacade userFacade,
         IChannelFacade channelFacade,
-        IContentModelProvider contentModelProvider)
+        IContentModelProvider contentModelProvider, 
+        IInteractionRepository interactionRepository)
     {
         _contentRepository = contentRepository;
         _contentMetadataRepository = contentMetadataRepository;
@@ -32,6 +35,7 @@ public class DefaultContentService : IContentService
         _userFacade = userFacade;
         _channelFacade = channelFacade;
         _contentModelProvider = contentModelProvider;
+        _interactionRepository = interactionRepository;
     }
 
     public async Task<Response> Add(ContentCreationRequest request)
@@ -125,6 +129,45 @@ public class DefaultContentService : IContentService
         catch (Exception exception)
         {
             return new Response(403,new {Message = "update of content failed!"});
+        }
+    }
+
+    public async Task<Response> AddInteraction(int contentId)
+    {
+        try
+        {
+            var userId = _userFacade.GetCurrentUserId();
+            await _interactionRepository.Create(new InteractionEntity()
+            {
+                UserId = userId,
+                ContentId = contentId
+            });
+            await _interactionRepository.SaveChangesAsync();
+            return new Response(200,new {Message = "interaction was added!"});
+        }
+        catch (Exception e)
+        {
+            return new Response(400,new {Message = "interaction add failed!"});
+        }
+    }
+    
+
+    public async Task<Response> DeleteInteraction(int contentId)
+    {
+        try
+        {
+            var userId = _userFacade.GetCurrentUserId();
+            _interactionRepository.Delete(new InteractionEntity()
+            {
+                UserId = userId,
+                ContentId = contentId
+            });
+            await _interactionRepository.SaveChangesAsync();
+            return new Response(200,new {Message = "interaction was deleted!"});
+        }
+        catch (Exception e)
+        {
+            return new Response(400,new {Message = "interaction remove failed!"});
         }
     }
 }

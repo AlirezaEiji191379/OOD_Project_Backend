@@ -11,4 +11,6 @@ public interface IContentService
     Task<Response> Show(int contentId);
     Task<Response> Delete(int contentId);
     Task<Response> Update(ContentUpdateRequest updateRequest);
+    Task<Response> AddInteraction(int contentId);
+    Task<Response> DeleteInteraction(int contentId);
 }

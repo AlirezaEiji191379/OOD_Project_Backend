@@ -59,4 +59,20 @@ public class ContentController : ControllerBase
         return await _contentService.Delete(contentId);
     }
 
+    [HttpPost]
+    [Route("Like/{contentId}")]
+    [Authorize]
+    public async Task<Response> LikeContent(int contentId)
+    {
+        return await _contentService.AddInteraction(contentId);
+    }
+    
+    [HttpDelete]
+    [Route("UnLike/{contentId}")]
+    [Authorize]
+    public async Task<Response> UnLikeContent(int contentId)
+    {
+        return await _contentService.DeleteInteraction(contentId);
+    }
+
 }
