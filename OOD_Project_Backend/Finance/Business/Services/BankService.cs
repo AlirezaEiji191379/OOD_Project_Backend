@@ -10,7 +10,7 @@ public class BankService : IBankService
     {
         await Task.Delay(4000);
         var mockRandom = new Random().Next(0, 100);
-        if (mockRandom < 5)
+        if (mockRandom < 2)
         {
             return new TransactionContract()
             {
@@ -31,7 +31,7 @@ public class BankService : IBankService
     {
         await Task.Delay(4000);
         var mockRandom = new Random().Next(0, 100);
-        if (mockRandom < 5)
+        if (mockRandom < 2)
         {
             return false;
         }
