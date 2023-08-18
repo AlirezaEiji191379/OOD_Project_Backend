@@ -60,7 +60,23 @@ public class MusicCreationStrategy : IContentCreationStrategy
         {
             File.Delete(oldFilePath);    
         }
+        var oldPreview = GetPreviewFilePath(oldFilePath);
+        if (File.Exists(oldPreview))
+        {
+            File.Delete(oldPreview);
+        }
         await using var stream = new FileStream(fileEntity.FilePath, FileMode.Create);
         await updateRequest.File!.CopyToAsync(stream);
     }
+    
+    private string GetPreviewFilePath(string filePath)
+    {
+        var appendString = "_preview";
+        var fileName = Path.GetFileNameWithoutExtension(filePath);
+        var newFileName = fileName + appendString;
+        var fileDirectory = Path.GetDirectoryName(filePath);
+        var fileExtension = Path.GetExtension(filePath);
+        return Path.Combine(fileDirectory, newFileName + fileExtension);
+    }
+    
 }

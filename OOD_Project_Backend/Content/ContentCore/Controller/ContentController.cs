@@ -44,7 +44,7 @@ public class ContentController : ControllerBase
     }
 
     [HttpPut]
-    [Route("")]
+    [Route("Edit")]
     [Authorize]
     public async Task<Response> UpdateContent([FromForm] ContentUpdateRequest contentUpdateRequest)
     {
