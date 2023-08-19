@@ -169,7 +169,7 @@ public class DefaultContentService : IContentService
         }
         catch (Exception e)
         {
-            return new Response(400, new { Message = "interaction add failed!" });
+            return new Response(400, new { Message = "you have liked the content!" });
         }
     }
 
@@ -190,6 +190,19 @@ public class DefaultContentService : IContentService
         catch (Exception e)
         {
             return new Response(400, new { Message = "interaction remove failed!" });
+        }
+    }
+
+    public async Task<Response> GetContentMetadata(int contentId)
+    {
+        try
+        {
+            var contentMetaDataEntity = await _contentMetadataRepository.FindByContentIdIncludeContent(contentId);
+            return new Response(200, new { Message = contentMetaDataEntity });
+        }
+        catch (Exception e)
+        {
+            return new Response(400,new {Message = "failed to get content"});
         }
     }
 }

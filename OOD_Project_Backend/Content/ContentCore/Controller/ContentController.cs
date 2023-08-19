@@ -43,6 +43,14 @@ public class ContentController : ControllerBase
         return await _contentService.Show(contentId);
     }
 
+    [HttpGet]
+    [Route("GetMetadata/{contentId}")]
+    [Authorize]
+    public async Task<Response> GetContentMetadata(int contentId)
+    {
+        return await _contentService.GetContentMetadata(contentId);
+    }
+
     [HttpPut]
     [Route("Edit")]
     [Authorize]

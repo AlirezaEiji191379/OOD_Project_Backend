@@ -16,6 +16,14 @@ public class ContentMetaDataRepository : BaseRepository<ContentMetaDataEntity>, 
         _appDbContext = dbContext;
     }
 
+    public Task<ContentMetaDataEntity> FindByContentIdIncludeContent(int contentId)
+    {
+        return _appDbContext
+            .ContentMetaDatas
+            .Where(x => x.ContentId == contentId)
+            .Include(x => x.Content)
+            .SingleAsync();
+    }
 
     public Task<ContentMetaDataEntity> FindByContentId(int contentId)
     {
