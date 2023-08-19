@@ -9,7 +9,7 @@ public class CategoryEntityConfiguration : IEntityTypeConfiguration<CategoryEnti
     public void Configure(EntityTypeBuilder<CategoryEntity> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.HasOne(x => x.Title);
+        builder.HasIndex(x => x.Title).IsUnique();
         builder.HasOne(x => x.Channel)
             .WithMany(x => x.CategoryEntities)
             .HasForeignKey(x => x.ChannelId);

@@ -22,9 +22,9 @@ public class DefaultCategoryService : ICategoryService
     private readonly IUserFacade _userFacade;
 
     public DefaultCategoryService(
-        IChannelFacade channelFacade, 
-        IUserFacade userFacade, 
-        ICategoryRepository categoryRepository, 
+        IChannelFacade channelFacade,
+        IUserFacade userFacade,
+        ICategoryRepository categoryRepository,
         IContentMetaDataRepository contentMetaDataRepository)
     {
         _channelFacade = channelFacade;
@@ -44,59 +44,52 @@ public class DefaultCategoryService : ICategoryService
                 return new Response((int)HttpStatusCode.Unauthorized,
                     new { Message = "You are not authorized to create categories!" });
 
-            var category = await _categoryRepository.GetByName(request.ChannelId, request.Title);
-
-            if (category != null)
-            {
-                return new Response((int)HttpStatusCode.BadRequest, new { Message = "Category Already exists" });
-            }
-
-            category = new CategoryEntity
+            var category = new CategoryEntity
             {
                 Title = request.Title,
                 ChannelId = request.ChannelId
             };
             await _categoryRepository.Create(category);
-           // await _categoryRepository.SaveChangesAsync();
+            await _categoryRepository.SaveChangesAsync();
 
-            return new Response((int)HttpStatusCode.Created, 
-                new { Message = new { CategoryId = category.Id, Title = category.Title, ChannelId = category.ChannelId } });
+            return new Response((int)HttpStatusCode.Created,
+                new { Message = category.Id });
         }
         catch (Exception)
         {
             return new Response((int)HttpStatusCode.BadRequest, new { Message = "Something Went Wrong!" });
-
         }
     }
+
     public async Task<Response> DeleteCategory(CategoryRequest request)
     {
         var currentUserId = _userFacade.GetCurrentUserId();
         try
         {
-            var isChannelAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(currentUserId, request.ChannelId);
-
-            if (!isChannelAdminOrOwner)
-                return new Response((int)HttpStatusCode.Unauthorized,
-                                       new { Message = "You are not authorized to delete categories!" });
-
             var category = await _categoryRepository.GetById(request.Id);
             if (category == null)
             {
                 return new Response((int)HttpStatusCode.NotFound, new { Message = "Category Not Found" });
             }
+            
+            var isChannelAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(currentUserId, category.ChannelId);
+            
+            if (!isChannelAdminOrOwner)
+                return new Response((int)HttpStatusCode.Unauthorized,
+                    new { Message = "You are not authorized to delete categories!" });
+            
 
             var contents = await _contentMetaDataRepository.FindByCategoryId(category.Id);
 
             foreach (var content in contents)
             {
-                content.CategoryId = null; 
+                content.CategoryId = null;
                 _contentMetaDataRepository.Update(content);
             }
 
             _categoryRepository.Delete(category);
-
+            await _categoryRepository.SaveChangesAsync();
             return new Response((int)HttpStatusCode.OK, new { Message = "Category Deleted Successfully" });
-
         }
         catch (Exception)
         {
@@ -109,23 +102,25 @@ public class DefaultCategoryService : ICategoryService
         var currentUserId = _userFacade.GetCurrentUserId();
         try
         {
-            var isChannelAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(currentUserId, request.ChannelId);
-
-            if (!isChannelAdminOrOwner)
-                return new Response((int)HttpStatusCode.Unauthorized,
-                                       new { Message = "You are not authorized to update categories!" });
-
             var category = await _categoryRepository.GetById(request.Id);
             if (category == null)
             {
                 return new Response((int)HttpStatusCode.NotFound, new { Message = "Category Not Found" });
             }
-            
+
+            var isChannelAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(currentUserId, category.ChannelId);
+
+            if (!isChannelAdminOrOwner)
+                return new Response((int)HttpStatusCode.Unauthorized,
+                    new { Message = "You are not authorized to update categories!" });
+
+
             var duplicateCategory = await _categoryRepository.GetByName(category.ChannelId, request.Title);
 
             if (duplicateCategory != null)
             {
-                return new Response((int)HttpStatusCode.BadRequest, new { Message = "Category with this title already exists" });
+                return new Response((int)HttpStatusCode.BadRequest,
+                    new { Message = "Category with this title already exists" });
             }
 
             category.Title = request.Title;
@@ -145,9 +140,9 @@ public class DefaultCategoryService : ICategoryService
         try
         {
             var category = await _categoryRepository.GetById(request.Id);
-            return category == null ? 
-                new Response((int)HttpStatusCode.NotFound, new { Message = "Category Not Found" }) : 
-                new Response((int)HttpStatusCode.OK, new { Message = category });
+            return category == null
+                ? new Response((int)HttpStatusCode.NotFound, new { Message = "Category Not Found" })
+                : new Response((int)HttpStatusCode.OK, new { Message = category });
         }
         catch (Exception)
         {
