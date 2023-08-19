@@ -68,23 +68,101 @@ public class DefaultCategoryService : ICategoryService
     }
     public async Task<Response> DeleteCategory(CategoryRequest request)
     {
-        throw new NotImplementedException(); 
+        var currentUserId = _userFacade.GetCurrentUserId();
+        try
+        {
+            var isChannelAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(currentUserId, request.ChannelId);
+
+            if (!isChannelAdminOrOwner)
+                return new Response((int)HttpStatusCode.Unauthorized,
+                                       new { Message = "You are not authorized to delete categories!" });
+
+            var category = await _categoryRepository.GetById(request.Id);
+            if (category == null)
+            {
+                return new Response((int)HttpStatusCode.NotFound, new { Message = "Category Not Found" });
+            }
+
+            var contents = await _contentMetaDataRepository.FindByCategoryId(category.Id);
+
+            foreach (var content in contents)
+            {
+                content.CategoryId = null; 
+                _contentMetaDataRepository.Update(content);
+            }
+
+            _categoryRepository.Delete(category);
+
+            return new Response((int)HttpStatusCode.OK, new { Message = "Category Deleted Successfully" });
+
+        }
+        catch (Exception)
+        {
+            return new Response((int)HttpStatusCode.BadRequest, new { Message = "Something Went Wrong!" });
+        }
     }
 
     public async Task<Response> UpdateCategory(CategoryRequest request)
     {
-        throw new NotImplementedException(); 
+        var currentUserId = _userFacade.GetCurrentUserId();
+        try
+        {
+            var isChannelAdminOrOwner = await _channelFacade.IsChannelAdminOrOwner(currentUserId, request.ChannelId);
 
+            if (!isChannelAdminOrOwner)
+                return new Response((int)HttpStatusCode.Unauthorized,
+                                       new { Message = "You are not authorized to update categories!" });
+
+            var category = await _categoryRepository.GetById(request.Id);
+            if (category == null)
+            {
+                return new Response((int)HttpStatusCode.NotFound, new { Message = "Category Not Found" });
+            }
+            
+            var duplicateCategory = await _categoryRepository.GetByName(category.ChannelId, request.Title);
+
+            if (duplicateCategory != null)
+            {
+                return new Response((int)HttpStatusCode.BadRequest, new { Message = "Category with this title already exists" });
+            }
+
+            category.Title = request.Title;
+            _categoryRepository.Update(category);
+            await _categoryRepository.SaveChangesAsync();
+
+            return new Response((int)HttpStatusCode.OK, new { Message = "Category Updated Successfully" });
+        }
+        catch (Exception)
+        {
+            return new Response((int)HttpStatusCode.BadRequest, new { Message = "Something Went Wrong!" });
+        }
     }
 
     public async Task<Response> GetCategory(CategoryRequest request)
     {
-        throw new NotImplementedException(); 
-
+        try
+        {
+            var category = await _categoryRepository.GetById(request.Id);
+            return category == null ? 
+                new Response((int)HttpStatusCode.NotFound, new { Message = "Category Not Found" }) : 
+                new Response((int)HttpStatusCode.OK, new { Message = category });
+        }
+        catch (Exception)
+        {
+            return new Response((int)HttpStatusCode.BadRequest, new { Message = "Something Went Wrong!" });
+        }
     }
 
     public async Task<Response> GetCategories(CategoryRequest request)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var categories = await _categoryRepository.FindByChannelId(request.ChannelId);
+            return new Response((int)HttpStatusCode.OK, new { Message = categories });
+        }
+        catch (Exception)
+        {
+            return new Response((int)HttpStatusCode.BadRequest, new { Message = "Something Went Wrong!" });
+        }
     }
 }

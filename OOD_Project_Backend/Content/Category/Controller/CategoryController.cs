@@ -24,5 +24,36 @@ public class CategoryController : ControllerBase
     {
         return await _categoryService.CreateCategory(categoryRequest);
     }
-    
+
+    [HttpDelete]
+    [Route("Delete/{categoryId}")]
+    [Authorize]
+    public async Task<Response> Delete(int categoryId)
+    {
+        return await _categoryService.DeleteCategory(new CategoryRequest{Id = categoryId});
+    }
+
+    [HttpPut]
+    [Route("Update")]
+    [Authorize]
+    public async Task<Response> Update([FromBody] CategoryRequest categoryRequest)
+    {
+        return await _categoryService.UpdateCategory(categoryRequest);
+    }
+
+    [HttpGet]
+    [Route("Get/{categoryId}")]
+    [Authorize]
+    public async Task<Response> Get(int categoryId)
+    {
+        return await _categoryService.GetCategory(new CategoryRequest { Id = categoryId});
+    }
+
+    [HttpGet]
+    [Route("GetAll/{channelId}")]
+    [Authorize]
+    public async Task<Response> GetAll(int channelId)
+    {
+        return await _categoryService.GetCategories(new CategoryRequest { ChannelId = channelId});
+    }
 }
