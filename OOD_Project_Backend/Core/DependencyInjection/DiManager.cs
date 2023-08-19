@@ -21,7 +21,7 @@ namespace OOD_Project_Backend.Core.DependencyInjection
                     (options =>
                         options.UseNpgsql(configuration.GetConnectionString("GhasedakDb")));
             serviceCollection.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(configuration.GetConnectionString("RedisConnectionString")));
-            serviceCollection.AddHostedService<JobsRunner>();
+           // serviceCollection.AddHostedService<JobsRunner>();
         }
 
         private static IEnumerable<IDependencyInstaller> GetAllIDependencyInstallerImplementations()

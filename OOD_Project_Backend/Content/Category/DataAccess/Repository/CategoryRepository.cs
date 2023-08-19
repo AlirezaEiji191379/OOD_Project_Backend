@@ -36,7 +36,7 @@ public class CategoryRepository : BaseRepository<CategoryEntity>,ICategoryReposi
                 .SingleAsync(x => x.Id == categoryId);
             return category;
         }
-        catch
+        catch (Exception e)
         {
             return null;
         }

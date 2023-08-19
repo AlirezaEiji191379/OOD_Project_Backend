@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OOD_Project_Backend.Channel.ChannelCore.Business.Contracts;
 using OOD_Project_Backend.Content.Category.Business.Contexts;
 using OOD_Project_Backend.Content.Category.Business.Contracts;
@@ -53,12 +54,13 @@ public class DefaultCategoryService : ICategoryService
             category = new CategoryEntity
             {
                 Title = request.Title,
-                ChannelId = request.ChannelId,
+                ChannelId = request.ChannelId
             };
             await _categoryRepository.Create(category);
-            await _categoryRepository.SaveChangesAsync();
+           // await _categoryRepository.SaveChangesAsync();
 
-            return new Response((int)HttpStatusCode.Created, new { Message = "Category Created Successfully" });
+            return new Response((int)HttpStatusCode.Created, 
+                new { Message = new { CategoryId = category.Id, Title = category.Title, ChannelId = category.ChannelId } });
         }
         catch (Exception)
         {
