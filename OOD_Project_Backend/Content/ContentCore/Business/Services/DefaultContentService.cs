@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OOD_Project_Backend.Channel.ChannelCore.Business.Contracts;
+using OOD_Project_Backend.Content.Category.DataAccess.Repository.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Contexts;
 using OOD_Project_Backend.Content.ContentCore.Business.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Creation.Contracts;
@@ -20,6 +21,7 @@ public class DefaultContentService : IContentService
     private readonly IChannelFacade _channelFacade;
     private readonly IContentModelProvider _contentModelProvider;
     private readonly IInteractionRepository _interactionRepository;
+    private readonly ICategoryRepository _categoryRepository;
 
     public DefaultContentService(IContentRepository contentRepository,
         IContentMetaDataRepository contentMetadataRepository,
@@ -27,7 +29,8 @@ public class DefaultContentService : IContentService
         IUserFacade userFacade,
         IChannelFacade channelFacade,
         IContentModelProvider contentModelProvider,
-        IInteractionRepository interactionRepository)
+        IInteractionRepository interactionRepository, 
+        ICategoryRepository categoryRepository)
     {
         _contentRepository = contentRepository;
         _contentMetadataRepository = contentMetadataRepository;
@@ -36,6 +39,7 @@ public class DefaultContentService : IContentService
         _channelFacade = channelFacade;
         _contentModelProvider = contentModelProvider;
         _interactionRepository = interactionRepository;
+        _categoryRepository = categoryRepository;
     }
 
     public async Task<Response> Add(ContentCreationRequest request)
@@ -133,6 +137,14 @@ public class DefaultContentService : IContentService
                 return new Response(403, new { Message = "only admins and owners can update contents of a channel" });
             }
 
+            if (updateRequest.CategoryId != null)
+            {
+                var category = await _categoryRepository.GetById(updateRequest.CategoryId.Value);
+                if (category.ChannelId != contentMetaDataEntity.ChannelId)
+                {
+                    return new Response(400, new {Message = "the category is not in the channel!"});
+                }
+            }
             await _contentCreation.UpdateContent(updateRequest);
             return new Response(200, new { Message = "content has been updated successfully!" });
         }

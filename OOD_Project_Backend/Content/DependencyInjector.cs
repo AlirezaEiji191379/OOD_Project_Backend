@@ -1,4 +1,6 @@
-﻿using OOD_Project_Backend.Content.Category.DataAccess.Repository;
+﻿using OOD_Project_Backend.Content.Category.Business.Contracts;
+using OOD_Project_Backend.Content.Category.Business.Services;
+using OOD_Project_Backend.Content.Category.DataAccess.Repository;
 using OOD_Project_Backend.Content.Category.DataAccess.Repository.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Contracts;
 using OOD_Project_Backend.Content.ContentCore.Business.Creation;
@@ -45,5 +47,7 @@ public class DependencyInjector : IDependencyInstaller
         services.AddScoped<IContentModel, TextModel>();
         services.AddScoped<IContentModelProvider, ContentModelProvider>();
         services.AddScoped<ISearchService, SearchService>();
+        services.AddScoped<ICategoryService,DefaultCategoryService>();
+        
     }
 }
