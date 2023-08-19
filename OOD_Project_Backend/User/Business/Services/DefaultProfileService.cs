@@ -136,7 +136,7 @@ public class DefaultProfileService : IProfileService
             var random = new Random();
             var code = random.Next(100000, 999999);
             await _tokenRepository.SaveVerificationCode(userId, code);
-            _emailService.SendEmailToUser(user.Email!, code);
+            await _emailService.SendEmailToUser(user.Email!, code);
             return new Response(200, new { Message = "check your email verification code has been sent" });
         }
         catch (Exception e)

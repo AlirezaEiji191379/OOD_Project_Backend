@@ -11,4 +11,5 @@ public class ContentDto
     public bool IsPremium { get; set; }
     public string Title { get; set; }
     public string? Description { get; set; }
+    public bool IsLiked { get; set; }
 }

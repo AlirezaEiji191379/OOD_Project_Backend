@@ -77,8 +77,8 @@ public class DefaultUserService : IUserService
         try
         {
             var user = string.IsNullOrEmpty(loginRequest.PhoneNumber)
-                ? await _userRepository.FindByCondition(x => x.Email == loginRequest.Email, false).FirstAsync()
-                : await _userRepository.FindByCondition(x => x.PhoneNumber == loginRequest.PhoneNumber, false)
+                ? await _userRepository.FindByCondition(x => x.Email == loginRequest.Email && x.IsDeleted == false, false).FirstAsync()
+                : await _userRepository.FindByCondition(x => x.PhoneNumber == loginRequest.PhoneNumber && x.IsDeleted == false, false)
                     .FirstAsync();
             if (!_passwordService.VerifyPassword(loginRequest.Password, user.Password))
             {

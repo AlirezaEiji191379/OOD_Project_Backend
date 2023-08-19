@@ -61,7 +61,13 @@ public class DefaultContentService : IContentService
     {
         try
         {
+            var userId = _userFacade.GetCurrentUserId();
             var contentDtos = await _contentMetadataRepository.FindByChannelIdIncludeContent(channelId);
+            foreach (var contentDto in contentDtos)
+            {
+                contentDto.IsLiked = await _interactionRepository.IsUserLikedContent(userId, contentDto.ContentId);
+            }
+
             return new Response(200, new { Message = contentDtos });
         }
         catch (Exception e)
