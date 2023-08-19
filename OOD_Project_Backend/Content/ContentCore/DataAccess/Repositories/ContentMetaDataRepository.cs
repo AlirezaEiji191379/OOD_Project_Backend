@@ -109,4 +109,17 @@ public class ContentMetaDataRepository : BaseRepository<ContentMetaDataEntity>, 
             .Where(x => x.ContentId == contentId)
             .SingleAsync();
     }
+    public async Task<List<ContentMetaDataEntity>> FindByCategoryId(int categoryId)
+    {
+        try
+        {
+            return await _appDbContext.ContentMetaDatas
+                .Where(x => x.CategoryId == categoryId)
+                .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            return new List<ContentMetaDataEntity>();
+        }
+    }
 }
